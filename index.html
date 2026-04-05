@@ -1,71 +1,130 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Emerald Guardian</title>
+
 <style>
 body {
-    margin:0;
-    font-family: Arial, sans-serif;
+    margin: 0;
     background: #000;
     color: #fff;
-    text-align:center;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
 }
+
 .container {
-    height:100vh;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
+
+/* TÍTULO */
 h1 {
-    font-size:48px;
-    color:#e6c200;
+    font-size: 64px;
+    color: #FFD700;
+    margin-bottom: 20px;
 }
+
+/* PUMA SVG */
+.puma {
+    width: 300px;
+    margin: 20px;
+}
+
+path {
+    fill: none;
+    stroke: #00ff99;
+    stroke-width: 2;
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: draw 3s ease forwards;
+}
+
+@keyframes draw {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* INPUT */
 input {
-    padding:10px;
-    margin-top:20px;
-    border:1px solid #00ff99;
-    background:#000;
-    color:#fff;
+    padding: 12px;
+    border: 1px solid #00ff99;
+    background: #000;
+    color: #fff;
+    margin-top: 20px;
+    text-align: center;
 }
+
+/* BOTÃO */
 button {
-    margin-top:20px;
-    padding:12px 24px;
-    background:#e6c200;
-    border:none;
-    cursor:pointer;
+    margin-top: 10px;
+    padding: 12px 30px;
+    background: #FFD700;
+    border: none;
+    cursor: pointer;
 }
-.hidden {
-    display:none;
+
+/* FORM FINAL */
+.form {
+    display: none;
+    flex-direction: column;
 }
+
 </style>
 </head>
+
 <body>
 
 <div class="container" id="login">
+
     <h1>Emerald Guardian</h1>
+
+    <!-- PUMA -->
+    <svg class="puma" viewBox="0 0 500 200">
+        <path d="M10 150 Q100 50 250 100 T490 150" />
+    </svg>
+
     <p>Restricted Access</p>
-    <input type="password" id="password" placeholder="Enter access code">
+
+    <input type="password" id="senha" placeholder="Enter access code">
     <button onclick="check()">Enter</button>
+
 </div>
 
-<div class="container hidden" id="content">
-    <h1>Welcome</h1>
-    <p>You now have access.</p>
+<div class="container form" id="form">
+
+    <h1>Private Access</h1>
+
+    <input placeholder="Nome">
+    <input placeholder="Email">
+    <input placeholder="Telefone">
+
+    <button onclick="enviar()">Enviar</button>
+
 </div>
 
 <script>
-function check(){
-    var pass = document.getElementById("password").value;
-    if(pass === "123A"){
-        document.getElementById("login").classList.add("hidden");
-        document.getElementById("content").classList.remove("hidden");
+
+function check() {
+    const senha = document.getElementById('senha').value;
+
+    if(senha === "123A"){
+        document.getElementById('login').style.display = "none";
+        document.getElementById('form').style.display = "flex";
     } else {
-        alert("Wrong password");
+        alert("Acesso negado");
     }
 }
+
+function enviar(){
+    alert("Dados enviados. Em breve você receberá acesso exclusivo.");
+}
+
 </script>
 
 </body>
