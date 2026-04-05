@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emerald Guardian</title>
+<style>
+body {
+    margin:0;
+    font-family: Arial, sans-serif;
+    background: #000;
+    color: #fff;
+    text-align:center;
+}
+.container {
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
+h1 {
+    font-size:48px;
+    color:#e6c200;
+}
+input {
+    padding:10px;
+    margin-top:20px;
+    border:1px solid #00ff99;
+    background:#000;
+    color:#fff;
+}
+button {
+    margin-top:20px;
+    padding:12px 24px;
+    background:#e6c200;
+    border:none;
+    cursor:pointer;
+}
+.hidden {
+    display:none;
+}
+</style>
+</head>
+<body>
+
+<div class="container" id="login">
+    <h1>Emerald Guardian</h1>
+    <p>Restricted Access</p>
+    <input type="password" id="password" placeholder="Enter access code">
+    <button onclick="check()">Enter</button>
+</div>
+
+<div class="container hidden" id="content">
+    <h1>Welcome</h1>
+    <p>You now have access.</p>
+</div>
+
+<script>
+function check(){
+    var pass = document.getElementById("password").value;
+    if(pass === "123A"){
+        document.getElementById("login").classList.add("hidden");
+        document.getElementById("content").classList.remove("hidden");
+    } else {
+        alert("Wrong password");
+    }
+}
+</script>
+
+</body>
+</html>
