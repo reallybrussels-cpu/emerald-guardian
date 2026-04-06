@@ -1,160 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Emerald Guardian</title>
 
 <style>
-
-body {
-margin:0;
-font-family:'Georgia', serif;
-background:#000;
-color:white;
-overflow:hidden;
-}
-
-/* SECTIONS */
-.section {
-position:absolute;
-width:100%;
-height:100vh;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-text-align:center;
-padding:40px;
-
-opacity:0;
-transition:1s;
-pointer-events:none;
-}
-
-.section.active {
-opacity:1;
-pointer-events:auto;
-}
-
-/* TEXT */
-h1 {font-size:60px;color:#e6c200;}
-.highlight {color:#00ffa6;}
-
-/* BUTTON */
-.btn {
-margin-top:30px;
-cursor:pointer;
-opacity:0.6;
-}
-.btn:hover {opacity:1;}
-
-/* INPUT */
-input, select {
-padding:12px;
-margin:10px;
-width:260px;
-background:black;
-border:1px solid #00ffa6;
-color:white;
-text-align:center;
-}
-
-button {
-padding:12px 35px;
-background:linear-gradient(90deg,#e6c200,#b89600);
-border:none;
-cursor:pointer;
-}
-
-/* PUMA */
-.guardian {width:420px;}
-
-.puma-img {
-width:100%;
-opacity:0;
-transform:translateY(40px);
-filter:brightness(0) invert(1) drop-shadow(0 0 6px #00ffa6);
-}
-
-.puma-active {
-animation:fade 2s forwards, float 6s infinite 2s;
-}
-
-@keyframes fade {
-to {opacity:1;transform:translateY(0);}
-}
-
-@keyframes float {
-50% {transform:translateY(-8px);}
-}
-
+body{margin:0;background:#000;color:#fff;font-family:Georgia;text-align:center}
+.section{display:none;height:100vh;justify-content:center;align-items:center;flex-direction:column}
+.active{display:flex}
+input,select{padding:10px;margin:5px;width:250px}
+button{padding:10px 30px;background:gold;border:none;cursor:pointer}
 </style>
 </head>
 
 <body>
 
-<!-- TELA 1 -->
-<div class="section active" id="s1">
+<!-- LOGIN -->
+<div id="s1" class="section active">
 <h1>Emerald Guardian</h1>
-<p>Restricted access for authorized invitees</p>
-
 <input id="code" placeholder="ACCESS CODE">
-<button onclick="check()">ENTER</button>
+<button onclick="login()">ENTER</button>
 <p id="erro"></p>
 </div>
 
-<!-- TELA 2 -->
-<div class="section" id="s2">
-<h2>There is a difference between something valuable...</h2>
-<h2 class="highlight">and something truly unique.</h2>
-<div class="btn" onclick="next(3)">CONTINUE ↓</div>
-</div>
-
-<!-- TELA 3 -->
-<div class="section" id="s3">
-<h2>Formed over millions of years</h2>
-<p>The <span class="highlight">Emerald Guardian</span> represents a rare convergence</p>
-<div class="btn" onclick="next(4)">CONTINUE ↓</div>
-</div>
-
-<!-- TELA 4 -->
-<div class="section" id="s4">
-<div class="guardian">
-<img src="puma.png" class="puma-img">
-</div>
-<h2>A singular presence</h2>
-<div class="btn" onclick="next(5)">CONTINUE ↓</div>
-</div>
-
-<!-- TELA 5 -->
-<div class="section" id="s5">
-<h2>It is an asset defined by <span class="highlight">absolute rarity</span></h2>
-<div class="btn" onclick="next(6)">CONTINUE ↓</div>
-</div>
-
-<!-- TELA 6 -->
-<div class="section" id="s6">
-<h2>Availability is <span class="highlight">private</span> and selective</h2>
-<div class="btn" onclick="next(7)">CONTINUE ↓</div>
-</div>
-
-<!-- TELA 7 -->
-<div class="section" id="s7">
-
-<h2>Request Direct Access</h2>
+<!-- FORM -->
+<div id="s2" class="section">
+<h2>Request Access</h2>
 
 <input id="nome" placeholder="Nome">
 <input id="email" placeholder="Email">
 
 <select id="ddi">
 <option value="">DDI</option>
-<option>+55 Brasil</option>
-<option>+1 USA</option>
-<option>+44 UK</option>
-<option>+351 Portugal</option>
-<option>+971 UAE</option>
-<option>+86 China</option>
+<option>+55</option>
+<option>+1</option>
+<option>+44</option>
 </select>
 
 <input id="telefone" placeholder="Telefone">
@@ -162,77 +42,44 @@ to {opacity:1;transform:translateY(0);}
 <button onclick="enviar()">SUBMIT</button>
 
 <p id="msg"></p>
-
 </div>
 
 <script>
 
-/* LOGIN */
-function check(){
-let code = document.getElementById("code").value;
-
-if(code === "123A"){
-next(2);
+function login(){
+let code=document.getElementById("code").value;
+if(code==="123A"){
+document.getElementById("s1").classList.remove("active");
+document.getElementById("s2").classList.add("active");
 }else{
 document.getElementById("erro").innerText="Invalid code";
 }
 }
 
-/* NAV */
-function next(n){
-document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-document.getElementById("s"+n).classList.add("active");
-
-/* anima puma só quando chega na tela 4 */
-if(n===4){
-setTimeout(()=>{
-document.querySelector(".puma-img").classList.add("puma-active");
-},800);
-}
-}
-
-/* VALIDAÇÃO EMAIL */
-function validarEmail(email){
-return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-/* ENVIO */
 function enviar(){
 
-let nome = document.getElementById("nome").value.trim();
-let email = document.getElementById("email").value.trim();
-let ddi = document.getElementById("ddi").value;
-let telefone = document.getElementById("telefone").value.trim();
+let nome=document.getElementById("nome").value;
+let email=document.getElementById("email").value;
+let ddi=document.getElementById("ddi").value;
+let tel=document.getElementById("telefone").value;
 
-if(!nome || !email || !ddi || !telefone){
-document.getElementById("msg").innerText="Preencha todos os campos";
+if(!nome||!email||!ddi||!tel){
+document.getElementById("msg").innerText="Preencha tudo";
 return;
 }
 
-if(!validarEmail(email)){
-document.getElementById("msg").innerText="Email inválido";
-return;
-}
-
-/* proteção */
-nome = nome.replace(/<[^>]*>?/gm, '');
-email = email.replace(/<[^>]*>?/gm, '');
-telefone = telefone.replace(/<[^>]*>?/gm, '');
-
-fetch("https://script.google.com/macros/s/AKfycbyUPhY7Gc2XN1WBQB5KZa8IoexJijO-vf5mQjzIw6pkBW3Uyk8i6fnfZaRvMxzbG2Pm/exec", {
+fetch("https://script.google.com/macros/s/AKfycbyUPhY7Gc2XN1WBQB5KZa8IoexJijO-vf5mQjzIw6pkBW3Uyk8i6fnfZaRvMxzbG2Pm/exec",{
 method:"POST",
-body: JSON.stringify({
-nome: nome,
-email: email,
-ddi: ddi,
-telefone: telefone
+mode:"no-cors",
+body:JSON.stringify({
+nome:nome,
+email:email,
+ddi:ddi,
+telefone:tel
 })
-.then(()=> {
-document.getElementById("msg").innerText="Request sent successfully";
-})
-.catch(()=>{
-document.getElementById("msg").innerText="Error sending request";
 });
+
+document.getElementById("msg").innerText="Enviado com sucesso";
 
 }
 
