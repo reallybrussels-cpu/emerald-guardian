@@ -122,23 +122,30 @@ width:100%;
 max-width:500px;
 background:transparent;
 
-/* base */
 filter:
 brightness(0)
 invert(1)
 opacity(0.85)
 drop-shadow(0 0 4px #00ffa6);
 
-/* animações combinadas */
-animation:
-fadeIn 2s ease forwards 1s,
-breathGlow 2s ease-in-out infinite 3s,
-floatPuma 6s ease-in-out infinite 3s;
+/* começa invisível */
+opacity:0;
+transform: translateY(20px);
+
+/* sem animação automática */
 }
+  
+.puma-active {
+animation:
+fadeIn 1.5s ease forwards,
+breathGlow 2s ease-in-out infinite 1.5s,
+floatPuma 6s ease-in-out infinite 1.5s;
 
+transform: translateY(0);
+opacity:1;
+}
+  
 /* ENERGIA */
-
-
 
 /* ANIMAÇÕES */
 
@@ -277,7 +284,19 @@ function next(n){
 document.querySelectorAll(".section").forEach(s=>{
 s.classList.remove("active");
 });
-document.getElementById("s"+n).classList.add("active");
+
+let target = document.getElementById("s"+n);
+target.classList.add("active");
+
+/* 🔥 ativa o puma só na tela 4 */
+if(n === 4){
+setTimeout(() => {
+let puma = document.querySelector(".puma-img");
+if(puma){
+puma.classList.add("puma-active");
+}
+}, 600);
+}
 }
 
 </script>
