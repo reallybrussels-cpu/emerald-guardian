@@ -141,18 +141,31 @@ pulseGlow 3s infinite ease-in-out 3s;
 .energy-line {
 position:absolute;
 top:0;
-left:-100%;
-width:200%;
+left:0;
+width:100%;
 height:100%;
 
+-webkit-mask-image: url('puma.png');
+-webkit-mask-repeat: no-repeat;
+-webkit-mask-size: contain;
+-webkit-mask-position: center;
+
+mask-image: url('puma.png');
+mask-repeat: no-repeat;
+mask-size: contain;
+mask-position: center;
+
 background: linear-gradient(
-90deg,
-transparent,
-rgba(0,255,166,0.4),
-transparent
+120deg,
+transparent 20%,
+rgba(0,255,166,0.7) 40%,
+rgba(0,255,166,1) 50%,
+rgba(0,255,166,0.7) 60%,
+transparent 80%
 );
 
-animation: energyFlow 3s linear infinite;
+animation: energyScan 3s linear infinite;
+
 pointer-events:none;
 }
 
