@@ -6,73 +6,89 @@
 <title>Emerald Guardian</title>
 
 <style>
+
 body {
-    margin: 0;
-    background: #000;
-    color: #fff;
-    font-family: Arial, sans-serif;
-    overflow: hidden;
+    margin:0;
+    font-family: 'Georgia', serif;
+    background: radial-gradient(circle at center, #001a12 0%, #000 70%);
+    color:#fff;
+    overflow:hidden;
 }
 
-.container {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.screen {
+    position:absolute;
+    width:100%;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    opacity:0;
+    transition:1s ease;
 }
 
-/* TÍTULO */
+.screen.active {
+    opacity:1;
+}
+
 h1 {
-    font-size: 64px;
-    color: #FFD700;
-    margin-bottom: 20px;
+    font-size:60px;
+    font-weight:400;
 }
 
-/* PUMA SVG */
+p {
+    max-width:700px;
+    opacity:0.8;
+}
+
+/* destaque verde */
+.green {
+    color:#00ff99;
+}
+
+/* botão minimalista */
+.continue {
+    margin-top:40px;
+    cursor:pointer;
+    font-size:14px;
+    opacity:0.7;
+    letter-spacing:2px;
+}
+
+.continue::before {
+    content:"↓ ↓";
+    display:block;
+    margin-bottom:10px;
+}
+
+/* input */
+input {
+    margin-top:20px;
+    padding:10px;
+    background:none;
+    border:1px solid #00ff99;
+    color:#fff;
+    text-align:center;
+}
+
+/* puma neon */
 .puma {
-    width: 300px;
-    margin: 20px;
+    width:400px;
+    margin-top:40px;
 }
 
 path {
-    fill: none;
-    stroke: #00ff99;
-    stroke-width: 2;
-    stroke-dasharray: 1000;
-    stroke-dashoffset: 1000;
-    animation: draw 3s ease forwards;
+    fill:none;
+    stroke:#00ff99;
+    stroke-width:2;
+    stroke-dasharray:1000;
+    stroke-dashoffset:1000;
+    animation:draw 4s ease forwards;
 }
 
 @keyframes draw {
-    to {
-        stroke-dashoffset: 0;
-    }
-}
-
-/* INPUT */
-input {
-    padding: 12px;
-    border: 1px solid #00ff99;
-    background: #000;
-    color: #fff;
-    margin-top: 20px;
-    text-align: center;
-}
-
-/* BOTÃO */
-button {
-    margin-top: 10px;
-    padding: 12px 30px;
-    background: #FFD700;
-    border: none;
-    cursor: pointer;
-}
-
-/* FORM FINAL */
-.form {
-    display: none;
-    flex-direction: column;
+    to { stroke-dashoffset:0; }
 }
 
 </style>
@@ -80,49 +96,82 @@ button {
 
 <body>
 
-<div class="container" id="login">
-
+<!-- TELA 1 -->
+<div class="screen active" id="s1">
     <h1>Emerald Guardian</h1>
-
-    <!-- PUMA -->
-    <svg class="puma" viewBox="0 0 500 200">
-        <path d="M10 150 Q100 50 250 100 T490 150" />
-    </svg>
-
-    <p>Restricted Access</p>
-
-    <input type="password" id="senha" placeholder="Enter access code">
-    <button onclick="check()">Enter</button>
-
+    <p>Not everything rare is meant to be seen by everyone.</p>
+    <input type="password" id="senha" placeholder="ACCESS CODE">
+    <div class="continue" onclick="login()">continue</div>
 </div>
 
-<div class="container form" id="form">
+<!-- TELA 2 -->
+<div class="screen" id="s2">
+    <p>There is a difference between something valuable...</p>
+    <h2 class="green">and something truly unique.</h2>
+    <div class="continue" onclick="next(3)">continue</div>
+</div>
 
-    <h1>Private Access</h1>
+<!-- TELA 3 -->
+<div class="screen" id="s3">
+    <h2>Formed over millions of years,</h2>
+    <p>the <span class="green">Emerald Guardian</span> represents a rare convergence of nature, time, and preservation.</p>
+    <div class="continue" onclick="next(4)">continue</div>
+</div>
 
+<!-- TELA 4 (PUMA) -->
+<div class="screen" id="s4">
+    <h2>A singular piece.</h2>
+
+    <svg class="puma" viewBox="0 0 500 200">
+        <path d="M20 150 
+        C80 60, 140 60, 200 100 
+        C260 140, 320 140, 380 100 
+        C420 70, 460 80, 480 120 
+        C440 110, 400 110, 360 120 
+        C300 140, 240 140, 180 120 
+        C120 100, 80 100, 40 140 Z"/>
+    </svg>
+
+    <div class="continue" onclick="next(5)">continue</div>
+</div>
+
+<!-- TELA 5 -->
+<div class="screen" id="s5">
+    <p>This is not a liquidity-driven asset.</p>
+    <h2>It is defined by <span class="green">absolute rarity.</span></h2>
+    <div class="continue" onclick="next(6)">continue</div>
+</div>
+
+<!-- TELA 6 -->
+<div class="screen" id="s6">
+    <h2>Availability is <span class="green">private</span> and selective.</h2>
+    <div class="continue" onclick="next(7)">continue</div>
+</div>
+
+<!-- TELA 7 (FINAL) -->
+<div class="screen" id="s7">
+    <h2>Request Access</h2>
     <input placeholder="Nome">
     <input placeholder="Email">
     <input placeholder="Telefone">
-
-    <button onclick="enviar()">Enviar</button>
-
+    <div class="continue" onclick="alert('Contato enviado')">continue</div>
 </div>
 
 <script>
 
-function check() {
-    const senha = document.getElementById('senha').value;
+function login(){
+    const senha = document.getElementById("senha").value;
 
     if(senha === "123A"){
-        document.getElementById('login').style.display = "none";
-        document.getElementById('form').style.display = "flex";
+        next(2);
     } else {
         alert("Acesso negado");
     }
 }
 
-function enviar(){
-    alert("Dados enviados. Em breve você receberá acesso exclusivo.");
+function next(n){
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    document.getElementById("s"+n).classList.add("active");
 }
 
 </script>
