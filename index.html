@@ -128,18 +128,17 @@ invert(1)
 opacity(0.85)
 drop-shadow(0 0 4px #00ffa6);
 
-/* começa invisível */
+/* começa escondido DE VERDADE */
 opacity:0;
-transform: translateY(20px);
-
-/* sem animação automática */
+transform: translateY(40px) scale(0.98);
+transition: all 1.5s ease;
 }
   
 .puma-active {
 animation:
-fadeIn 1.5s ease forwards,
-breathGlow 2s ease-in-out infinite 1.5s,
-floatPuma 6s ease-in-out infinite 1.5s;
+fadeIn 2.5s ease forwards,
+breathGlow 2.5s ease-in-out infinite 2.5s,
+floatPuma 6s ease-in-out infinite 2.5s;
 
 transform: translateY(0);
 opacity:1;
