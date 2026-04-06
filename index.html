@@ -6,69 +6,148 @@
 <title>Emerald Guardian</title>
 
 <style>
-body {margin:0;font-family:'Georgia',serif;color:white;background:#000;overflow:hidden;}
-.section {position:absolute;width:100%;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;opacity:0;transition:1s;pointer-events:none;}
-.section.active {opacity:1;pointer-events:auto;}
 
-input, select {
-padding:12px;width:260px;margin:10px;
-background:transparent;border:1px solid #00ffa6;color:white;text-align:center;
+body {
+margin:0;
+font-family:'Georgia', serif;
+color:white;
+background:#000;
+overflow:hidden;
 }
 
+/* SECTIONS */
+.section {
+position:absolute;
+width:100%;
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:40px;
+opacity:0;
+transition:1s;
+pointer-events:none;
+}
+
+.section.active {
+opacity:1;
+pointer-events:auto;
+}
+
+/* TEXT */
+h1 {font-size:60px;color:#e6c200;}
+.highlight {color:#00ffa6;}
+
+.btn {
+margin-top:30px;
+cursor:pointer;
+opacity:0.6;
+}
+.btn:hover {opacity:1;}
+
+/* INPUT */
+input, select {
+padding:12px;
+width:260px;
+margin:10px;
+background:transparent;
+border:1px solid #00ffa6;
+color:white;
+text-align:center;
+}
+
+/* BUTTON */
 button {
 padding:12px 35px;
 background:linear-gradient(90deg,#e6c200,#b89600);
-border:none;cursor:pointer;
+border:none;
+cursor:pointer;
 }
 
-.guardian {perspective:800px;width:420px;}
-.puma-img {width:100%;opacity:0;transform:translateY(40px);}
+/* PUMA */
+.guardian {
+width:420px;
+}
+
+.puma-img {
+width:100%;
+opacity:0;
+transform:translateY(40px);
+filter:brightness(0) invert(1) drop-shadow(0 0 6px #00ffa6);
+}
 
 .puma-active {
 animation:fadeIn 2s forwards, float 6s infinite 2s;
-opacity:1;
 }
 
-@keyframes fadeIn {to{opacity:1;transform:translateY(0);}}
-@keyframes float {50%{transform:translateY(-8px);}}
+@keyframes fadeIn {
+to {opacity:1;transform:translateY(0);}
+}
+
+@keyframes float {
+50% {transform:translateY(-8px);}
+}
+
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
+<!-- TELA 1 -->
 <div class="section active" id="s1">
 <h1>Emerald Guardian</h1>
+<p>Restricted access</p>
 <input id="code" placeholder="ACCESS CODE">
 <button onclick="check()">ENTER</button>
 </div>
 
-<!-- FLOW -->
+<!-- TELA 2 -->
 <div class="section" id="s2">
-<h2>Exclusive Access</h2>
-<button onclick="next(4)">CONTINUE</button>
+<h2>There is a difference between something valuable...</h2>
+<h2 class="highlight">and something truly unique.</h2>
+<div class="btn" onclick="next(3)">CONTINUE ↓</div>
 </div>
 
-<!-- PUMA -->
+<!-- TELA 3 -->
+<div class="section" id="s3">
+<h2>Formed over millions of years</h2>
+<p>Emerald Guardian represents a rare convergence</p>
+<div class="btn" onclick="next(4)">CONTINUE ↓</div>
+</div>
+
+<!-- TELA 4 -->
 <div class="section" id="s4">
 <div class="guardian">
 <img src="puma.png" class="puma-img">
 </div>
-<button onclick="next(7)">CONTINUE</button>
+<h2>A singular presence</h2>
+<div class="btn" onclick="next(5)">CONTINUE ↓</div>
 </div>
 
-<!-- FORM -->
+<!-- TELA 5 -->
+<div class="section" id="s5">
+<h2>It is defined by <span class="highlight">absolute rarity</span></h2>
+<div class="btn" onclick="next(6)">CONTINUE ↓</div>
+</div>
+
+<!-- TELA 6 -->
+<div class="section" id="s6">
+<h2>Availability is <span class="highlight">private</span> and selective</h2>
+<div class="btn" onclick="next(7)">CONTINUE ↓</div>
+</div>
+
+<!-- TELA 7 -->
 <div class="section" id="s7">
 
 <h2>Request Direct Access</h2>
 
 <form action="https://formsubmit.co/really.brussels@gmail.com" method="POST">
 
-<!-- SEGUNDO EMAIL -->
 <input type="hidden" name="_cc" value="realede@yahoo.com.br">
 
 <input name="Nome" placeholder="Nome" required>
-
 <input name="Email" type="email" placeholder="Email" required>
 
 <select name="DDI" required>
@@ -76,23 +155,13 @@ opacity:1;
 <option>+55 Brasil</option>
 <option>+1 USA</option>
 <option>+44 UK</option>
-<option>+33 França</option>
-<option>+49 Alemanha</option>
-<option>+39 Itália</option>
-<option>+34 Espanha</option>
 <option>+351 Portugal</option>
 <option>+971 UAE</option>
 <option>+86 China</option>
 <option>+81 Japão</option>
 <option>+91 Índia</option>
-<option>+7 Rússia</option>
-<option>+27 África do Sul</option>
-<option>+52 México</option>
-<option>+54 Argentina</option>
-<option>+56 Chile</option>
-<option>+57 Colômbia</option>
 <option>+61 Austrália</option>
-<option>+64 Nova Zelândia</option>
+<option>+27 África do Sul</option>
 </select>
 
 <input name="Telefone" placeholder="Telefone" required>
@@ -105,11 +174,13 @@ opacity:1;
 
 <script>
 
+/* LOGIN */
 function check(){
 let code=document.getElementById("code").value;
 if(code==="123A"){next(2);}else{alert("Invalid code");}
 }
 
+/* NAVEGAÇÃO */
 function next(n){
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 document.getElementById("s"+n).classList.add("active");
