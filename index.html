@@ -108,22 +108,20 @@ margin-top:20px;
 letter-spacing:2px;
 }
 
-/* 🔥 NOVO BLOCO PUMA (CORRETO) */
+/* PUMA BLOCO */
 
 .guardian {
 position:relative;
 width:420px;
 margin-bottom:20px;
+overflow:hidden;
 }
 
 .puma-img {
 width:100%;
 max-width:500px;
+background:transparent;
 
-/* remove qualquer fundo residual */
-background: transparent;
-
-/* transforma a silhueta em neon */
 filter:
 brightness(0)
 invert(1)
@@ -133,16 +131,35 @@ drop-shadow(0 0 40px rgba(0,255,166,0.4));
 
 opacity:0;
 
-/* animação suave */
 animation:
 fadeIn 2s ease forwards 1s,
 pulseGlow 3s infinite ease-in-out 3s;
 }
 
-@keyframes fadeIn {
-to {
-opacity:1;
+/* ENERGIA */
+
+.energy-line {
+position:absolute;
+top:0;
+left:-100%;
+width:200%;
+height:100%;
+
+background: linear-gradient(
+90deg,
+transparent,
+rgba(0,255,166,0.4),
+transparent
+);
+
+animation: energyFlow 3s linear infinite;
+pointer-events:none;
 }
+
+/* ANIMAÇÕES */
+
+@keyframes fadeIn {
+to { opacity:1; }
 }
 
 @keyframes pulseGlow {
@@ -155,6 +172,11 @@ filter: brightness(0) invert(1) drop-shadow(0 0 35px #00ffa6);
 100% {
 filter: brightness(0) invert(1) drop-shadow(0 0 10px #00ffa6);
 }
+}
+
+@keyframes energyFlow {
+0% { left:-100%; }
+100% { left:100%; }
 }
 
 </style>
@@ -200,6 +222,7 @@ CONTINUE
 
 <div class="guardian">
   <img src="puma.png" class="puma-img">
+  <div class="energy-line"></div>
 </div>
 
 <h2>A singular presence.</h2>
