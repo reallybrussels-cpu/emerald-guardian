@@ -15,6 +15,7 @@ color:white;
 overflow:hidden;
 }
 
+/* SECTIONS */
 .section {
 position:absolute;
 width:100%;
@@ -23,6 +24,9 @@ display:flex;
 flex-direction:column;
 justify-content:center;
 align-items:center;
+text-align:center;
+padding:40px;
+
 opacity:0;
 transition:1s;
 pointer-events:none;
@@ -33,6 +37,19 @@ opacity:1;
 pointer-events:auto;
 }
 
+/* TEXT */
+h1 {font-size:60px;color:#e6c200;}
+.highlight {color:#00ffa6;}
+
+/* BUTTON */
+.btn {
+margin-top:30px;
+cursor:pointer;
+opacity:0.6;
+}
+.btn:hover {opacity:1;}
+
+/* INPUT */
 input, select {
 padding:12px;
 margin:10px;
@@ -51,9 +68,7 @@ cursor:pointer;
 }
 
 /* PUMA */
-.guardian {
-width:420px;
-}
+.guardian {width:420px;}
 
 .puma-img {
 width:100%;
@@ -79,34 +94,60 @@ to {opacity:1;transform:translateY(0);}
 
 <body>
 
-<!-- LOGIN -->
+<!-- TELA 1 -->
 <div class="section active" id="s1">
 <h1>Emerald Guardian</h1>
-<p>Restricted Access</p>
+<p>Restricted access for authorized invitees</p>
 
 <input id="code" placeholder="ACCESS CODE">
 <button onclick="check()">ENTER</button>
 <p id="erro"></p>
 </div>
 
-<!-- PUMA -->
+<!-- TELA 2 -->
 <div class="section" id="s2">
+<h2>There is a difference between something valuable...</h2>
+<h2 class="highlight">and something truly unique.</h2>
+<div class="btn" onclick="next(3)">CONTINUE ↓</div>
+</div>
+
+<!-- TELA 3 -->
+<div class="section" id="s3">
+<h2>Formed over millions of years</h2>
+<p>The <span class="highlight">Emerald Guardian</span> represents a rare convergence</p>
+<div class="btn" onclick="next(4)">CONTINUE ↓</div>
+</div>
+
+<!-- TELA 4 -->
+<div class="section" id="s4">
 <div class="guardian">
 <img src="puma.png" class="puma-img">
 </div>
-
-<button onclick="next(3)">CONTINUE</button>
+<h2>A singular presence</h2>
+<div class="btn" onclick="next(5)">CONTINUE ↓</div>
 </div>
 
-<!-- FORM -->
-<div class="section" id="s3">
+<!-- TELA 5 -->
+<div class="section" id="s5">
+<h2>It is an asset defined by <span class="highlight">absolute rarity</span></h2>
+<div class="btn" onclick="next(6)">CONTINUE ↓</div>
+</div>
+
+<!-- TELA 6 -->
+<div class="section" id="s6">
+<h2>Availability is <span class="highlight">private</span> and selective</h2>
+<div class="btn" onclick="next(7)">CONTINUE ↓</div>
+</div>
+
+<!-- TELA 7 -->
+<div class="section" id="s7">
 
 <h2>Request Direct Access</h2>
 
-<input id="nome" placeholder="Nome" required>
-<input id="email" placeholder="Email" required>
+<input id="nome" placeholder="Nome">
+<input id="email" placeholder="Email">
 
-<select id="ddi" required>
+<select id="ddi">
 <option value="">DDI</option>
 <option>+55 Brasil</option>
 <option>+1 USA</option>
@@ -116,7 +157,7 @@ to {opacity:1;transform:translateY(0);}
 <option>+86 China</option>
 </select>
 
-<input id="telefone" placeholder="Telefone" required>
+<input id="telefone" placeholder="Telefone">
 
 <button onclick="enviar()">SUBMIT</button>
 
@@ -142,14 +183,15 @@ function next(n){
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 document.getElementById("s"+n).classList.add("active");
 
-if(n===2){
+/* anima puma só quando chega na tela 4 */
+if(n===4){
 setTimeout(()=>{
 document.querySelector(".puma-img").classList.add("puma-active");
 },800);
 }
 }
 
-/* VALIDAÇÃO */
+/* VALIDAÇÃO EMAIL */
 function validarEmail(email){
 return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
@@ -172,7 +214,7 @@ document.getElementById("msg").innerText="Email inválido";
 return;
 }
 
-/* proteção simples */
+/* proteção */
 nome = nome.replace(/<[^>]*>?/gm, '');
 email = email.replace(/<[^>]*>?/gm, '');
 telefone = telefone.replace(/<[^>]*>?/gm, '');
@@ -185,8 +227,7 @@ email: email,
 telefone: ddi + " " + telefone
 })
 })
-.then(res=>res.json())
-.then(()=>{
+.then(()=> {
 document.getElementById("msg").innerText="Request sent successfully";
 })
 .catch(()=>{
