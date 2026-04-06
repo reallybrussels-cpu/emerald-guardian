@@ -108,20 +108,15 @@ transform:translateY(5px);
 position:relative;
 width:420px;
 margin-bottom:20px;
-
-/* 3D */
 perspective:800px;
 }
 
 .puma-img {
 width:100%;
 max-width:500px;
-
-/* estado inicial */
 opacity:0;
 transform: translateY(40px) scale(0.98);
 
-/* estilo */
 filter:
 brightness(0)
 invert(1)
@@ -131,7 +126,6 @@ drop-shadow(0 0 4px #00ffa6);
 transition: transform 0.2s ease;
 }
 
-/* ATIVAÇÃO */
 .puma-active {
 animation:
 fadeIn 2.5s ease forwards,
@@ -140,6 +134,42 @@ floatPuma 6s ease-in-out infinite 2.5s;
 
 transform: translateY(0);
 opacity:1;
+}
+
+/* PARTÍCULAS */
+
+.particles {
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+pointer-events:none;
+overflow:hidden;
+}
+
+.particle {
+position:absolute;
+width:4px;
+height:4px;
+background:#00ffa6;
+border-radius:50%;
+opacity:0.6;
+animation: floatParticle linear infinite;
+}
+
+@keyframes floatParticle {
+0% {
+transform: translateY(0px) scale(1);
+opacity:0;
+}
+50% {
+opacity:1;
+}
+100% {
+transform: translateY(-200px) scale(0.5);
+opacity:0;
+}
 }
 
 /* ANIMAÇÕES */
@@ -185,7 +215,6 @@ filter: brightness(0) invert(1) opacity(0.8) drop-shadow(0 0 3px #00ffa6);
 <div class="section" id="s2">
 <h2>There is a difference between something valuable...</h2>
 <h2 class="highlight">and something truly unique.</h2>
-
 <div class="btn" onclick="next(3)">CONTINUE ↓</div>
 </div>
 
@@ -193,7 +222,6 @@ filter: brightness(0) invert(1) opacity(0.8) drop-shadow(0 0 3px #00ffa6);
 <div class="section" id="s3">
 <h2>Formed over millions of years,</h2>
 <p>The <span class="highlight">Emerald Guardian</span> represents a rare convergence.</p>
-
 <div class="btn" onclick="next(4)">CONTINUE ↓</div>
 </div>
 
@@ -201,6 +229,7 @@ filter: brightness(0) invert(1) opacity(0.8) drop-shadow(0 0 3px #00ffa6);
 <div class="section" id="s4">
 <div class="guardian">
 <img src="puma.png" class="puma-img">
+<div class="particles" id="particles"></div>
 </div>
 
 <h2>A singular presence.</h2>
@@ -211,25 +240,21 @@ filter: brightness(0) invert(1) opacity(0.8) drop-shadow(0 0 3px #00ffa6);
 <!-- TELA 5 -->
 <div class="section" id="s5">
 <h2>It is an asset defined by <span class="highlight">absolute rarity.</span></h2>
-
 <div class="btn" onclick="next(6)">CONTINUE ↓</div>
 </div>
 
 <!-- TELA 6 -->
 <div class="section" id="s6">
 <h2>Availability is <span class="highlight">private</span> and selective.</h2>
-
 <div class="btn" onclick="next(7)">CONTINUE ↓</div>
 </div>
 
 <!-- TELA 7 -->
 <div class="section" id="s7">
 <h2>Request Direct Access</h2>
-
 <input placeholder="Nome">
 <input placeholder="Email">
 <input placeholder="Telefone">
-
 <button onclick="alert('Request sent')">SUBMIT</button>
 </div>
 
@@ -237,7 +262,6 @@ filter: brightness(0) invert(1) opacity(0.8) drop-shadow(0 0 3px #00ffa6);
 
 function check(){
 let code = document.getElementById("code").value;
-
 if(code === "123A"){
 next(2);
 }else{
@@ -266,9 +290,8 @@ puma.classList.add("puma-active");
 }
 }
 
-/* 🔥 EFEITO 3D */
+/* 3D */
 document.addEventListener("mousemove", (e) => {
-
 let puma = document.querySelector(".puma-img");
 let container = document.querySelector(".guardian");
 
@@ -291,6 +314,26 @@ rotateX(${rotateX}deg)
 rotateY(${rotateY}deg)
 `;
 });
+
+/* PARTÍCULAS */
+function createParticles(){
+const container = document.getElementById("particles");
+
+setInterval(()=>{
+let p = document.createElement("div");
+p.classList.add("particle");
+
+p.style.left = Math.random() * 100 + "%";
+p.style.animationDuration = (2 + Math.random()*3) + "s";
+
+container.appendChild(p);
+
+setTimeout(()=>{ p.remove(); },5000);
+
+},150);
+}
+
+createParticles();
 
 </script>
 
