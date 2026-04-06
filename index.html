@@ -61,27 +61,6 @@ line-height:1.6;
 color:#00ffa6;
 }
 
-/* BOTÃO */
-.btn {
-margin-top:40px;
-font-size:12px;
-letter-spacing:3px;
-cursor:pointer;
-opacity:0.6;
-transition:0.4s;
-}
-
-.btn:hover {
-opacity:1;
-transform:translateY(5px);
-}
-
-.arrow {
-display:block;
-font-size:18px;
-line-height:8px;
-}
-
 /* INPUT */
 input {
 padding:12px;
@@ -108,32 +87,49 @@ margin-top:20px;
 letter-spacing:2px;
 }
 
-/* PUMA BLOCO */
+/* BOTÃO CONTINUE */
+.btn {
+margin-top:40px;
+font-size:12px;
+letter-spacing:3px;
+cursor:pointer;
+opacity:0.6;
+transition:0.4s;
+}
+
+.btn:hover {
+opacity:1;
+transform:translateY(5px);
+}
+
+.arrow {
+display:block;
+font-size:18px;
+line-height:8px;
+}
+
+/* PUMA */
 
 .guardian {
 position:relative;
 width:420px;
 margin-bottom:20px;
-overflow:hidden;
 }
 
 .puma-img {
 width:100%;
 max-width:500px;
-background:transparent;
+opacity:0;
+transform: translateY(40px) scale(0.98);
 
 filter:
 brightness(0)
 invert(1)
 opacity(0.85)
 drop-shadow(0 0 4px #00ffa6);
-
-/* começa escondido DE VERDADE */
-opacity:0;
-transform: translateY(40px) scale(0.98);
-transition: all 1.5s ease;
 }
-  
+
+/* ATIVAÇÃO */
 .puma-active {
 animation:
 fadeIn 2.5s ease forwards,
@@ -143,10 +139,13 @@ floatPuma 6s ease-in-out infinite 2.5s;
 transform: translateY(0);
 opacity:1;
 }
-  
-/* ENERGIA */
 
 /* ANIMAÇÕES */
+
+@keyframes fadeIn {
+from { opacity:0; }
+to { opacity:1; }
+}
 
 @keyframes breathGlow {
 0% {
@@ -160,26 +159,12 @@ filter: brightness(0) invert(1) opacity(0.8) drop-shadow(0 0 3px #00ffa6);
 }
 }
 
-@keyframes fadeIn {
-from {
-opacity:0;
-}
-to {
-opacity:1;
-}
-}
-  
 @keyframes floatPuma {
-0% {
-transform: translateY(0px) scale(1);
+0% { transform: translateY(0px); }
+50% { transform: translateY(-8px); }
+100% { transform: translateY(0px); }
 }
-50% {
-transform: translateY(-8px) scale(1.01);
-}
-100% {
-transform: translateY(0px) scale(1);
-}
-}  
+
 </style>
 </head>
 
@@ -190,7 +175,7 @@ transform: translateY(0px) scale(1);
 <h1>Emerald Guardian</h1>
 <p>Restricted access for authorized invitees</p>
 
-<input placeholder="ACCESS CODE" id="code">
+<input id="code" placeholder="ACCESS CODE">
 <button onclick="check()">ENTER</button>
 </div>
 
@@ -199,11 +184,7 @@ transform: translateY(0px) scale(1);
 <h2>There is a difference between something valuable...</h2>
 <h2 class="highlight">and something truly unique.</h2>
 
-<div class="btn" onclick="next(3)">
-<span class="arrow">↓</span>
-CONTINUE
-<span class="arrow">↓</span>
-</div>
+<div class="btn" onclick="next(3)">CONTINUE ↓</div>
 </div>
 
 <!-- TELA 3 -->
@@ -211,50 +192,32 @@ CONTINUE
 <h2>Formed over millions of years,</h2>
 <p>The <span class="highlight">Emerald Guardian</span> represents a rare convergence.</p>
 
-<div class="btn" onclick="next(4)">
-<span class="arrow">↓</span>
-CONTINUE
-<span class="arrow">↓</span>
-</div>
+<div class="btn" onclick="next(4)">CONTINUE ↓</div>
 </div>
 
 <!-- TELA 4 -->
 <div class="section" id="s4">
-
 <div class="guardian">
-  <img src="puma.png" class="puma-img">
+<img src="puma.png" class="puma-img">
 </div>
 
 <h2>A singular presence.</h2>
 
-<div class="btn" onclick="next(5)">
-<span class="arrow">↓</span>
-CONTINUE
-<span class="arrow">↓</span>
-</div>
-
+<div class="btn" onclick="next(5)">CONTINUE ↓</div>
 </div>
 
 <!-- TELA 5 -->
 <div class="section" id="s5">
 <h2>It is an asset defined by <span class="highlight">absolute rarity.</span></h2>
 
-<div class="btn" onclick="next(6)">
-<span class="arrow">↓</span>
-CONTINUE
-<span class="arrow">↓</span>
-</div>
+<div class="btn" onclick="next(6)">CONTINUE ↓</div>
 </div>
 
 <!-- TELA 6 -->
 <div class="section" id="s6">
 <h2>Availability is <span class="highlight">private</span> and selective.</h2>
 
-<div class="btn" onclick="next(7)">
-<span class="arrow">↓</span>
-CONTINUE
-<span class="arrow">↓</span>
-</div>
+<div class="btn" onclick="next(7)">CONTINUE ↓</div>
 </div>
 
 <!-- TELA 7 -->
@@ -288,18 +251,20 @@ s.classList.remove("active");
 let target = document.getElementById("s"+n);
 target.classList.add("active");
 
-/* ativa o puma só na tela 4 */
 if(n === 4){
 let puma = document.querySelector(".puma-img");
 
 if(puma){
 puma.classList.remove("puma-active");
 
-setTimeout(() => {
+setTimeout(()=>{
 puma.classList.add("puma-active");
-}, 1500);
+},1500);
 }
 }
 }
 
 </script>
+
+</body>
+</html>
