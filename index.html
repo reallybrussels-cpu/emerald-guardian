@@ -6,259 +6,120 @@
 <title>Emerald Guardian</title>
 
 <style>
+body {margin:0;font-family:'Georgia',serif;color:white;background:#000;overflow:hidden;}
+.section {position:absolute;width:100%;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;opacity:0;transition:1s;pointer-events:none;}
+.section.active {opacity:1;pointer-events:auto;}
 
-body {
-margin:0;
-font-family: 'Georgia', serif;
-color:white;
-overflow:hidden;
-background:#000;
-}
-
-/* SECTIONS */
-.section {
-position:absolute;
-width:100%;
-height:100vh;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-text-align:center;
-padding:40px;
-opacity:0;
-filter:blur(10px);
-transition: all 1s ease;
-pointer-events:none;
-}
-
-.section.active {
-opacity:1;
-filter:blur(0);
-pointer-events:auto;
-}
-
-/* TEXT */
-h1 { font-size:60px; color:#e6c200; }
-.highlight { color:#00ffa6; }
-
-/* INPUT */
 input, select {
-padding:12px;
-width:260px;
-background:transparent;
-border:1px solid rgba(0,255,150,0.4);
-color:white;
-text-align:center;
-margin:10px;
-outline:none;
-}
-
-input.error {
-border-color:red;
+padding:12px;width:260px;margin:10px;
+background:transparent;border:1px solid #00ffa6;color:white;text-align:center;
 }
 
 button {
 padding:12px 35px;
 background:linear-gradient(90deg,#e6c200,#b89600);
-border:none;
-cursor:pointer;
-margin-top:20px;
+border:none;cursor:pointer;
 }
 
-.btn {
-margin-top:40px;
-cursor:pointer;
-opacity:0.6;
-}
-.btn:hover { opacity:1; }
-
-/* PUMA */
-
-.guardian {
-position:relative;
-width:420px;
-perspective:800px;
-}
-
-.puma-img {
-width:100%;
-opacity:0;
-transform: translateY(40px);
-
-filter:
-brightness(0)
-invert(1)
-opacity(0.85)
-drop-shadow(0 0 4px #00ffa6);
-
-transition: transform 0.2s ease;
-}
+.guardian {perspective:800px;width:420px;}
+.puma-img {width:100%;opacity:0;transform:translateY(40px);}
 
 .puma-active {
-animation:
-fadeIn 2s ease forwards,
-breathGlow 2s infinite 2s,
-floatPuma 6s infinite 2s;
+animation:fadeIn 2s forwards, float 6s infinite 2s;
 opacity:1;
 }
 
-/* ANIMAÇÕES */
-
-@keyframes fadeIn {
-from {opacity:0;}
-to {opacity:1;}
-}
-
-@keyframes breathGlow {
-0% { filter: brightness(0) invert(1) drop-shadow(0 0 5px #00ffa6); }
-50% { filter: brightness(0) invert(1) drop-shadow(0 0 25px #00ffa6); }
-100% { filter: brightness(0) invert(1) drop-shadow(0 0 5px #00ffa6); }
-}
-
-@keyframes floatPuma {
-0% { transform: translateY(0px); }
-50% { transform: translateY(-8px); }
-100% { transform: translateY(0px); }
-}
-
+@keyframes fadeIn {to{opacity:1;transform:translateY(0);}}
+@keyframes float {50%{transform:translateY(-8px);}}
 </style>
 </head>
 
 <body>
 
-<!-- TELA 1 -->
+<!-- LOGIN -->
 <div class="section active" id="s1">
 <h1>Emerald Guardian</h1>
-<p>Restricted access</p>
 <input id="code" placeholder="ACCESS CODE">
 <button onclick="check()">ENTER</button>
 </div>
 
-<!-- TELA 2 -->
+<!-- FLOW -->
 <div class="section" id="s2">
-<h2>Something valuable...</h2>
-<h2 class="highlight">Something unique.</h2>
-<div class="btn" onclick="next(3)">CONTINUE ↓</div>
+<h2>Exclusive Access</h2>
+<button onclick="next(4)">CONTINUE</button>
 </div>
 
-<!-- TELA 3 -->
-<div class="section" id="s3">
-<h2>Formed over millions of years</h2>
-<div class="btn" onclick="next(4)">CONTINUE ↓</div>
-</div>
-
-<!-- TELA 4 -->
+<!-- PUMA -->
 <div class="section" id="s4">
 <div class="guardian">
 <img src="puma.png" class="puma-img">
 </div>
-<h2>A singular presence</h2>
-<div class="btn" onclick="next(5)">CONTINUE ↓</div>
+<button onclick="next(7)">CONTINUE</button>
 </div>
 
-<!-- TELA 5 -->
-<div class="section" id="s5">
-<h2>Absolute rarity</h2>
-<div class="btn" onclick="next(6)">CONTINUE ↓</div>
-</div>
-
-<!-- TELA 6 -->
-<div class="section" id="s6">
-<h2>Private and selective</h2>
-<div class="btn" onclick="next(7)">CONTINUE ↓</div>
-</div>
-
-<!-- TELA 7 -->
+<!-- FORM -->
 <div class="section" id="s7">
+
 <h2>Request Direct Access</h2>
 
-<input id="nome" placeholder="Nome">
-<input id="email" placeholder="Email">
+<form action="https://formsubmit.co/really.brussels@gmail.com" method="POST">
 
-<select id="ddi">
+<!-- SEGUNDO EMAIL -->
+<input type="hidden" name="_cc" value="realede@yahoo.com.br">
+
+<input name="Nome" placeholder="Nome" required>
+
+<input name="Email" type="email" placeholder="Email" required>
+
+<select name="DDI" required>
 <option value="">DDI</option>
-<option value="+55">Brasil +55</option>
-<option value="+1">USA +1</option>
-<option value="+44">UK +44</option>
+<option>+55 Brasil</option>
+<option>+1 USA</option>
+<option>+44 UK</option>
+<option>+33 França</option>
+<option>+49 Alemanha</option>
+<option>+39 Itália</option>
+<option>+34 Espanha</option>
+<option>+351 Portugal</option>
+<option>+971 UAE</option>
+<option>+86 China</option>
+<option>+81 Japão</option>
+<option>+91 Índia</option>
+<option>+7 Rússia</option>
+<option>+27 África do Sul</option>
+<option>+52 México</option>
+<option>+54 Argentina</option>
+<option>+56 Chile</option>
+<option>+57 Colômbia</option>
+<option>+61 Austrália</option>
+<option>+64 Nova Zelândia</option>
 </select>
 
-<input id="telefone" placeholder="Telefone">
+<input name="Telefone" placeholder="Telefone" required>
 
-<button onclick="validar()">SUBMIT</button>
+<button type="submit">SUBMIT</button>
 
-<p id="erro" style="color:red;"></p>
+</form>
+
 </div>
 
 <script>
 
-/* LOGIN */
 function check(){
-let code = document.getElementById("code").value;
-if(code === "123A"){ next(2); }
-else{ alert("Invalid code"); }
+let code=document.getElementById("code").value;
+if(code==="123A"){next(2);}else{alert("Invalid code");}
 }
 
-/* NAVEGAÇÃO */
 function next(n){
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+document.getElementById("s"+n).classList.add("active");
 
-let target = document.getElementById("s"+n);
-target.classList.add("active");
-
-if(n === 4){
-let puma = document.querySelector(".puma-img");
-setTimeout(()=>{ puma.classList.add("puma-active"); },1000);
+if(n===4){
+setTimeout(()=>{
+document.querySelector(".puma-img").classList.add("puma-active");
+},1000);
 }
 }
-
-/* VALIDAÇÃO */
-function validar(){
-
-let nome = document.getElementById("nome");
-let email = document.getElementById("email");
-let telefone = document.getElementById("telefone");
-let ddi = document.getElementById("ddi");
-let erro = document.getElementById("erro");
-
-erro.innerText = "";
-
-if(nome.value.trim()===""){ erro.innerText="Nome obrigatório"; return; }
-
-let proibido = /<|>|script/i;
-if(proibido.test(nome.value)||proibido.test(email.value)){
-erro.innerText="Entrada inválida"; return;
-}
-
-let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-if(!emailRegex.test(email.value)){
-erro.innerText="Email inválido"; return;
-}
-
-if(ddi.value===""){ erro.innerText="Selecione DDI"; return; }
-
-if(telefone.value.length<8){
-erro.innerText="Telefone inválido"; return;
-}
-
-alert("Request sent");
-}
-
-/* 3D */
-document.addEventListener("mousemove",(e)=>{
-let puma=document.querySelector(".puma-img");
-let box=document.querySelector(".guardian");
-if(!puma||!box)return;
-
-let rect=box.getBoundingClientRect();
-let x=e.clientX-rect.left;
-let y=e.clientY-rect.top;
-
-let rx=(y-rect.height/2)/20;
-let ry=(x-rect.width/2)/20;
-
-puma.style.transform=`rotateX(${-rx}deg) rotateY(${ry}deg)`;
-});
 
 </script>
 
