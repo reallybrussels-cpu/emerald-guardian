@@ -118,17 +118,22 @@ margin-bottom:20px;
 
 .puma-img {
 width:100%;
+max-width:500px;
 
-/* transforma em silhueta neon */
+/* remove qualquer fundo residual */
+background: transparent;
+
+/* transforma a silhueta em neon */
 filter:
 brightness(0)
 invert(1)
-drop-shadow(0 0 10px #00ffa6)
-drop-shadow(0 0 25px rgba(0,255,166,0.5));
+drop-shadow(0 0 8px #00ffa6)
+drop-shadow(0 0 20px rgba(0,255,166,0.6))
+drop-shadow(0 0 40px rgba(0,255,166,0.4));
 
 opacity:0;
 
-/* animação correta */
+/* animação suave */
 animation:
 fadeIn 2s ease forwards 1s,
 pulseGlow 3s infinite ease-in-out 3s;
