@@ -12,10 +12,17 @@ margin:0;
 font-family: 'Georgia', serif;
 color:white;
 overflow:hidden;
-background: radial-gradient(circle at 30% 30%, #0f2f25, #000000 70%);
+
+/* FUNDO PREMIUM */
+background: radial-gradient(circle at 30% 20%, rgba(0,255,150,0.15), transparent 40%),
+radial-gradient(circle at 70% 80%, rgba(0,255,150,0.08), transparent 40%),
+#000;
 }
 
+/* SECTIONS */
 .section {
+position:absolute;
+width:100%;
 height:100vh;
 display:flex;
 flex-direction:column;
@@ -23,79 +30,91 @@ justify-content:center;
 align-items:center;
 text-align:center;
 padding:40px;
+
+opacity:0;
+filter:blur(10px);
+transition: all 1s ease;
 }
 
+.section.active {
+opacity:1;
+filter:blur(0);
+}
+
+/* TITLES */
 h1 {
-font-size:56px;
+font-size:60px;
 color:#e6c200;
-margin-bottom:20px;
+letter-spacing:2px;
 }
 
 h2 {
 font-weight:300;
-letter-spacing:1px;
+max-width:700px;
+line-height:1.6;
 }
 
 .highlight {
-color:#00ff9f;
+color:#00ffa6;
 }
 
+/* BOTÃO LUXO */
 .btn {
 margin-top:40px;
-font-size:14px;
-letter-spacing:2px;
+font-size:12px;
+letter-spacing:3px;
 cursor:pointer;
-opacity:0.8;
-transition:0.3s;
+opacity:0.6;
+transition:0.4s;
 }
 
 .btn:hover {
 opacity:1;
+transform:translateY(5px);
 }
 
 .arrow {
 display:block;
-font-size:22px;
-line-height:10px;
-}
-
-/* esconder telas */
-.section {
-display:none;
-}
-
-.section.active {
-display:flex;
+font-size:18px;
+line-height:8px;
 }
 
 /* INPUT */
 input {
 padding:12px;
-width:250px;
+width:260px;
 background:transparent;
-border:1px solid #00ff9f;
+border:1px solid rgba(0,255,150,0.4);
 color:white;
 text-align:center;
 margin:10px;
+outline:none;
+}
+
+input:focus {
+border-color:#00ffa6;
+box-shadow:0 0 10px rgba(0,255,150,0.4);
 }
 
 button {
-padding:12px 30px;
-background:#e6c200;
+padding:12px 35px;
+background:linear-gradient(90deg,#e6c200,#b89600);
 border:none;
 cursor:pointer;
 margin-top:20px;
+letter-spacing:2px;
 }
 
-/* PUMA SVG */
+/* PUMA */
 .puma {
-width:300px;
-stroke:#00ff9f;
-stroke-width:2;
+width:340px;
+stroke:#00ffa6;
+stroke-width:1.5;
 fill:none;
-stroke-dasharray:1000;
-stroke-dashoffset:1000;
-animation:draw 4s ease forwards;
+stroke-dasharray:1200;
+stroke-dashoffset:1200;
+animation:draw 3s ease forwards;
+filter: drop-shadow(0 0 10px #00ffa6);
 }
 
 @keyframes draw {
@@ -115,7 +134,6 @@ stroke-dashoffset:0;
 <p>Restricted access for authorized invitees</p>
 
 <input placeholder="ACCESS CODE" id="code">
-
 <button onclick="check()">ENTER</button>
 </div>
 
@@ -143,7 +161,7 @@ CONTINUE
 </div>
 </div>
 
-<!-- TELA 4 (PUMA) -->
+<!-- TELA 4 -->
 <div class="section" id="s4">
 
 <svg class="puma" viewBox="0 0 500 200">
@@ -182,17 +200,15 @@ CONTINUE
 </div>
 </div>
 
-<!-- TELA 7 (FORM FINAL) -->
+<!-- TELA 7 -->
 <div class="section" id="s7">
-
 <h2>Request Direct Access</h2>
 
 <input placeholder="Nome">
 <input placeholder="Email">
 <input placeholder="Telefone">
 
-<button onclick="alert('Acesso solicitado')">Enviar</button>
-
+<button onclick="alert('Request sent')">SUBMIT</button>
 </div>
 
 <script>
@@ -208,7 +224,9 @@ alert("Invalid code");
 }
 
 function next(n){
-document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+document.querySelectorAll(".section").forEach(s=>{
+s.classList.remove("active");
+});
 document.getElementById("s"+n).classList.add("active");
 }
 
