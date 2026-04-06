@@ -280,18 +280,6 @@ alert("Invalid code");
 }
 }
 
-<script>
-
-function check(){
-let code = document.getElementById("code").value;
-
-if(code === "123A"){
-next(2);
-}else{
-alert("Invalid code");
-}
-}
-
 function next(n){
 document.querySelectorAll(".section").forEach(s=>{
 s.classList.remove("active");
