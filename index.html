@@ -1,86 +1,191 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Emerald Guardian</title>
 
 <style>
-body{margin:0;background:#000;color:#fff;font-family:Georgia;text-align:center}
-.section{display:none;height:100vh;justify-content:center;align-items:center;flex-direction:column}
-.active{display:flex}
-input,select{padding:10px;margin:5px;width:250px}
-button{padding:10px 30px;background:gold;border:none;cursor:pointer}
+
+body {
+margin:0;
+font-family:'Georgia', serif;
+background:#000;
+color:white;
+overflow:hidden;
+}
+
+.section {
+position:absolute;
+width:100%;
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+opacity:0;
+transition:1s;
+pointer-events:none;
+}
+
+.section.active {
+opacity:1;
+pointer-events:auto;
+}
+
+input {
+padding:12px;
+margin:10px;
+width:250px;
+background:black;
+border:1px solid #00ffa6;
+color:white;
+}
+
+button {
+padding:12px 30px;
+background:gold;
+border:none;
+cursor:pointer;
+}
+
+.guardian {
+width:400px;
+}
+
+.puma-img {
+width:100%;
+opacity:0;
+transform:translateY(40px);
+filter:brightness(0) invert(1) drop-shadow(0 0 6px #00ffa6);
+}
+
+.puma-active {
+animation:fade 2s forwards, float 6s infinite 2s;
+}
+
+@keyframes fade {
+to {opacity:1;transform:translateY(0);}
+}
+
+@keyframes float {
+50% {transform:translateY(-8px);}
+}
+
 </style>
 </head>
 
 <body>
 
 <!-- LOGIN -->
-<div id="s1" class="section active">
-<h1>Emerald Guardian</h1>
-<input id="code" placeholder="ACCESS CODE">
+<div class="section active" id="s1">
+<h1>VIP Access</h1>
+<input id="emailLogin" placeholder="Email">
+<input id="senhaLogin" type="password" placeholder="Senha">
 <button onclick="login()">ENTER</button>
 <p id="erro"></p>
 </div>
 
+<!-- PUMA -->
+<div class="section" id="s2">
+<div class="guardian">
+<img src="puma.png" class="puma-img">
+</div>
+<button onclick="next(3)">CONTINUE</button>
+</div>
+
 <!-- FORM -->
-<div id="s2" class="section">
+<div class="section" id="s3">
 <h2>Request Access</h2>
 
 <input id="nome" placeholder="Nome">
 <input id="email" placeholder="Email">
-
-<select id="ddi">
-<option value="">DDI</option>
-<option>+55</option>
-<option>+1</option>
-<option>+44</option>
-</select>
-
 <input id="telefone" placeholder="Telefone">
 
-<button onclick="enviar()">SUBMIT</button>
+<button onclick="enviar()">ENVIAR</button>
 
 <p id="msg"></p>
 </div>
 
-<script>
+<!-- SUCESSO -->
+<div class="section" id="s4">
+<h2>✔ Solicitação Enviada</h2>
+<p style="max-width:400px; text-align:center;">
+Agradecemos seu interesse no <b>Emerald Guardian</b>.<br><br>
+Nossa equipe irá analisar suas informações e em breve entraremos em contato.
+</p>
 
-function login(){
-let code=document.getElementById("code").value;
-if(code==="123A"){
-document.getElementById("s1").classList.remove("active");
-document.getElementById("s2").classList.add("active");
+<button onclick="reiniciar()">OK</button>
+</div>
+
+<script type="module">
+
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
+
+const supabase = createClient(
+  "https://pnwprbbmflbbqduupnke.supabase.co",
+  "sb_publishable_kFKfsQu13MtS8ath-2ZeeQ_-o0wxBUp"
+)
+
+/* LOGIN */
+window.login = function(){
+let e = document.getElementById("emailLogin").value;
+let s = document.getElementById("senhaLogin").value;
+
+if(e === "vip@guardian.com" && s === "1234"){
+next(2);
 }else{
-document.getElementById("erro").innerText="Invalid code";
+document.getElementById("erro").innerText="Acesso negado";
 }
 }
 
-function enviar(){
+/* ENVIO */
+window.enviar = async function(){
 
-let nome=document.getElementById("nome").value;
-let email=document.getElementById("email").value;
-let ddi=document.getElementById("ddi").value;
-let tel=document.getElementById("telefone").value;
+let nome = document.getElementById("nome").value;
+let email = document.getElementById("email").value;
+let telefone = document.getElementById("telefone").value;
 
-if(!nome||!email||!ddi||!tel){
-document.getElementById("msg").innerText="Preencha tudo";
+if(!nome || !email || !telefone){
+document.getElementById("msg").innerText="Preencha todos os campos";
 return;
 }
 
-fetch("https://script.google.com/macros/s/AKfycbyUPhY7Gc2XN1WBQB5KZa8IoexJijO-vf5mQjzIw6pkBW3Uyk8i6fnfZaRvMxzbG2Pm/exec",{
-method:"POST",
-mode:"no-cors",
-body:JSON.stringify({
-nome:nome,
-email:email,
-ddi:ddi,
-telefone:tel
-})
-});
+let { error } = await supabase
+.from("leads")
+.insert([{ nome, email, telefone }])
 
-document.getElementById("msg").innerText="Enviado com sucesso";
+if(error){
+document.getElementById("msg").innerText="Erro ao salvar";
+}else{
 
+// LIMPAR CAMPOS
+document.getElementById("nome").value="";
+document.getElementById("email").value="";
+document.getElementById("telefone").value="";
+document.getElementById("msg").innerText="";
+
+// IR PARA TELA FINAL
+next(4);
+
+}
+}
+
+/* NAVEGAÇÃO */
+window.next = function(n){
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+document.getElementById("s"+n).classList.add("active");
+
+if(n===2){
+setTimeout(()=>{
+document.querySelector(".puma-img").classList.add("puma-active");
+},800);
+}
+}
+
+/* RESET */
+window.reiniciar = function(){
+next(1);
 }
 
 </script>
