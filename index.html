@@ -93,7 +93,7 @@ to {opacity:1;transform:translateY(0);}
 <!-- S1 LOGIN -->
 <div class="section active" id="s1">
 <h1>Emerald Guardian</h1>
-<input id="code" placeholder="ACCESS CODE">
+<input id="code" type="password" placeholder="ACCESS CODE">
 <button onclick="login()">ENTER</button>
 <p id="erro"></p>
 </div>
@@ -172,7 +172,7 @@ let code=document.getElementById("code").value;
 if(code==="123A"){
 next(2);
 }else{
-document.getElementById("erro").innerText="Invalid access code";
+document.getElementById("erro").innerText="Access denied";
 }
 }
 
