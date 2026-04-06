@@ -108,45 +108,50 @@ margin-top:20px;
 letter-spacing:2px;
 }
 
-/* PUMA */
-.puma {
-width:380px;
-fill: rgba(0,255,166,0.08);
-stroke:#00ffa6;
-stroke-width:1.2;
+/* 🔥 NOVO BLOCO PUMA (CORRETO) */
 
-stroke-dasharray:1400;
-stroke-dashoffset:1400;
+.guardian {
+position:relative;
+width:420px;
+margin-bottom:20px;
+}
 
-animation:
-draw 2.5s ease forwards,
-glowPulse 2s infinite ease-in-out 2.5s;
+.puma-img {
+width:100%;
 
+/* transforma em silhueta neon */
 filter:
-drop-shadow(0 0 6px #00ffa6)
-drop-shadow(0 0 12px rgba(0,255,166,0.6))
-drop-shadow(0 0 25px rgba(0,255,166,0.4));
+brightness(0)
+invert(1)
+drop-shadow(0 0 10px #00ffa6)
+drop-shadow(0 0 25px rgba(0,255,166,0.5));
+
+opacity:0;
+
+/* animação correta */
+animation:
+fadeIn 2s ease forwards 1s,
+pulseGlow 3s infinite ease-in-out 3s;
 }
 
-@keyframes draw {
+@keyframes fadeIn {
 to {
-stroke-dashoffset:0;
+opacity:1;
 }
 }
-@keyframes glowPulse {
+
+@keyframes pulseGlow {
 0% {
-opacity:0.6;
-transform:scale(1);
+filter: brightness(0) invert(1) drop-shadow(0 0 10px #00ffa6);
 }
 50% {
-opacity:1;
-transform:scale(1.04);
+filter: brightness(0) invert(1) drop-shadow(0 0 35px #00ffa6);
 }
 100% {
-opacity:0.6;
-transform:scale(1);
+filter: brightness(0) invert(1) drop-shadow(0 0 10px #00ffa6);
 }
 }
+
 </style>
 </head>
 
@@ -189,7 +194,7 @@ CONTINUE
 <div class="section" id="s4">
 
 <div class="guardian">
-  <img src="https://i.imgur.com/7QZ6bGz.png" class="puma-img">
+<img src="https://i.imgur.com/7QZ6bGz.png" class="puma-img">
 </div>
 
 <h2>A singular presence.</h2>
