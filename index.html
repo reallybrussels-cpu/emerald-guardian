@@ -38,6 +38,10 @@ filter:blur(0);
 pointer-events:auto;
 }
 
+/* TEXT */
+h1 { font-size:60px; color:#e6c200; }
+.highlight { color:#00ffa6; }
+
 /* INPUT */
 input, select {
 padding:12px;
@@ -62,18 +66,114 @@ cursor:pointer;
 margin-top:20px;
 }
 
+.btn {
+margin-top:40px;
+cursor:pointer;
+opacity:0.6;
+}
+.btn:hover { opacity:1; }
+
+/* PUMA */
+
+.guardian {
+position:relative;
+width:420px;
+perspective:800px;
+}
+
+.puma-img {
+width:100%;
+opacity:0;
+transform: translateY(40px);
+
+filter:
+brightness(0)
+invert(1)
+opacity(0.85)
+drop-shadow(0 0 4px #00ffa6);
+
+transition: transform 0.2s ease;
+}
+
+.puma-active {
+animation:
+fadeIn 2s ease forwards,
+breathGlow 2s infinite 2s,
+floatPuma 6s infinite 2s;
+opacity:1;
+}
+
+/* ANIMAÇÕES */
+
+@keyframes fadeIn {
+from {opacity:0;}
+to {opacity:1;}
+}
+
+@keyframes breathGlow {
+0% { filter: brightness(0) invert(1) drop-shadow(0 0 5px #00ffa6); }
+50% { filter: brightness(0) invert(1) drop-shadow(0 0 25px #00ffa6); }
+100% { filter: brightness(0) invert(1) drop-shadow(0 0 5px #00ffa6); }
+}
+
+@keyframes floatPuma {
+0% { transform: translateY(0px); }
+50% { transform: translateY(-8px); }
+100% { transform: translateY(0px); }
+}
+
 </style>
 </head>
 
 <body>
 
-<!-- TELA 7 -->
-<div class="section active" id="s7">
+<!-- TELA 1 -->
+<div class="section active" id="s1">
+<h1>Emerald Guardian</h1>
+<p>Restricted access</p>
+<input id="code" placeholder="ACCESS CODE">
+<button onclick="check()">ENTER</button>
+</div>
 
+<!-- TELA 2 -->
+<div class="section" id="s2">
+<h2>Something valuable...</h2>
+<h2 class="highlight">Something unique.</h2>
+<div class="btn" onclick="next(3)">CONTINUE ↓</div>
+</div>
+
+<!-- TELA 3 -->
+<div class="section" id="s3">
+<h2>Formed over millions of years</h2>
+<div class="btn" onclick="next(4)">CONTINUE ↓</div>
+</div>
+
+<!-- TELA 4 -->
+<div class="section" id="s4">
+<div class="guardian">
+<img src="puma.png" class="puma-img">
+</div>
+<h2>A singular presence</h2>
+<div class="btn" onclick="next(5)">CONTINUE ↓</div>
+</div>
+
+<!-- TELA 5 -->
+<div class="section" id="s5">
+<h2>Absolute rarity</h2>
+<div class="btn" onclick="next(6)">CONTINUE ↓</div>
+</div>
+
+<!-- TELA 6 -->
+<div class="section" id="s6">
+<h2>Private and selective</h2>
+<div class="btn" onclick="next(7)">CONTINUE ↓</div>
+</div>
+
+<!-- TELA 7 -->
+<div class="section" id="s7">
 <h2>Request Direct Access</h2>
 
 <input id="nome" placeholder="Nome">
-
 <input id="email" placeholder="Email">
 
 <select id="ddi">
@@ -81,7 +181,6 @@ margin-top:20px;
 <option value="+55">Brasil +55</option>
 <option value="+1">USA +1</option>
 <option value="+44">UK +44</option>
-<option value="+351">Portugal +351</option>
 </select>
 
 <input id="telefone" placeholder="Telefone">
@@ -89,11 +188,31 @@ margin-top:20px;
 <button onclick="validar()">SUBMIT</button>
 
 <p id="erro" style="color:red;"></p>
-
 </div>
 
 <script>
 
+/* LOGIN */
+function check(){
+let code = document.getElementById("code").value;
+if(code === "123A"){ next(2); }
+else{ alert("Invalid code"); }
+}
+
+/* NAVEGAÇÃO */
+function next(n){
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+
+let target = document.getElementById("s"+n);
+target.classList.add("active");
+
+if(n === 4){
+let puma = document.querySelector(".puma-img");
+setTimeout(()=>{ puma.classList.add("puma-active"); },1000);
+}
+}
+
+/* VALIDAÇÃO */
 function validar(){
 
 let nome = document.getElementById("nome");
@@ -104,50 +223,42 @@ let erro = document.getElementById("erro");
 
 erro.innerText = "";
 
-// reset
-[nome,email,telefone].forEach(i=>i.classList.remove("error"));
+if(nome.value.trim()===""){ erro.innerText="Nome obrigatório"; return; }
 
-/* VALIDAÇÃO NOME */
-if(nome.value.trim() === ""){
-erro.innerText = "Nome obrigatório";
-nome.classList.add("error");
-return;
+let proibido = /<|>|script/i;
+if(proibido.test(nome.value)||proibido.test(email.value)){
+erro.innerText="Entrada inválida"; return;
 }
 
-/* BLOQUEIO SCRIPT */
-let proibido = /<|>|script|SELECT|INSERT|DROP/i;
-
-if(proibido.test(nome.value) || proibido.test(email.value)){
-erro.innerText = "Entrada inválida";
-return;
-}
-
-/* VALIDAÇÃO EMAIL */
 let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 if(!emailRegex.test(email.value)){
-erro.innerText = "Email inválido";
-email.classList.add("error");
-return;
+erro.innerText="Email inválido"; return;
 }
 
-/* DDI */
-if(ddi.value === ""){
-erro.innerText = "Selecione o DDI";
-return;
+if(ddi.value===""){ erro.innerText="Selecione DDI"; return; }
+
+if(telefone.value.length<8){
+erro.innerText="Telefone inválido"; return;
 }
 
-/* TELEFONE */
-if(telefone.value.length < 8){
-erro.innerText = "Telefone inválido";
-telefone.classList.add("error");
-return;
+alert("Request sent");
 }
 
-/* SUCESSO */
-alert("Request sent successfully");
+/* 3D */
+document.addEventListener("mousemove",(e)=>{
+let puma=document.querySelector(".puma-img");
+let box=document.querySelector(".guardian");
+if(!puma||!box)return;
 
-}
+let rect=box.getBoundingClientRect();
+let x=e.clientX-rect.left;
+let y=e.clientY-rect.top;
+
+let rx=(y-rect.height/2)/20;
+let ry=(x-rect.width/2)/20;
+
+puma.style.transform=`rotateX(${-rx}deg) rotateY(${ry}deg)`;
+});
 
 </script>
 
