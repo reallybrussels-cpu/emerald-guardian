@@ -122,16 +122,18 @@ width:100%;
 max-width:500px;
 background:transparent;
 
-/* base mais escura */
+/* base */
 filter:
 brightness(0)
 invert(1)
 opacity(0.85)
 drop-shadow(0 0 4px #00ffa6);
 
+/* animações combinadas */
 animation:
 fadeIn 2s ease forwards 1s,
-breathGlow 2s ease-in-out infinite 3s;
+breathGlow 2s ease-in-out infinite 3s,
+floatPuma 6s ease-in-out infinite 3s;
 }
 
 /* ENERGIA */
@@ -150,7 +152,6 @@ filter: brightness(0) invert(1) opacity(1) drop-shadow(0 0 20px #00ffa6);
 100% {
 filter: brightness(0) invert(1) opacity(0.8) drop-shadow(0 0 3px #00ffa6);
 }
-}
 
 @keyframes fadeIn {
 from {
@@ -161,6 +162,17 @@ opacity:1;
 }
 }
   
+@keyframes floatPuma {
+0% {
+transform: translateY(0px) scale(1);
+}
+50% {
+transform: translateY(-8px) scale(1.01);
+}
+100% {
+transform: translateY(0px) scale(1);
+}
+}  
 </style>
 </head>
 
