@@ -289,12 +289,15 @@ target.classList.add("active");
 
 /* 🔥 ativa o puma só na tela 4 */
 if(n === 4){
-setTimeout(() => {
 let puma = document.querySelector(".puma-img");
+
 if(puma){
+puma.classList.remove("puma-active");
+
+/* delay cinematográfico real */
+setTimeout(() => {
 puma.classList.add("puma-active");
-}
-}, 600);
+}, 1500);
 }
 }
 
