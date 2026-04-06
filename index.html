@@ -102,31 +102,33 @@ opacity:1;
 transform:translateY(5px);
 }
 
-.arrow {
-display:block;
-font-size:18px;
-line-height:8px;
-}
-
 /* PUMA */
 
 .guardian {
 position:relative;
 width:420px;
 margin-bottom:20px;
+
+/* 3D */
+perspective:800px;
 }
 
 .puma-img {
 width:100%;
 max-width:500px;
+
+/* estado inicial */
 opacity:0;
 transform: translateY(40px) scale(0.98);
 
+/* estilo */
 filter:
 brightness(0)
 invert(1)
 opacity(0.85)
 drop-shadow(0 0 4px #00ffa6);
+
+transition: transform 0.2s ease;
 }
 
 /* ATIVAÇÃO */
@@ -263,6 +265,32 @@ puma.classList.add("puma-active");
 }
 }
 }
+
+/* 🔥 EFEITO 3D */
+document.addEventListener("mousemove", (e) => {
+
+let puma = document.querySelector(".puma-img");
+let container = document.querySelector(".guardian");
+
+if(!puma || !container) return;
+
+let rect = container.getBoundingClientRect();
+
+let x = e.clientX - rect.left;
+let y = e.clientY - rect.top;
+
+let centerX = rect.width / 2;
+let centerY = rect.height / 2;
+
+let rotateX = ((y - centerY) / centerY) * -8;
+let rotateY = ((x - centerX) / centerX) * 8;
+
+puma.style.transform = `
+translateY(-5px)
+rotateX(${rotateX}deg)
+rotateY(${rotateY}deg)
+`;
+});
 
 </script>
 
