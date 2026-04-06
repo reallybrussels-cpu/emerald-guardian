@@ -7,15 +7,16 @@
 
 <style>
 
-body {
+body{
 margin:0;
-font-family:'Georgia', serif;
-background:#000;
+font-family:Georgia, serif;
+background: radial-gradient(circle at top, #033c35, #000);
 color:white;
 overflow:hidden;
 }
 
-.section {
+/* SECTIONS */
+.section{
 position:absolute;
 width:100%;
 height:100vh;
@@ -24,52 +25,62 @@ flex-direction:column;
 justify-content:center;
 align-items:center;
 opacity:0;
-transition:1s;
+transition:0.8s;
 pointer-events:none;
 }
 
-.section.active {
+.section.active{
 opacity:1;
 pointer-events:auto;
 }
 
-input, select {
-padding:10px;
-margin:5px;
+/* INPUT */
+input, select{
+padding:14px;
+margin:10px;
 width:260px;
-background:black;
+background:rgba(0,0,0,0.7);
 border:1px solid #00ffa6;
 color:white;
 }
 
-button {
-padding:10px 30px;
+/* BUTTON */
+button{
+padding:14px 40px;
 background:gold;
 border:none;
 cursor:pointer;
+font-weight:bold;
 }
 
-.guardian {
-width:400px;
+/* TITLE */
+h1,h2{
+letter-spacing:2px;
+text-shadow:0 0 12px #00ffa6;
 }
 
-.puma-img {
+/* PUMA */
+.guardian{
+width:420px;
+}
+
+.puma-img{
 width:100%;
 opacity:0;
 transform:translateY(40px);
-filter:brightness(0) invert(1) drop-shadow(0 0 6px #00ffa6);
+filter:brightness(0) invert(1) drop-shadow(0 0 10px #00ffa6);
 }
 
-.puma-active {
+.puma-active{
 animation:fade 2s forwards, float 6s infinite 2s;
 }
 
-@keyframes fade {
-to {opacity:1;transform:translateY(0);}
+@keyframes fade{
+to{opacity:1;transform:translateY(0);}
 }
 
-@keyframes float {
-50% {transform:translateY(-8px);}
+@keyframes float{
+50%{transform:translateY(-10px);}
 }
 
 </style>
@@ -77,7 +88,7 @@ to {opacity:1;transform:translateY(0);}
 
 <body>
 
-<!-- LOGIN -->
+<!-- S1 LOGIN -->
 <div class="section active" id="s1">
 <h1>Emerald Guardian</h1>
 <input id="code" placeholder="ACCESS CODE">
@@ -85,7 +96,7 @@ to {opacity:1;transform:translateY(0);}
 <p id="erro"></p>
 </div>
 
-<!-- PUMA -->
+<!-- S2 PUMA -->
 <div class="section" id="s2">
 <div class="guardian">
 <img src="puma.png" class="puma-img">
@@ -93,38 +104,69 @@ to {opacity:1;transform:translateY(0);}
 <button onclick="next(3)">CONTINUE</button>
 </div>
 
-<!-- FORM FINAL -->
+<!-- S3 NAME -->
 <div class="section" id="s3">
-<h2>Request Access</h2>
+<h2>Your Name</h2>
+<input id="nome" placeholder="Full Name">
+<button onclick="next(4)">NEXT</button>
+</div>
 
-<input id="nome" placeholder="Nome">
+<!-- S4 EMAIL -->
+<div class="section" id="s4">
+<h2>Your Email</h2>
 <input id="email" placeholder="Email">
+<button onclick="next(5)">NEXT</button>
+</div>
 
+<!-- S5 DDI -->
+<div class="section" id="s5">
+<h2>Country Code</h2>
 <select id="ddi">
-<option value="">DDI</option>
+<option value="">Select</option>
 <option value="55">Brazil +55</option>
 <option value="1">USA +1</option>
 <option value="44">UK +44</option>
 </select>
+<button onclick="next(6)">NEXT</button>
+</div>
 
-<input id="telefone" placeholder="Telefone">
+<!-- S6 PHONE -->
+<div class="section" id="s6">
+<h2>Your Phone</h2>
+<input id="telefone" placeholder="Phone Number">
+<button onclick="next(7)">NEXT</button>
+</div>
 
-<button onclick="enviar()">ENVIAR</button>
-
+<!-- S7 CONFIRM -->
+<div class="section" id="s7">
+<h2>Confirm Submission</h2>
+<button onclick="enviar()">SUBMIT</button>
 <p id="msg"></p>
+</div>
+
+<!-- S8 SUCCESS -->
+<div class="section" id="s8">
+<h2>✔ Request Successfully Sent</h2>
+<p style="max-width:400px;text-align:center;">
+Thank you for your interest in <b>Emerald Guardian</b>.<br><br>
+Our team will contact you shortly.
+</p>
+<button onclick="reset()">FINISH</button>
 </div>
 
 <script>
 
+/* LOGIN */
 function login(){
 let code=document.getElementById("code").value;
 if(code==="123A"){
 next(2);
 }else{
-document.getElementById("erro").innerText="Invalid code";
+document.getElementById("erro").innerText="Invalid access code";
 }
 }
 
+/* NAVIGATION */
 function next(n){
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 document.getElementById("s"+n).classList.add("active");
@@ -136,6 +178,7 @@ document.querySelector(".puma-img").classList.add("puma-active");
 }
 }
 
+/* SUBMIT */
 function enviar(){
 
 let nome=document.getElementById("nome").value;
@@ -143,15 +186,14 @@ let email=document.getElementById("email").value;
 let ddi=document.getElementById("ddi").value;
 let telefone=document.getElementById("telefone").value;
 
-// DATA AUTOMATICA
-let data = new Date().toLocaleString();
+let data=new Date().toLocaleString();
 
 if(!nome || !email || !ddi || !telefone){
-document.getElementById("msg").innerText="Preencha todos os campos";
+document.getElementById("msg").innerText="Please complete all fields";
 return;
 }
 
-// AQUI VOCÊ PODE INTEGRAR COM GOOGLE SHEETS OU SUPABASE
+/* DEBUG (depois conectamos com Sheets ou Supabase) */
 console.log({
 nome,
 email,
@@ -160,16 +202,21 @@ telefone,
 data
 });
 
-// LIMPAR CAMPOS
+/* CLEAR */
 document.getElementById("nome").value="";
 document.getElementById("email").value="";
 document.getElementById("ddi").value="";
 document.getElementById("telefone").value="";
+document.getElementById("msg").innerText="";
 
-// MENSAGEM BONITA
-document.getElementById("msg").innerHTML =
-"✔ Solicitação enviada com sucesso<br><br>Em breve entraremos em contato.";
+/* SUCCESS SCREEN */
+next(8);
 
+}
+
+/* RESET */
+function reset(){
+next(1);
 }
 
 </script>
