@@ -10,12 +10,11 @@
 body {
 margin:0;
 font-family:'Georgia', serif;
-color:white;
 background:#000;
+color:white;
 overflow:hidden;
 }
 
-/* SECTIONS */
 .section {
 position:absolute;
 width:100%;
@@ -24,8 +23,6 @@ display:flex;
 flex-direction:column;
 justify-content:center;
 align-items:center;
-text-align:center;
-padding:40px;
 opacity:0;
 transition:1s;
 pointer-events:none;
@@ -36,29 +33,16 @@ opacity:1;
 pointer-events:auto;
 }
 
-/* TEXT */
-h1 {font-size:60px;color:#e6c200;}
-.highlight {color:#00ffa6;}
-
-.btn {
-margin-top:30px;
-cursor:pointer;
-opacity:0.6;
-}
-.btn:hover {opacity:1;}
-
-/* INPUT */
 input, select {
 padding:12px;
-width:260px;
 margin:10px;
-background:transparent;
+width:260px;
+background:black;
 border:1px solid #00ffa6;
 color:white;
 text-align:center;
 }
 
-/* BUTTON */
 button {
 padding:12px 35px;
 background:linear-gradient(90deg,#e6c200,#b89600);
@@ -79,10 +63,10 @@ filter:brightness(0) invert(1) drop-shadow(0 0 6px #00ffa6);
 }
 
 .puma-active {
-animation:fadeIn 2s forwards, float 6s infinite 2s;
+animation:fade 2s forwards, float 6s infinite 2s;
 }
 
-@keyframes fadeIn {
+@keyframes fade {
 to {opacity:1;transform:translateY(0);}
 }
 
@@ -95,235 +79,48 @@ to {opacity:1;transform:translateY(0);}
 
 <body>
 
-<!-- TELA 1 -->
+<!-- LOGIN -->
 <div class="section active" id="s1">
 <h1>Emerald Guardian</h1>
-<p>Restricted access</p>
+<p>Restricted Access</p>
+
 <input id="code" placeholder="ACCESS CODE">
 <button onclick="check()">ENTER</button>
+<p id="erro"></p>
 </div>
 
-<!-- TELA 2 -->
+<!-- PUMA -->
 <div class="section" id="s2">
-<h2>There is a difference between something valuable...</h2>
-<h2 class="highlight">and something truly unique.</h2>
-<div class="btn" onclick="next(3)">CONTINUE ↓</div>
-</div>
-
-<!-- TELA 3 -->
-<div class="section" id="s3">
-<h2>Formed over millions of years</h2>
-<p>Emerald Guardian represents a rare convergence</p>
-<div class="btn" onclick="next(4)">CONTINUE ↓</div>
-</div>
-
-<!-- TELA 4 -->
-<div class="section" id="s4">
 <div class="guardian">
 <img src="puma.png" class="puma-img">
 </div>
-<h2>A singular presence</h2>
-<div class="btn" onclick="next(5)">CONTINUE ↓</div>
+
+<button onclick="next(3)">CONTINUE</button>
 </div>
 
-<!-- TELA 5 -->
-<div class="section" id="s5">
-<h2>It is defined by <span class="highlight">absolute rarity</span></h2>
-<div class="btn" onclick="next(6)">CONTINUE ↓</div>
-</div>
-
-<!-- TELA 6 -->
-<div class="section" id="s6">
-<h2>Availability is <span class="highlight">private</span> and selective</h2>
-<div class="btn" onclick="next(7)">CONTINUE ↓</div>
-</div>
-
-<!-- TELA 7 -->
-<div class="section" id="s7">
+<!-- FORM -->
+<div class="section" id="s3">
 
 <h2>Request Direct Access</h2>
 
-<form action="https://formsubmit.co/really.brussels@gmail.com" method="POST">
+<input id="nome" placeholder="Nome" required>
+<input id="email" placeholder="Email" required>
 
-<input type="hidden" name="_cc" value="realede@yahoo.com.br">
-
-<input name="Nome" placeholder="Nome" required>
-<input name="Email" type="email" placeholder="Email" required>
-
-<select name="DDI" required>
+<select id="ddi" required>
 <option value="">DDI</option>
-
-<option>+1 USA / Canada</option>
-<option>+7 Russia</option>
-<option>+20 Egypt</option>
-<option>+27 South Africa</option>
-<option>+30 Greece</option>
-<option>+31 Netherlands</option>
-<option>+32 Belgium</option>
-<option>+33 France</option>
-<option>+34 Spain</option>
-<option>+36 Hungary</option>
-<option>+39 Italy</option>
-<option>+40 Romania</option>
-<option>+41 Switzerland</option>
-<option>+43 Austria</option>
+<option>+55 Brasil</option>
+<option>+1 USA</option>
 <option>+44 UK</option>
-<option>+45 Denmark</option>
-<option>+46 Sweden</option>
-<option>+47 Norway</option>
-<option>+48 Poland</option>
-<option>+49 Germany</option>
-<option>+51 Peru</option>
-<option>+52 Mexico</option>
-<option>+53 Cuba</option>
-<option>+54 Argentina</option>
-<option>+55 Brazil</option>
-<option>+56 Chile</option>
-<option>+57 Colombia</option>
-<option>+58 Venezuela</option>
-<option>+60 Malaysia</option>
-<option>+61 Australia</option>
-<option>+62 Indonesia</option>
-<option>+63 Philippines</option>
-<option>+64 New Zealand</option>
-<option>+65 Singapore</option>
-<option>+66 Thailand</option>
-<option>+81 Japan</option>
-<option>+82 South Korea</option>
-<option>+84 Vietnam</option>
-<option>+86 China</option>
-<option>+90 Turkey</option>
-<option>+91 India</option>
-<option>+92 Pakistan</option>
-<option>+93 Afghanistan</option>
-<option>+94 Sri Lanka</option>
-<option>+95 Myanmar</option>
-<option>+98 Iran</option>
-<option>+211 South Sudan</option>
-<option>+212 Morocco</option>
-<option>+213 Algeria</option>
-<option>+216 Tunisia</option>
-<option>+218 Libya</option>
-<option>+220 Gambia</option>
-<option>+221 Senegal</option>
-<option>+222 Mauritania</option>
-<option>+223 Mali</option>
-<option>+224 Guinea</option>
-<option>+225 Ivory Coast</option>
-<option>+226 Burkina Faso</option>
-<option>+227 Niger</option>
-<option>+228 Togo</option>
-<option>+229 Benin</option>
-<option>+230 Mauritius</option>
-<option>+231 Liberia</option>
-<option>+232 Sierra Leone</option>
-<option>+233 Ghana</option>
-<option>+234 Nigeria</option>
-<option>+235 Chad</option>
-<option>+236 Central African Republic</option>
-<option>+237 Cameroon</option>
-<option>+238 Cape Verde</option>
-<option>+239 Sao Tome</option>
-<option>+240 Equatorial Guinea</option>
-<option>+241 Gabon</option>
-<option>+242 Congo</option>
-<option>+243 DR Congo</option>
-<option>+244 Angola</option>
-<option>+245 Guinea-Bissau</option>
-<option>+248 Seychelles</option>
-<option>+249 Sudan</option>
-<option>+250 Rwanda</option>
-<option>+251 Ethiopia</option>
-<option>+252 Somalia</option>
-<option>+253 Djibouti</option>
-<option>+254 Kenya</option>
-<option>+255 Tanzania</option>
-<option>+256 Uganda</option>
-<option>+257 Burundi</option>
-<option>+258 Mozambique</option>
-<option>+260 Zambia</option>
-<option>+261 Madagascar</option>
-<option>+262 Reunion</option>
-<option>+263 Zimbabwe</option>
-<option>+264 Namibia</option>
-<option>+265 Malawi</option>
-<option>+266 Lesotho</option>
-<option>+267 Botswana</option>
-<option>+268 Eswatini</option>
-<option>+269 Comoros</option>
-<option>+290 Saint Helena</option>
-<option>+291 Eritrea</option>
-<option>+297 Aruba</option>
-<option>+298 Faroe Islands</option>
-<option>+299 Greenland</option>
-<option>+350 Gibraltar</option>
 <option>+351 Portugal</option>
-<option>+352 Luxembourg</option>
-<option>+353 Ireland</option>
-<option>+354 Iceland</option>
-<option>+355 Albania</option>
-<option>+356 Malta</option>
-<option>+357 Cyprus</option>
-<option>+358 Finland</option>
-<option>+359 Bulgaria</option>
-<option>+370 Lithuania</option>
-<option>+371 Latvia</option>
-<option>+372 Estonia</option>
-<option>+373 Moldova</option>
-<option>+374 Armenia</option>
-<option>+375 Belarus</option>
-<option>+376 Andorra</option>
-<option>+377 Monaco</option>
-<option>+378 San Marino</option>
-<option>+380 Ukraine</option>
-<option>+381 Serbia</option>
-<option>+382 Montenegro</option>
-<option>+383 Kosovo</option>
-<option>+385 Croatia</option>
-<option>+386 Slovenia</option>
-<option>+387 Bosnia</option>
-<option>+389 North Macedonia</option>
-<option>+420 Czech Republic</option>
-<option>+421 Slovakia</option>
-<option>+423 Liechtenstein</option>
-<option>+852 Hong Kong</option>
-<option>+853 Macau</option>
-<option>+855 Cambodia</option>
-<option>+856 Laos</option>
-<option>+880 Bangladesh</option>
-<option>+886 Taiwan</option>
-<option>+960 Maldives</option>
-<option>+961 Lebanon</option>
-<option>+962 Jordan</option>
-<option>+963 Syria</option>
-<option>+964 Iraq</option>
-<option>+965 Kuwait</option>
-<option>+966 Saudi Arabia</option>
-<option>+967 Yemen</option>
-<option>+968 Oman</option>
-<option>+970 Palestine</option>
 <option>+971 UAE</option>
-<option>+972 Israel</option>
-<option>+973 Bahrain</option>
-<option>+974 Qatar</option>
-<option>+975 Bhutan</option>
-<option>+976 Mongolia</option>
-<option>+977 Nepal</option>
-<option>+992 Tajikistan</option>
-<option>+993 Turkmenistan</option>
-<option>+994 Azerbaijan</option>
-<option>+995 Georgia</option>
-<option>+996 Kyrgyzstan</option>
-<option>+998 Uzbekistan</option>
-
-</select>
+<option>+86 China</option>
 </select>
 
-<input name="Telefone" placeholder="Telefone" required>
+<input id="telefone" placeholder="Telefone" required>
 
-<button type="submit">SUBMIT</button>
+<button onclick="enviar()">SUBMIT</button>
 
-</form>
+<p id="msg"></p>
 
 </div>
 
@@ -331,20 +128,71 @@ to {opacity:1;transform:translateY(0);}
 
 /* LOGIN */
 function check(){
-let code=document.getElementById("code").value;
-if(code==="123A"){next(2);}else{alert("Invalid code");}
+let code = document.getElementById("code").value;
+
+if(code === "123A"){
+next(2);
+}else{
+document.getElementById("erro").innerText="Invalid code";
+}
 }
 
-/* NAVEGAÇÃO */
+/* NAV */
 function next(n){
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 document.getElementById("s"+n).classList.add("active");
 
-if(n===4){
+if(n===2){
 setTimeout(()=>{
 document.querySelector(".puma-img").classList.add("puma-active");
-},1000);
+},800);
 }
+}
+
+/* VALIDAÇÃO */
+function validarEmail(email){
+return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+/* ENVIO */
+function enviar(){
+
+let nome = document.getElementById("nome").value.trim();
+let email = document.getElementById("email").value.trim();
+let ddi = document.getElementById("ddi").value;
+let telefone = document.getElementById("telefone").value.trim();
+
+if(!nome || !email || !ddi || !telefone){
+document.getElementById("msg").innerText="Preencha todos os campos";
+return;
+}
+
+if(!validarEmail(email)){
+document.getElementById("msg").innerText="Email inválido";
+return;
+}
+
+/* proteção simples */
+nome = nome.replace(/<[^>]*>?/gm, '');
+email = email.replace(/<[^>]*>?/gm, '');
+telefone = telefone.replace(/<[^>]*>?/gm, '');
+
+fetch("https://script.google.com/macros/s/AKfycbyUPhY7Gc2XN1WBQB5KZa8IoexJijO-vf5mQjzIw6pkBW3Uyk8i6fnfZaRvMxzbG2Pm/exec", {
+method:"POST",
+body:JSON.stringify({
+nome: nome,
+email: email,
+telefone: ddi + " " + telefone
+})
+})
+.then(res=>res.json())
+.then(()=>{
+document.getElementById("msg").innerText="Request sent successfully";
+})
+.catch(()=>{
+document.getElementById("msg").innerText="Error sending request";
+});
+
 }
 
 </script>
