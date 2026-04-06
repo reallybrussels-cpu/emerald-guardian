@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,87 +8,100 @@
 <style>
 
 body {
-    margin:0;
-    font-family: 'Georgia', serif;
-    background: radial-gradient(circle at center, #001a12 0%, #000 70%);
-    color:#fff;
-    overflow:hidden;
+margin:0;
+font-family: 'Georgia', serif;
+color:white;
+overflow:hidden;
+background: radial-gradient(circle at 30% 30%, #0f2f25, #000000 70%);
 }
 
-.screen {
-    position:absolute;
-    width:100%;
-    height:100vh;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-    opacity:0;
-    transition:1s ease;
-}
-
-.screen.active {
-    opacity:1;
+.section {
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:40px;
 }
 
 h1 {
-    font-size:60px;
-    font-weight:400;
+font-size:56px;
+color:#e6c200;
+margin-bottom:20px;
 }
 
-p {
-    max-width:700px;
-    opacity:0.8;
+h2 {
+font-weight:300;
+letter-spacing:1px;
 }
 
-/* destaque verde */
-.green {
-    color:#00ff99;
+.highlight {
+color:#00ff9f;
 }
 
-/* botão minimalista */
-.continue {
-    margin-top:40px;
-    cursor:pointer;
-    font-size:14px;
-    opacity:0.7;
-    letter-spacing:2px;
+.btn {
+margin-top:40px;
+font-size:14px;
+letter-spacing:2px;
+cursor:pointer;
+opacity:0.8;
+transition:0.3s;
 }
 
-.continue::before {
-    content:"↓ ↓";
-    display:block;
-    margin-bottom:10px;
+.btn:hover {
+opacity:1;
 }
 
-/* input */
+.arrow {
+display:block;
+font-size:22px;
+line-height:10px;
+}
+
+/* esconder telas */
+.section {
+display:none;
+}
+
+.section.active {
+display:flex;
+}
+
+/* INPUT */
 input {
-    margin-top:20px;
-    padding:10px;
-    background:none;
-    border:1px solid #00ff99;
-    color:#fff;
-    text-align:center;
+padding:12px;
+width:250px;
+background:transparent;
+border:1px solid #00ff9f;
+color:white;
+text-align:center;
+margin:10px;
 }
 
-/* puma neon */
+button {
+padding:12px 30px;
+background:#e6c200;
+border:none;
+cursor:pointer;
+margin-top:20px;
+}
+
+/* PUMA SVG */
 .puma {
-    width:400px;
-    margin-top:40px;
-}
-
-path {
-    fill:none;
-    stroke:#00ff99;
-    stroke-width:2;
-    stroke-dasharray:1000;
-    stroke-dashoffset:1000;
-    animation:draw 4s ease forwards;
+width:300px;
+stroke:#00ff9f;
+stroke-width:2;
+fill:none;
+stroke-dasharray:1000;
+stroke-dashoffset:1000;
+animation:draw 4s ease forwards;
 }
 
 @keyframes draw {
-    to { stroke-dashoffset:0; }
+to {
+stroke-dashoffset:0;
+}
 }
 
 </style>
@@ -97,81 +110,106 @@ path {
 <body>
 
 <!-- TELA 1 -->
-<div class="screen active" id="s1">
-    <h1>Emerald Guardian</h1>
-    <p>Not everything rare is meant to be seen by everyone.</p>
-    <input type="password" id="senha" placeholder="ACCESS CODE">
-    <div class="continue" onclick="login()">continue</div>
+<div class="section active" id="s1">
+<h1>Emerald Guardian</h1>
+<p>Restricted access for authorized invitees</p>
+
+<input placeholder="ACCESS CODE" id="code">
+
+<button onclick="check()">ENTER</button>
 </div>
 
 <!-- TELA 2 -->
-<div class="screen" id="s2">
-    <p>There is a difference between something valuable...</p>
-    <h2 class="green">and something truly unique.</h2>
-    <div class="continue" onclick="next(3)">continue</div>
+<div class="section" id="s2">
+<h2>There is a difference between something valuable...</h2>
+<h2 class="highlight">and something truly unique.</h2>
+
+<div class="btn" onclick="next(3)">
+<span class="arrow">↓</span>
+CONTINUE
+<span class="arrow">↓</span>
+</div>
 </div>
 
 <!-- TELA 3 -->
-<div class="screen" id="s3">
-    <h2>Formed over millions of years,</h2>
-    <p>the <span class="green">Emerald Guardian</span> represents a rare convergence of nature, time, and preservation.</p>
-    <div class="continue" onclick="next(4)">continue</div>
+<div class="section" id="s3">
+<h2>Formed over millions of years,</h2>
+<p>The <span class="highlight">Emerald Guardian</span> represents a rare convergence.</p>
+
+<div class="btn" onclick="next(4)">
+<span class="arrow">↓</span>
+CONTINUE
+<span class="arrow">↓</span>
+</div>
 </div>
 
 <!-- TELA 4 (PUMA) -->
-<div class="screen" id="s4">
-    <h2>A singular piece.</h2>
+<div class="section" id="s4">
 
-    <svg class="puma" viewBox="0 0 500 200">
-        <path d="M20 150 
-        C80 60, 140 60, 200 100 
-        C260 140, 320 140, 380 100 
-        C420 70, 460 80, 480 120 
-        C440 110, 400 110, 360 120 
-        C300 140, 240 140, 180 120 
-        C120 100, 80 100, 40 140 Z"/>
-    </svg>
+<svg class="puma" viewBox="0 0 500 200">
+<path d="M10 150 Q 100 50 200 100 T 400 80 T 490 100" />
+</svg>
 
-    <div class="continue" onclick="next(5)">continue</div>
+<h2>A singular presence.</h2>
+
+<div class="btn" onclick="next(5)">
+<span class="arrow">↓</span>
+CONTINUE
+<span class="arrow">↓</span>
+</div>
+
 </div>
 
 <!-- TELA 5 -->
-<div class="screen" id="s5">
-    <p>This is not a liquidity-driven asset.</p>
-    <h2>It is defined by <span class="green">absolute rarity.</span></h2>
-    <div class="continue" onclick="next(6)">continue</div>
+<div class="section" id="s5">
+<h2>It is an asset defined by <span class="highlight">absolute rarity.</span></h2>
+
+<div class="btn" onclick="next(6)">
+<span class="arrow">↓</span>
+CONTINUE
+<span class="arrow">↓</span>
+</div>
 </div>
 
 <!-- TELA 6 -->
-<div class="screen" id="s6">
-    <h2>Availability is <span class="green">private</span> and selective.</h2>
-    <div class="continue" onclick="next(7)">continue</div>
+<div class="section" id="s6">
+<h2>Availability is <span class="highlight">private</span> and selective.</h2>
+
+<div class="btn" onclick="next(7)">
+<span class="arrow">↓</span>
+CONTINUE
+<span class="arrow">↓</span>
+</div>
 </div>
 
-<!-- TELA 7 (FINAL) -->
-<div class="screen" id="s7">
-    <h2>Request Access</h2>
-    <input placeholder="Nome">
-    <input placeholder="Email">
-    <input placeholder="Telefone">
-    <div class="continue" onclick="alert('Contato enviado')">continue</div>
+<!-- TELA 7 (FORM FINAL) -->
+<div class="section" id="s7">
+
+<h2>Request Direct Access</h2>
+
+<input placeholder="Nome">
+<input placeholder="Email">
+<input placeholder="Telefone">
+
+<button onclick="alert('Acesso solicitado')">Enviar</button>
+
 </div>
 
 <script>
 
-function login(){
-    const senha = document.getElementById("senha").value;
+function check(){
+let code = document.getElementById("code").value;
 
-    if(senha === "123A"){
-        next(2);
-    } else {
-        alert("Acesso negado");
-    }
+if(code === "123A"){
+next(2);
+}else{
+alert("Invalid code");
+}
 }
 
 function next(n){
-    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-    document.getElementById("s"+n).classList.add("active");
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+document.getElementById("s"+n).classList.add("active");
 }
 
 </script>
