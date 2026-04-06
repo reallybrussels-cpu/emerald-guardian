@@ -122,17 +122,16 @@ width:100%;
 max-width:500px;
 background:transparent;
 
-/* base elegante */
+/* base mais escura */
 filter:
 brightness(0)
 invert(1)
-opacity(0.95)
-drop-shadow(0 0 8px #00ffa6);
+opacity(0.85)
+drop-shadow(0 0 4px #00ffa6);
 
-/* animação premium */
 animation:
 fadeIn 2s ease forwards 1s,
-breathGlow 4s ease-in-out infinite 3s;
+breathGlow 2s ease-in-out infinite 3s;
 }
 
 /* ENERGIA */
@@ -143,13 +142,13 @@ breathGlow 4s ease-in-out infinite 3s;
 
 @keyframes breathGlow {
 0% {
-filter: brightness(0) invert(1) drop-shadow(0 0 6px #00ffa6);
+filter: brightness(0) invert(1) opacity(0.8) drop-shadow(0 0 3px #00ffa6);
 }
 50% {
-filter: brightness(0) invert(1) drop-shadow(0 0 25px #00ffa6);
+filter: brightness(0) invert(1) opacity(1) drop-shadow(0 0 20px #00ffa6);
 }
 100% {
-filter: brightness(0) invert(1) drop-shadow(0 0 6px #00ffa6);
+filter: brightness(0) invert(1) opacity(0.8) drop-shadow(0 0 3px #00ffa6);
 }
 }
 
