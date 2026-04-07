@@ -5,53 +5,118 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Emerald Guardian</title>
 
-<style>
-body{margin:0;background:black;color:white;font-family:Arial}
-.section{position:absolute;width:100%;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;opacity:0;transition:1s}
-.section.active{opacity:1}
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
-input,select{margin:10px;padding:10px;width:260px;background:black;color:white;border:1px solid #00ffa6}
-button{padding:10px 30px;background:gold;border:none;cursor:pointer}
-.success{color:#00ffa6;font-size:22px}
+<style>
+html,body{
+margin:0;
+height:100%;
+font-family:'Inter',sans-serif;
+color:white;
+background: radial-gradient(circle at center,#0b5d2a 0%,#000 70%);
+overflow:hidden;
+}
+
+.section{
+position:absolute;
+width:100%;
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+opacity:0;
+transform:scale(1.05);
+transition:1s;
+}
+
+.section.active{
+opacity:1;
+transform:scale(1);
+}
+
+h1,h2{
+font-family:'Playfair Display',serif;
+}
+
+h1{
+font-size:60px;
+color:#e6c200;
+text-shadow:0 0 15px gold;
+}
+
+.highlight{
+color:#00ffa6;
+text-shadow:0 0 10px #00ffa6;
+}
+
+button{
+padding:14px 50px;
+background:gold;
+border:none;
+cursor:pointer;
+margin-top:20px;
+font-weight:bold;
+}
+
+input,select{
+padding:12px;
+width:260px;
+background:black;
+border:1px solid #00ffa6;
+color:white;
+text-align:center;
+margin:8px;
+}
+
+.success{
+font-size:26px;
+color:#00ffa6;
+}
 </style>
 </head>
 
 <body>
 
+<!-- TELA 1 CORRIGIDA -->
 <div class="section active" id="s1">
 <h1>Emerald Guardian</h1>
+<input placeholder="ACCESS CODE">
 <button onclick="next(2)">ENTER</button>
 </div>
 
 <div class="section" id="s2">
-<h2>Exclusive Access</h2>
+<h2>There is a difference between something valuable...</h2>
+<h2 class="highlight">and something truly unique.</h2>
 <button onclick="next(3)">CONTINUE</button>
 </div>
 
 <div class="section" id="s3">
-<h2>Rare Asset</h2>
+<h2>Formed over millions of years</h2>
 <button onclick="next(4)">CONTINUE</button>
 </div>
 
 <div class="section" id="s4">
-<h2>Singular Piece</h2>
+<h2>A singular piece</h2>
 <button onclick="next(5)">CONTINUE</button>
 </div>
 
 <div class="section" id="s5">
-<h2>Absolute Rarity</h2>
+<h2>Absolute rarity</h2>
 <button onclick="next(6)">CONTINUE</button>
 </div>
 
 <div class="section" id="s6">
-<h2>Private Access</h2>
+<h2>Private and selective</h2>
 <button onclick="next(7)">CONTINUE</button>
 </div>
 
 <div class="section" id="s7">
-<h2>Request Access</h2>
+<h2>Request Direct Access</h2>
 
 <form id="formEG">
+
 <input name="name" placeholder="Full Name" required>
 <input name="email" placeholder="Email" required>
 
@@ -99,7 +164,8 @@ button{padding:10px 30px;background:gold;border:none;cursor:pointer}
 
 <input name="phone" placeholder="Phone">
 
-<button id="btn">SEND</button>
+<button>SEND</button>
+
 </form>
 </div>
 
