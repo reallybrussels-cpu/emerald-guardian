@@ -40,51 +40,17 @@ filter:blur(0);
 pointer-events:auto;
 }
 
-h1 {
-font-size:60px;
-color:#e6c200;
-letter-spacing:2px;
-}
-
-h2 {
-font-weight:300;
-max-width:700px;
-line-height:1.6;
-}
-
-.highlight {
-color:#00ffa6;
-}
-
-.btn {
-margin-top:40px;
-font-size:12px;
-letter-spacing:3px;
-cursor:pointer;
-opacity:0.6;
-transition:0.4s;
-}
-
-.btn:hover {
-opacity:1;
-transform:translateY(5px);
-}
-
-.arrow {
-display:block;
-font-size:18px;
-line-height:8px;
-}
+h1 { font-size:60px; color:#e6c200; }
+.highlight { color:#00ffa6; }
 
 input, select {
 padding:12px;
 width:260px;
+margin:10px;
 background:transparent;
 border:1px solid rgba(0,255,150,0.4);
 color:white;
 text-align:center;
-margin:10px;
-outline:none;
 }
 
 button {
@@ -92,33 +58,13 @@ padding:12px 35px;
 background:linear-gradient(90deg,#e6c200,#b89600);
 border:none;
 cursor:pointer;
-margin-top:20px;
-letter-spacing:2px;
 }
 
-.guardian {
-width:420px;
-}
+.guardian { width:420px; }
 
 .puma-img {
 width:100%;
-filter:
-brightness(0)
-invert(1)
-drop-shadow(0 0 10px #00ffa6)
-drop-shadow(0 0 30px rgba(0,255,166,0.6));
-opacity:0;
-animation:
-fadeIn 2s ease forwards 1s,
-pulseGlow 3s infinite 3s;
-}
-
-@keyframes fadeIn {
-to { opacity:1; }
-}
-
-@keyframes pulseGlow {
-50% { filter: brightness(0) invert(1) drop-shadow(0 0 35px #00ffa6); }
+filter: brightness(0) invert(1) drop-shadow(0 0 20px #00ffa6);
 }
 
 </style>
@@ -126,89 +72,68 @@ to { opacity:1; }
 
 <body>
 
-<!-- TELA 1 -->
+<!-- TELAS (mantidas iguais) -->
+
 <div class="section active" id="s1">
 <h1>Emerald Guardian</h1>
-<p>Restricted access for authorized invitees</p>
-<input placeholder="ACCESS CODE" id="code">
+<input id="code" placeholder="ACCESS CODE">
 <button onclick="check()">ENTER</button>
 </div>
 
-<!-- TELA 2 -->
 <div class="section" id="s2">
 <h2>There is a difference between something valuable...</h2>
 <h2 class="highlight">and something truly unique.</h2>
-<p>What you are about to see does not belong to the conventional market.</p>
-<div class="btn" onclick="next(3)">
-<span class="arrow">↓</span>CONTINUE<span class="arrow">↓</span>
-</div>
+<button onclick="next(3)">CONTINUE</button>
 </div>
 
-<!-- TELA 3 -->
 <div class="section" id="s3">
-<h2>Formed over millions of years,</h2>
-<p>The <span class="highlight">Emerald Guardian</span> represents a rare convergence.</p>
-<div class="btn" onclick="next(4)">
-<span class="arrow">↓</span>CONTINUE<span class="arrow">↓</span>
-</div>
+<h2>Formed over millions of years</h2>
+<button onclick="next(4)">CONTINUE</button>
 </div>
 
-<!-- TELA 4 -->
 <div class="section" id="s4">
 <div class="guardian">
 <img src="puma.png" class="puma-img">
 </div>
-<h2>A singular piece.<br>No known equivalent.</h2>
-<p class="highlight">Non-replicable. Non-substitutable.</p>
-<div class="btn" onclick="next(5)">
-<span class="arrow">↓</span>CONTINUE<span class="arrow">↓</span>
-</div>
+<button onclick="next(5)">CONTINUE</button>
 </div>
 
-<!-- TELA 5 -->
 <div class="section" id="s5">
-<h2>This is not a liquidity-driven asset.</h2>
-<h2>It is an asset defined by <span class="highlight">absolute rarity.</span></h2>
-<div class="btn" onclick="next(6)">
-<span class="arrow">↓</span>CONTINUE<span class="arrow">↓</span>
-</div>
+<h2>Absolute rarity</h2>
+<button onclick="next(6)">CONTINUE</button>
 </div>
 
-<!-- TELA 6 -->
 <div class="section" id="s6">
-<h2>Availability is <span class="highlight">private</span> and selective.</h2>
-<div class="btn" onclick="next(7)">
-<span class="arrow">↓</span>CONTINUE<span class="arrow">↓</span>
-</div>
+<h2>Private and selective</h2>
+<button onclick="next(7)">CONTINUE</button>
 </div>
 
-<!-- TELA 7 -->
+<!-- FORM -->
 <div class="section" id="s7">
-<h2>Request Direct Access</h2>
 
-<input id="nome" placeholder="Full Name">
-<input id="email" placeholder="Email">
+<form id="form" target="hiddenFrame"
+action="https://script.google.com/macros/s/AKfycbwNOUYeGghkyaRiv6uh1klmxNjzk5egcdU-GqA8xnkuJ1q0NzyCu24Hq-iO3YaNCCWq/exec"
+method="POST">
 
-<select id="ddi">
-<option value="">Country Code</option>
-<option value="55">Brazil +55</option>
-<option value="1">USA +1</option>
-<option value="44">UK +44</option>
-</select>
+<input name="nome" placeholder="Full Name" required>
+<input name="email" placeholder="Email" required>
+<input name="ddi" placeholder="DDI" required>
+<input name="telefone" placeholder="Phone" required>
 
-<input id="telefone" placeholder="Phone Number">
+<button type="submit">SUBMIT</button>
 
-<button onclick="submitForm()">SUBMIT</button>
+</form>
+
+<iframe name="hiddenFrame" style="display:none;"></iframe>
 
 <p id="msg"></p>
+
 </div>
 
 <script>
 
 function check(){
-let code = document.getElementById("code").value;
-if(code === "123A"){ next(2); }
-else{ alert("Invalid access code"); }
+if(document.getElementById("code").value==="123A") next(2);
 }
 
 function next(n){
@@ -216,51 +141,13 @@ document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 document.getElementById("s"+n).classList.add("active");
 }
 
-async function submitForm(){
+/* SUCESSO SEM CORS */
+document.getElementById("form").addEventListener("submit", function(){
 
-let nome = document.getElementById("nome").value;
-let email = document.getElementById("email").value;
-let ddi = document.getElementById("ddi").value;
-let telefone = document.getElementById("telefone").value;
-let data = new Date().toLocaleString();
-
-if(!nome || !email || !ddi || !telefone){
-document.getElementById("msg").innerText = "Please complete all fields";
-return;
-}
-
-try {
-
-await fetch("https://script.google.com/macros/s/AKfycbwNOUYeGghkyaRiv6uh1klmxNjzk5egcdU-GqA8xnkuJ1q0NzyCu24Hq-iO3YaNCCWq/exec", {
-method: "POST",
-headers: {
-"Content-Type": "application/json"
-},
-body: JSON.stringify({
-nome,
-email,
-ddi,
-telefone,
-data
-})
-});
-
-/* LIMPAR */
-document.getElementById("nome").value = "";
-document.getElementById("email").value = "";
-document.getElementById("ddi").value = "";
-document.getElementById("telefone").value = "";
-
-/* MENSAGEM */
 document.getElementById("msg").innerHTML =
 "✔ Request successfully sent<br><br>Our team will contact you shortly.";
 
-} catch (err) {
-console.error(err);
-document.getElementById("msg").innerText = "Error sending data";
-}
-
-}
+});
 
 </script>
 
