@@ -18,7 +18,6 @@ radial-gradient(circle at 70% 80%, rgba(0,255,150,0.08), transparent 40%),
 #000;
 }
 
-/* SECTIONS */
 .section {
 position:absolute;
 width:100%;
@@ -41,7 +40,6 @@ filter:blur(0);
 pointer-events:auto;
 }
 
-/* TITLES */
 h1 {
 font-size:60px;
 color:#e6c200;
@@ -58,7 +56,6 @@ line-height:1.6;
 color:#00ffa6;
 }
 
-/* BOTÃO */
 .btn {
 margin-top:40px;
 font-size:12px;
@@ -79,7 +76,6 @@ font-size:18px;
 line-height:8px;
 }
 
-/* INPUT */
 input, select {
 padding:12px;
 width:260px;
@@ -91,11 +87,6 @@ margin:10px;
 outline:none;
 }
 
-input:focus, select:focus {
-border-color:#00ffa6;
-box-shadow:0 0 10px rgba(0,255,150,0.4);
-}
-
 button {
 padding:12px 35px;
 background:linear-gradient(90deg,#e6c200,#b89600);
@@ -105,9 +96,7 @@ margin-top:20px;
 letter-spacing:2px;
 }
 
-/* PUMA (VERSÃO CORRETA FINAL) */
 .guardian {
-position:relative;
 width:420px;
 }
 
@@ -129,9 +118,7 @@ to { opacity:1; }
 }
 
 @keyframes pulseGlow {
-0% { filter: brightness(0) invert(1) drop-shadow(0 0 10px #00ffa6); }
 50% { filter: brightness(0) invert(1) drop-shadow(0 0 35px #00ffa6); }
-100% { filter: brightness(0) invert(1) drop-shadow(0 0 10px #00ffa6); }
 }
 
 </style>
@@ -152,11 +139,8 @@ to { opacity:1; }
 <h2>There is a difference between something valuable...</h2>
 <h2 class="highlight">and something truly unique.</h2>
 <p>What you are about to see does not belong to the conventional market.</p>
-
 <div class="btn" onclick="next(3)">
-<span class="arrow">↓</span>
-CONTINUE
-<span class="arrow">↓</span>
+<span class="arrow">↓</span>CONTINUE<span class="arrow">↓</span>
 </div>
 </div>
 
@@ -164,27 +148,20 @@ CONTINUE
 <div class="section" id="s3">
 <h2>Formed over millions of years,</h2>
 <p>The <span class="highlight">Emerald Guardian</span> represents a rare convergence.</p>
-
 <div class="btn" onclick="next(4)">
-<span class="arrow">↓</span>
-CONTINUE
-<span class="arrow">↓</span>
+<span class="arrow">↓</span>CONTINUE<span class="arrow">↓</span>
 </div>
 </div>
 
-<!-- TELA 4 (CORRETA) -->
+<!-- TELA 4 -->
 <div class="section" id="s4">
 <div class="guardian">
-<img src="puma.png" class="puma-img">
+<img src="https://i.imgur.com/7QZ6bGz.png" class="puma-img">
 </div>
-
 <h2>A singular piece.<br>No known equivalent.</h2>
 <p class="highlight">Non-replicable. Non-substitutable.</p>
-
 <div class="btn" onclick="next(5)">
-<span class="arrow">↓</span>
-CONTINUE
-<span class="arrow">↓</span>
+<span class="arrow">↓</span>CONTINUE<span class="arrow">↓</span>
 </div>
 </div>
 
@@ -192,22 +169,16 @@ CONTINUE
 <div class="section" id="s5">
 <h2>This is not a liquidity-driven asset.</h2>
 <h2>It is an asset defined by <span class="highlight">absolute rarity.</span></h2>
-
 <div class="btn" onclick="next(6)">
-<span class="arrow">↓</span>
-CONTINUE
-<span class="arrow">↓</span>
+<span class="arrow">↓</span>CONTINUE<span class="arrow">↓</span>
 </div>
 </div>
 
 <!-- TELA 6 -->
 <div class="section" id="s6">
 <h2>Availability is <span class="highlight">private</span> and selective.</h2>
-
 <div class="btn" onclick="next(7)">
-<span class="arrow">↓</span>
-CONTINUE
-<span class="arrow">↓</span>
+<span class="arrow">↓</span>CONTINUE<span class="arrow">↓</span>
 </div>
 </div>
 
@@ -236,21 +207,15 @@ CONTINUE
 
 function check(){
 let code = document.getElementById("code").value;
-if(code === "123A"){
-next(2);
-}else{
-alert("Invalid access code");
-}
+if(code === "123A"){ next(2); }
+else{ alert("Invalid access code"); }
 }
 
 function next(n){
-document.querySelectorAll(".section").forEach(s=>{
-s.classList.remove("active");
-});
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 document.getElementById("s"+n).classList.add("active");
 }
 
-/* ENVIO REAL (AGORA SIM) */
 function submitForm(){
 
 let nome = document.getElementById("nome").value;
@@ -264,12 +229,10 @@ document.getElementById("msg").innerText="Please complete all fields";
 return;
 }
 
-/* GOOGLE SHEETS */
-fetch("SEU_SCRIPT_URL_AQUI", {
+fetch("https://script.google.com/macros/s/AKfycbyUPhY7Gc2XN1WBQB5KZa8IoexJijO-vf5mQjzIw6pkBW3Uyk8i6fnfZaRvMxzbG2Pm/exec", {
 method: "POST",
-body: JSON.stringify({
-nome, email, ddi, telefone, data
-})
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify({ nome, email, ddi, telefone, data })
 });
 
 /* LIMPAR */
@@ -278,10 +241,8 @@ document.getElementById("email").value="";
 document.getElementById("ddi").value="";
 document.getElementById("telefone").value="";
 
-/* MENSAGEM */
 document.getElementById("msg").innerHTML =
 "✔ Request successfully sent<br><br>Our team will contact you shortly.";
-
 }
 
 </script>
