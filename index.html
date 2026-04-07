@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Emerald Guardian Premium</title>
+<title>Emerald Guardian ULTRA</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
@@ -27,7 +27,7 @@ justify-content:center;
 align-items:center;
 opacity:0;
 pointer-events:none;
-transition:1s;
+transition:1.2s ease;
 }
 
 .section.active{
@@ -38,23 +38,31 @@ pointer-events:auto;
 /* TITLE */
 h1{
 font-family:'Playfair Display',serif;
-font-size:60px;
+font-size:64px;
 color:gold;
-text-shadow:0 0 20px gold;
+text-shadow:0 0 25px gold;
+letter-spacing:2px;
 }
 
-/* SUBTLE GREEN LINE */
+/* GREEN LINE EFFECT */
 .line{
-width:400px;
+width:500px;
 height:3px;
 background:linear-gradient(90deg, transparent, #00ff88, transparent);
-margin:20px 0;
-box-shadow:0 0 15px #00ff88;
+box-shadow:0 0 20px #00ff88;
+margin:25px 0;
+animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+0%{opacity:0.6;}
+50%{opacity:1;}
+100%{opacity:0.6;}
 }
 
 /* BUTTON */
 .btn{
-width:300px;
+width:320px;
 padding:14px;
 margin-top:20px;
 background:transparent;
@@ -68,10 +76,10 @@ transition:0.4s;
 .btn:hover{
 background:gold;
 color:black;
-box-shadow:0 0 15px gold;
+box-shadow:0 0 20px gold;
 }
 
-/* FORM - ALWAYS VERTICAL */
+/* FORM */
 form{
 display:flex;
 flex-direction:column;
@@ -80,10 +88,10 @@ align-items:center;
 
 /* INPUT */
 input, select{
-width:300px;
+width:320px;
 padding:14px;
-margin:8px;
-background:black;
+margin:10px;
+background:rgba(0,0,0,0.8);
 border:1px solid #00ffa6;
 color:white;
 text-align:center;
@@ -91,19 +99,19 @@ box-sizing:border-box;
 transition:0.3s;
 }
 
-/* HOVER EFFECT PREMIUM */
+/* HOVER GLOW */
 input:hover, select:hover,
 input:focus, select:focus{
 border:1px solid #00ff88;
-box-shadow:0 0 12px #00ff88;
+box-shadow:0 0 15px #00ff88;
 outline:none;
 }
 
 /* SUCCESS */
 .success{
 color:#00ffa6;
-font-size:24px;
-text-shadow:0 0 10px #00ffa6;
+font-size:26px;
+text-shadow:0 0 15px #00ffa6;
 }
 </style>
 </head>
@@ -118,27 +126,32 @@ text-shadow:0 0 10px #00ffa6;
 </div>
 
 <div class="section" id="s2">
-<h2>Exclusive Access</h2>
+<h2>There is a difference between something valuable...</h2>
+<div class="line"></div>
 <button class="btn" onclick="next(3)">CONTINUE</button>
 </div>
 
 <div class="section" id="s3">
 <h2>Formed over millions of years</h2>
+<div class="line"></div>
 <button class="btn" onclick="next(4)">CONTINUE</button>
 </div>
 
 <div class="section" id="s4">
 <h2>A singular piece</h2>
+<div class="line"></div>
 <button class="btn" onclick="next(5)">CONTINUE</button>
 </div>
 
 <div class="section" id="s5">
 <h2>Absolute rarity</h2>
+<div class="line"></div>
 <button class="btn" onclick="next(6)">CONTINUE</button>
 </div>
 
 <div class="section" id="s6">
 <h2>Private and selective</h2>
+<div class="line"></div>
 <button class="btn" onclick="next(7)">CONTINUE</button>
 </div>
 
@@ -147,12 +160,10 @@ text-shadow:0 0 10px #00ffa6;
 <div class="line"></div>
 
 <form id="formEG">
-
 <input name="name" placeholder="Full Name" required>
 <input name="email" placeholder="Email" required>
 
-<select name="ddi" required>
-<option>Select Country</option>
+<select name="ddi">
 <option>Brazil (+55)</option>
 <option>United States (+1)</option>
 <option>United Kingdom (+44)</option>
@@ -160,39 +171,17 @@ text-shadow:0 0 10px #00ffa6;
 <option>France (+33)</option>
 <option>Italy (+39)</option>
 <option>Spain (+34)</option>
-<option>Portugal (+351)</option>
-<option>Netherlands (+31)</option>
-<option>Switzerland (+41)</option>
-<option>Sweden (+46)</option>
-<option>Norway (+47)</option>
-<option>Denmark (+45)</option>
-<option>Finland (+358)</option>
-<option>Canada (+1)</option>
-<option>Mexico (+52)</option>
-<option>Argentina (+54)</option>
-<option>Chile (+56)</option>
-<option>Colombia (+57)</option>
-<option>Peru (+51)</option>
-<option>China (+86)</option>
-<option>Japan (+81)</option>
-<option>South Korea (+82)</option>
-<option>India (+91)</option>
-<option>Indonesia (+62)</option>
-<option>Thailand (+66)</option>
-<option>United Arab Emirates (+971)</option>
-<option>Saudi Arabia (+966)</option>
 </select>
 
 <input name="phone" placeholder="Phone" required>
 
-<button class="btn" type="submit">SEND</button>
-
+<button class="btn">SEND</button>
 </form>
 </div>
 
 <div class="section" id="s8">
 <h2 class="success">Request received successfully</h2>
-<p>We will contact you shortly</p>
+<div class="line"></div>
 <button class="btn" onclick="next(1)">RETURN</button>
 </div>
 
@@ -210,8 +199,7 @@ e.preventDefault();
 fetch("https://formsubmit.co/really.brussels@gmail.com",{
 method:"POST",
 body:new FormData(form)
-})
-.then(()=>{
+}).then(()=>{
 next(8);
 form.reset();
 });
