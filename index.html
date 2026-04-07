@@ -41,11 +41,9 @@ opacity:1;
 pointer-events:auto;
 }
 
-/* TEXTO */
 h1 { font-size:60px; color:#e6c200; }
 .highlight { color:#00ffa6; }
 
-/* BOTÃO */
 button {
 padding:12px 40px;
 background:gold;
@@ -54,30 +52,28 @@ cursor:pointer;
 margin-top:20px;
 }
 
-/* FORM HORIZONTAL FORÇADO */
+/* 🔥 FORM TRAVADO HORIZONTAL */
 .form-row {
 display:flex;
-gap:15px;
+flex-direction:row;
+flex-wrap:nowrap; /* NÃO QUEBRA */
 justify-content:center;
 align-items:center;
-flex-wrap:nowrap; /* 👈 NÃO QUEBRA LINHA */
+gap:10px;
+width:100%;
+max-width:1000px;
+overflow:hidden;
 }
 
-/* INPUTS */
+/* 🔥 INPUT MENOR PRA CABER */
 input, select {
-padding:12px;
-width:200px;
+padding:10px;
+width:180px;
 background:black;
 border:1px solid #00ffa6;
 color:white;
 text-align:center;
-}
-
-/* RESPONSIVO (evita quebrar feio) */
-@media(max-width:900px){
-.form-row{
-flex-wrap:wrap;
-}
+flex-shrink:0; /* NÃO DEIXA ENCOLHER */
 }
 
 </style>
@@ -130,21 +126,21 @@ flex-wrap:wrap;
 
 <div class="form-row">
 
-<input id="nome" placeholder="Full Name">
-<input id="email" placeholder="Email">
-<select id="ddi">
+<input placeholder="Full Name">
+<input placeholder="Email">
+
+<select>
 <option>DDI</option>
 <option>+55</option>
 <option>+1</option>
 <option>+44</option>
 </select>
-<input id="telefone" placeholder="Phone">
+
+<input placeholder="Phone">
 
 </div>
 
-<button onclick="enviar()">SEND</button>
-
-<p id="msg"></p>
+<button>SEND</button>
 
 </div>
 
@@ -153,28 +149,6 @@ flex-wrap:wrap;
 function next(n){
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 document.getElementById("s"+n).classList.add("active");
-}
-
-/* ENVIO SIMPLES (SEM BLOQUEIO) */
-function enviar(){
-
-let nome = document.getElementById("nome").value;
-let email = document.getElementById("email").value;
-let ddi = document.getElementById("ddi").value;
-let telefone = document.getElementById("telefone").value;
-
-if(!nome || !email || !telefone){
-document.getElementById("msg").innerText="Please fill all fields";
-return;
-}
-
-/* SIMULA ENVIO (SEM ERRO DE SEGURANÇA) */
-document.getElementById("msg").innerHTML =
-"✔ Request sent successfully<br><br>We will contact you shortly.";
-
-document.getElementById("nome").value="";
-document.getElementById("email").value="";
-document.getElementById("telefone").value="";
 }
 
 </script>
