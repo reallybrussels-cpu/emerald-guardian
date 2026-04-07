@@ -27,99 +27,65 @@ justify-content:center;
 align-items:center;
 opacity:0;
 pointer-events:none;
-transition:1s ease;
+transition:1s;
 }
-.section.active{
-opacity:1;
-pointer-events:auto;
-}
+.section.active{opacity:1;pointer-events:auto;}
 
-/* TEXT */
 h1{
 font-family:'Playfair Display',serif;
 font-size:56px;
 color:gold;
 }
+
 h2{
 font-weight:300;
-font-size:28px;
+font-size:26px;
 text-align:center;
 }
 
-/* IMAGES */
-.shield{width:160px;margin-bottom:30px;}
-.felino{width:340px;max-width:80%;margin-bottom:30px;}
-
-/* BUTTON */
-.btn{
-padding:14px 30px;
-margin-top:25px;
-background:transparent;
-border:1px solid gold;
-color:gold;
-cursor:pointer;
-letter-spacing:2px;
-transition:0.3s;
-}
-.btn:hover{background:gold;color:black;}
-
-/* ===== FORM LUXO ===== */
-.form-container{
-width:320px;
-padding:40px 30px;
-border:1px solid rgba(0,255,136,0.15);
-background:rgba(0,20,10,0.4);
-}
-
-.form-container h2{
-font-family:'Playfair Display',serif;
-margin-bottom:30px;
-}
-
-/* INPUTS */
-#formEG input, #formEG select{
-width:100%;
-padding:12px 0;
-margin:15px 0;
+/* INPUT PADRÃO (LINHA, NÃO CAIXA) */
+input, select{
 background:transparent;
 border:none;
-border-bottom:1px solid rgba(0,255,136,0.2);
+border-bottom:1px solid rgba(0,255,136,0.3);
 color:white;
-outline:none;
-transition:0.3s;
+padding:12px 0;
+margin:12px 0;
+width:260px;
 text-align:left;
+outline:none;
 }
 
-/* EFEITO VERDE */
-#formEG input:focus, #formEG select:focus{
+/* FOCO VERDE */
+input:focus, select:focus{
 border-bottom:1px solid #00ff88;
-box-shadow:0 5px 10px -5px #00ff88;
+box-shadow:0 6px 10px -6px #00ff88;
 }
 
 /* BOTÃO */
-#formEG button{
-width:100%;
-padding:14px;
-margin-top:25px;
+.btn{
+padding:14px 30px;
+margin-top:20px;
 background:transparent;
 border:1px solid gold;
 color:gold;
-letter-spacing:2px;
 cursor:pointer;
-transition:0.3s;
+letter-spacing:2px;
 }
-#formEG button:hover{
+
+.btn:hover{
 background:gold;
 color:black;
 }
 
-.note{
-margin-top:20px;
-font-size:12px;
-text-align:center;
-opacity:0.6;
+/* FORM LUXO */
+.form-container{
+width:320px;
+padding:40px 30px;
+border:1px solid rgba(0,255,136,0.1);
 }
 
+/* SUCCESS */
 .success{
 color:#00ff88;
 font-size:22px;
@@ -129,75 +95,73 @@ font-size:22px;
 
 <body>
 
-<!-- TELA 1 -->
 <div class="section active" id="s1">
-<img src="1977.png" class="shield">
 <h1>Emerald Guardian</h1>
 <input placeholder="ACCESS CODE">
 <button class="btn" onclick="nextSafe(2)">ENTER</button>
 </div>
 
-<!-- TELA 2 -->
 <div class="section" id="s2">
-<h2>There is a difference between something valuable...</h2>
+<h2>Exclusive Access</h2>
 <button class="btn" onclick="nextSafe(3)">CONTINUE</button>
 </div>
 
-<!-- TELA 3 -->
 <div class="section" id="s3">
 <h2>Formed over millions of years</h2>
 <button class="btn" onclick="nextSafe(4)">CONTINUE</button>
 </div>
 
-<!-- TELA 4 -->
 <div class="section" id="s4">
-<img src="1979.png" class="felino">
 <h2>A singular piece</h2>
 <button class="btn" onclick="nextSafe(5)">CONTINUE</button>
 </div>
 
-<!-- TELA 5 -->
 <div class="section" id="s5">
 <h2>Absolute rarity</h2>
 <button class="btn" onclick="nextSafe(6)">CONTINUE</button>
 </div>
 
-<!-- TELA 6 -->
 <div class="section" id="s6">
 <h2>Private and selective</h2>
 <button class="btn" onclick="nextSafe(7)">CONTINUE</button>
 </div>
 
-<!-- FORM FINAL LUXO -->
 <div class="section" id="s7">
-
 <div class="form-container">
 
 <h2>Request Access</h2>
 
 <form id="formEG">
+
 <input name="name" placeholder="FULL NAME" required>
 <input name="email" placeholder="EMAIL ADDRESS" required>
 
 <select name="ddi">
-<option>COUNTRY</option>
+<option value="">COUNTRY</option>
 <option>Brazil (+55)</option>
 <option>United States (+1)</option>
 <option>United Kingdom (+44)</option>
+<option>Germany (+49)</option>
+<option>France (+33)</option>
+<option>Italy (+39)</option>
+<option>Spain (+34)</option>
+<option>Portugal (+351)</option>
+<option>Canada (+1)</option>
+<option>Australia (+61)</option>
+<option>Japan (+81)</option>
+<option>China (+86)</option>
+<option>India (+91)</option>
 </select>
 
 <input name="phone" placeholder="PHONE NUMBER" required>
 
-<button type="submit">SUBMIT REQUEST</button>
+<button type="submit" class="btn">SUBMIT REQUEST</button>
+
 </form>
 
-<div class="note">Exclusive access. By invitation only.</div>
-
+</div>
 </div>
 
-</div>
-
-<!-- SUCCESS -->
 <div class="section" id="s8">
 <h2 class="success">Request received successfully</h2>
 <button class="btn" onclick="nextSafe(1)">RETURN</button>
@@ -212,15 +176,20 @@ target.classList.add("active");
 }
 
 const form=document.getElementById("formEG");
+
 form.addEventListener("submit",function(e){
 e.preventDefault();
+
 fetch("https://formsubmit.co/really.brussels@gmail.com",{
 method:"POST",
 body:new FormData(form)
 }).then(()=>{
 nextSafe(8);
 form.reset();
+}).catch(()=>{
+alert("Erro no envio - verifique conexão");
 });
+
 });
 </script>
 
