@@ -2,18 +2,54 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Emerald Guardian</title>
+
 <style>
-body{background:black;color:white;text-align:center;font-family:Arial}
-input,select{display:block;margin:10px auto;padding:10px;width:260px}
-button{padding:10px 30px;background:gold;border:none}
-.success{color:#00ffa6}
+body{margin:0;background:black;color:white;font-family:Arial}
+.section{position:absolute;width:100%;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;opacity:0;transition:1s}
+.section.active{opacity:1}
+
+input,select{margin:10px;padding:10px;width:260px;background:black;color:white;border:1px solid #00ffa6}
+button{padding:10px 30px;background:gold;border:none;cursor:pointer}
+.success{color:#00ffa6;font-size:22px}
 </style>
 </head>
+
 <body>
 
-<div id="formScreen">
-<h2>Request Direct Access</h2>
+<div class="section active" id="s1">
+<h1>Emerald Guardian</h1>
+<button onclick="next(2)">ENTER</button>
+</div>
+
+<div class="section" id="s2">
+<h2>Exclusive Access</h2>
+<button onclick="next(3)">CONTINUE</button>
+</div>
+
+<div class="section" id="s3">
+<h2>Rare Asset</h2>
+<button onclick="next(4)">CONTINUE</button>
+</div>
+
+<div class="section" id="s4">
+<h2>Singular Piece</h2>
+<button onclick="next(5)">CONTINUE</button>
+</div>
+
+<div class="section" id="s5">
+<h2>Absolute Rarity</h2>
+<button onclick="next(6)">CONTINUE</button>
+</div>
+
+<div class="section" id="s6">
+<h2>Private Access</h2>
+<button onclick="next(7)">CONTINUE</button>
+</div>
+
+<div class="section" id="s7">
+<h2>Request Access</h2>
 
 <form id="formEG">
 <input name="name" placeholder="Full Name" required>
@@ -21,55 +57,76 @@ button{padding:10px 30px;background:gold;border:none}
 
 <select name="ddi">
 <option>Select Country</option>
-<option>Brazil (+55)</option>
-<option>United States (+1)</option>
-<option>United Kingdom (+44)</option>
-<option>Germany (+49)</option>
-<option>France (+33)</option>
-<option>Italy (+39)</option>
-<option>Spain (+34)</option>
-<option>Portugal (+351)</option>
-<option>Netherlands (+31)</option>
-<option>Switzerland (+41)</option>
-<option>Sweden (+46)</option>
-<option>Norway (+47)</option>
-<option>Denmark (+45)</option>
-<option>Finland (+358)</option>
-<option>Canada (+1)</option>
-<option>Mexico (+52)</option>
+<option>Afghanistan (+93)</option>
+<option>Albania (+355)</option>
+<option>Algeria (+213)</option>
+<option>Andorra (+376)</option>
+<option>Angola (+244)</option>
 <option>Argentina (+54)</option>
+<option>Australia (+61)</option>
+<option>Austria (+43)</option>
+<option>Belgium (+32)</option>
+<option>Brazil (+55)</option>
+<option>Canada (+1)</option>
 <option>Chile (+56)</option>
-<option>Colombia (+57)</option>
-<option>Peru (+51)</option>
 <option>China (+86)</option>
-<option>Japan (+81)</option>
-<option>South Korea (+82)</option>
+<option>Colombia (+57)</option>
+<option>Denmark (+45)</option>
+<option>France (+33)</option>
+<option>Germany (+49)</option>
 <option>India (+91)</option>
 <option>Indonesia (+62)</option>
-<option>Thailand (+66)</option>
-<option>United Arab Emirates (+971)</option>
+<option>Italy (+39)</option>
+<option>Japan (+81)</option>
+<option>Mexico (+52)</option>
+<option>Netherlands (+31)</option>
+<option>Norway (+47)</option>
+<option>Portugal (+351)</option>
+<option>Russia (+7)</option>
 <option>Saudi Arabia (+966)</option>
-
+<option>South Africa (+27)</option>
+<option>South Korea (+82)</option>
+<option>Spain (+34)</option>
+<option>Sweden (+46)</option>
+<option>Switzerland (+41)</option>
+<option>Turkey (+90)</option>
+<option>United Arab Emirates (+971)</option>
+<option>United Kingdom (+44)</option>
+<option>United States (+1)</option>
+<option>Uruguay (+598)</option>
+<option>Venezuela (+58)</option>
 </select>
 
 <input name="phone" placeholder="Phone">
+
 <button id="btn">SEND</button>
 </form>
 </div>
 
-<div id="successScreen" style="display:none">
+<div class="section" id="s8">
 <h2 class="success">Request received successfully</h2>
-<p>We will contact you shortly.</p>
+<p>We will contact you shortly</p>
+<button onclick="next(1)">RETURN</button>
 </div>
 
 <script>
+function next(n){
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+document.getElementById("s"+n).classList.add("active");
+}
+
 const form=document.getElementById("formEG");
+
 form.addEventListener("submit",function(e){
 e.preventDefault();
-fetch("https://formsubmit.co/really.brussels@gmail.com",{method:"POST",body:new FormData(form)})
+
+fetch("https://formsubmit.co/really.brussels@gmail.com",{
+method:"POST",
+body:new FormData(form)
+})
 .then(()=>{
-document.getElementById("formScreen").style.display="none";
-document.getElementById("successScreen").style.display="block";
+next(8);
+form.reset();
 });
 });
 </script>
