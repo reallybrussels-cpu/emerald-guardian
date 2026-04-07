@@ -111,18 +111,26 @@ filter: brightness(0) invert(1) drop-shadow(0 0 20px #00ffa6);
 <!-- FORM -->
 <div class="section" id="s7">
 
-<form id="form" target="hiddenFrame"
+<h2>Request Direct Access</h2>
+
+<form target="hiddenFrame"
 action="https://script.google.com/macros/s/AKfycbwNOUYeGghkyaRiv6uh1klmxNjzk5egcdU-GqA8xnkuJ1q0NzyCu24Hq-iO3YaNCCWq/exec"
 method="POST">
 
 <input name="nome" placeholder="Full Name" required>
 <input name="email" placeholder="Email" required>
 <input name="ddi" placeholder="DDI" required>
-<input name="telefone" placeholder="Phone" required>
+<input name="telefone" placeholder="Phone Number" required>
 
 <button type="submit">SUBMIT</button>
 
 </form>
+
+<iframe name="hiddenFrame" style="display:none;"></iframe>
+
+<p id="msg"></p>
+
+</div>
 
 <iframe name="hiddenFrame" style="display:none;"></iframe>
 
