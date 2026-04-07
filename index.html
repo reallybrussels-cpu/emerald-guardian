@@ -143,7 +143,7 @@ box-shadow: 0 0 10px gold;
 <div class="section" id="s7">
 <h2>Request Direct Access</h2>
 
-<form action="https://formsubmit.co/really.brussels@gmail.com" method="POST" class="form-column">
+<form id="formEG" class="form-column">
 
 <input type="text" name="name" placeholder="Full Name" required>
 <input type="email" name="email" placeholder="Email" required>
@@ -162,16 +162,54 @@ box-shadow: 0 0 10px gold;
 <input type="hidden" name="_captcha" value="false">
 <input type="hidden" name="_template" value="table">
 
-<button type="submit">SEND</button>
+<button type="submit" id="submitBtn">SEND</button>
 
 </form>
+
 </div>
 
 <script>
+
 function next(n){
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 document.getElementById("s"+n).classList.add("active");
 }
+
+/* ENVIO SEM REDIRECIONAMENTO */
+const form = document.getElementById("formEG");
+const btn = document.getElementById("submitBtn");
+
+form.addEventListener("submit", function(e){
+e.preventDefault();
+
+btn.innerText = "SENDING...";
+btn.disabled = true;
+
+const data = new FormData(form);
+
+fetch("https://formsubmit.co/really.brussels@gmail.com", {
+method: "POST",
+body: data
+})
+.then(response => {
+if(response.ok){
+btn.innerText = "SENT ✓";
+form.reset();
+} else {
+btn.innerText = "ERROR";
+}
+})
+.catch(() => {
+btn.innerText = "FAILED";
+});
+
+setTimeout(() => {
+btn.innerText = "SEND";
+btn.disabled = false;
+}, 3000);
+
+});
+
 </script>
 
 </body>
