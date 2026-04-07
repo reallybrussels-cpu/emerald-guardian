@@ -44,15 +44,8 @@ font-size:28px;
 text-align:center;
 }
 
-.shield{
-width:160px;
-margin-bottom:30px;
-}
-.felino{
-width:340px;
-max-width:80%;
-margin-bottom:30px;
-}
+.shield{width:160px;margin-bottom:30px;}
+.felino{width:340px;max-width:80%;margin-bottom:30px;}
 
 .btn{
 padding:14px 30px;
@@ -64,23 +57,19 @@ cursor:pointer;
 letter-spacing:2px;
 transition:0.3s;
 }
-.btn:hover{
-background:gold;
-color:black;
-}
+.btn:hover{background:gold;color:black;}
 
-/* FORM PREMIUM */
-.form-box{
+/* ===== FORM IGUAL AO LINK ===== */
+.form-wrapper{
 width:100%;
-max-width:900px;
-display:flex;
-justify-content:center;
+max-width:800px;
+margin-top:20px;
 }
 
 #formEG{
 display:grid;
 grid-template-columns: repeat(4, 1fr);
-gap:20px;
+gap:16px;
 width:100%;
 }
 
@@ -94,17 +83,17 @@ text-align:center;
 width:100%;
 }
 
-#formEG .btn{
-grid-column: span 4;
-width:200px;
-justify-self:start;
-}
-
 #formEG input:focus,
 #formEG select:focus{
 border:1px solid #00ff88;
 box-shadow:0 0 8px rgba(0,255,136,0.3);
 outline:none;
+}
+
+#formEG .btn{
+grid-column: span 4;
+width:180px;
+justify-self:start;
 }
 
 .success{
@@ -152,18 +141,16 @@ font-size:22px;
 <div class="section" id="s7">
 <h2>Request Access</h2>
 
-<div class="form-box">
+<div class="form-wrapper">
 <form id="formEG">
 
 <input name="name" placeholder="Full Name" required>
 <input name="email" placeholder="Email" required>
-
 <select name="ddi">
 <option>Brazil (+55)</option>
 <option>United States (+1)</option>
 <option>United Kingdom (+44)</option>
 </select>
-
 <input name="phone" placeholder="Phone" required>
 
 <button class="btn">SEND</button>
@@ -180,19 +167,15 @@ font-size:22px;
 
 <script>
 function nextSafe(n){
-let target = document.getElementById("s"+n);
-if(!target) return;
-
-document.querySelectorAll(".section").forEach(s=>{
-s.classList.remove("active");
-});
+let target=document.getElementById("s"+n);
+if(!target)return;
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 target.classList.add("active");
 }
 
 const form=document.getElementById("formEG");
 form.addEventListener("submit",function(e){
 e.preventDefault();
-
 fetch("https://formsubmit.co/really.brussels@gmail.com",{
 method:"POST",
 body:new FormData(form)
