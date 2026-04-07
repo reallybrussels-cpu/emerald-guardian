@@ -5,16 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Emerald Guardian</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400&display=swap" rel="stylesheet">
-
 <style>
-html, body {
+
+body {
 margin:0;
-height:100%;
-font-family:'Inter', sans-serif;
+font-family:'Georgia', serif;
 color:white;
-background: radial-gradient(circle at center, #0b5d2a 0%, #000000 70%);
 overflow:hidden;
+background:
+radial-gradient(circle at 30% 20%, rgba(0,255,150,0.15), transparent 40%),
+radial-gradient(circle at 70% 80%, rgba(0,255,150,0.08), transparent 40%),
+#000;
 }
 
 .section {
@@ -26,100 +27,57 @@ flex-direction:column;
 justify-content:center;
 align-items:center;
 text-align:center;
+padding:40px;
 opacity:0;
-transform: scale(1.05);
-transition: opacity 1s ease, transform 1s ease;
+filter:blur(10px);
+transition: all 1s ease;
 pointer-events:none;
 }
 
 .section.active {
 opacity:1;
-transform: scale(1);
+filter:blur(0);
 pointer-events:auto;
 }
 
-h1, h2 {
-font-family: 'Playfair Display', serif;
-letter-spacing: 1px;
-}
+h1 { font-size:60px; color:#e6c200; }
+.highlight { color:#00ffa6; }
 
-h1 {
-font-size:60px;
-color:#e6c200;
-text-shadow: 0 0 15px gold;
-}
-
-.highlight {
-color:#00ffa6;
-text-shadow: 0 0 10px #00ffa6;
+input, select {
+padding:12px;
+width:260px;
+margin:10px;
+background:transparent;
+border:1px solid rgba(0,255,150,0.4);
+color:white;
+text-align:center;
 }
 
 button {
-padding:14px 50px;
-background: linear-gradient(45deg, gold, #e6c200);
+padding:12px 35px;
+background:linear-gradient(90deg,#e6c200,#b89600);
 border:none;
 cursor:pointer;
-margin-top:25px;
-font-weight:600;
-letter-spacing:1px;
-transition:0.3s;
 }
 
-button:hover {
-transform: scale(1.05);
-box-shadow: 0 0 20px gold;
+.guardian { width:420px; }
+
+.puma-img {
+width:100%;
+filter: brightness(0) invert(1) drop-shadow(0 0 20px #00ffa6);
 }
 
-.form-column {
-display:flex;
-flex-direction:column;
-gap:15px;
-align-items:center;
-}
-
-input, select {
-padding:14px;
-width:300px;
-background: rgba(0,0,0,0.7);
-border:1px solid #00ffa6;
-color:white;
-text-align:center;
-transition:0.3s;
-}
-
-input:focus, select:focus {
-outline:none;
-border-color:gold;
-box-shadow: 0 0 10px gold;
-}
-
-.success {
-font-size:28px;
-color:#00ffa6;
-text-shadow: 0 0 15px #00ffa6;
-animation: fadeIn 2s ease;
-}
-
-.subtext {
-margin-top:15px;
-opacity:0.7;
-font-size:14px;
-animation: fadeIn 3s ease;
-}
-
-@keyframes fadeIn {
-from {opacity:0; transform: translateY(20px);}
-to {opacity:1; transform: translateY(0);}
-}
 </style>
 </head>
 
 <body>
 
+<!-- TELAS (mantidas iguais) -->
+
 <div class="section active" id="s1">
 <h1>Emerald Guardian</h1>
 <input id="code" placeholder="ACCESS CODE">
-<button onclick="next(2)">ENTER</button>
+<button onclick="check()">ENTER</button>
 </div>
 
 <div class="section" id="s2">
@@ -134,7 +92,9 @@ to {opacity:1; transform: translateY(0);}
 </div>
 
 <div class="section" id="s4">
-<h2>A singular piece</h2>
+<div class="guardian">
+<img src="puma.png" class="puma-img">
+</div>
 <button onclick="next(5)">CONTINUE</button>
 </div>
 
@@ -148,182 +108,47 @@ to {opacity:1; transform: translateY(0);}
 <button onclick="next(7)">CONTINUE</button>
 </div>
 
+<!-- FORM -->
 <div class="section" id="s7">
-<h2>Request Direct Access</h2>
 
-<form id="formEG" class="form-column">
+<form id="form" target="hiddenFrame"
+action="https://script.google.com/macros/s/AKfycbwNOUYeGghkyaRiv6uh1klmxNjzk5egcdU-GqA8xnkuJ1q0NzyCu24Hq-iO3YaNCCWq/exec"
+method="POST">
 
-<input type="text" name="name" placeholder="Full Name" required>
-<input type="email" name="email" placeholder="Email" required>
+<input name="nome" placeholder="Full Name" required>
+<input name="email" placeholder="Email" required>
+<input name="ddi" placeholder="DDI" required>
+<input name="telefone" placeholder="Phone" required>
 
-<select name="ddi" required>
-<option value="">Select Country</option>
-<option>Afghanistan (+93)</option>
-<option>Albania (+355)</option>
-<option>Algeria (+213)</option>
-<option>Andorra (+376)</option>
-<option>Angola (+244)</option>
-<option>Argentina (+54)</option>
-<option>Armenia (+374)</option>
-<option>Australia (+61)</option>
-<option>Austria (+43)</option>
-<option>Azerbaijan (+994)</option>
-<option>Bahamas (+1)</option>
-<option>Bahrain (+973)</option>
-<option>Bangladesh (+880)</option>
-<option>Belarus (+375)</option>
-<option>Belgium (+32)</option>
-<option>Belize (+501)</option>
-<option>Benin (+229)</option>
-<option>Bhutan (+975)</option>
-<option>Bolivia (+591)</option>
-<option>Bosnia and Herzegovina (+387)</option>
-<option>Botswana (+267)</option>
-<option>Brazil (+55)</option>
-<option>Brunei (+673)</option>
-<option>Bulgaria (+359)</option>
-<option>Burkina Faso (+226)</option>
-<option>Burundi (+257)</option>
-<option>Cambodia (+855)</option>
-<option>Cameroon (+237)</option>
-<option>Canada (+1)</option>
-<option>Chile (+56)</option>
-<option>China (+86)</option>
-<option>Colombia (+57)</option>
-<option>Costa Rica (+506)</option>
-<option>Croatia (+385)</option>
-<option>Cuba (+53)</option>
-<option>Cyprus (+357)</option>
-<option>Czech Republic (+420)</option>
-<option>Denmark (+45)</option>
-<option>Dominican Republic (+1)</option>
-<option>Ecuador (+593)</option>
-<option>Egypt (+20)</option>
-<option>El Salvador (+503)</option>
-<option>Estonia (+372)</option>
-<option>Ethiopia (+251)</option>
-<option>Finland (+358)</option>
-<option>France (+33)</option>
-<option>Georgia (+995)</option>
-<option>Germany (+49)</option>
-<option>Ghana (+233)</option>
-<option>Greece (+30)</option>
-<option>Guatemala (+502)</option>
-<option>Honduras (+504)</option>
-<option>Hong Kong (+852)</option>
-<option>Hungary (+36)</option>
-<option>Iceland (+354)</option>
-<option>India (+91)</option>
-<option>Indonesia (+62)</option>
-<option>Iran (+98)</option>
-<option>Iraq (+964)</option>
-<option>Ireland (+353)</option>
-<option>Israel (+972)</option>
-<option>Italy (+39)</option>
-<option>Jamaica (+1)</option>
-<option>Japan (+81)</option>
-<option>Jordan (+962)</option>
-<option>Kazakhstan (+7)</option>
-<option>Kenya (+254)</option>
-<option>Kuwait (+965)</option>
-<option>Latvia (+371)</option>
-<option>Lebanon (+961)</option>
-<option>Libya (+218)</option>
-<option>Lithuania (+370)</option>
-<option>Luxembourg (+352)</option>
-<option>Malaysia (+60)</option>
-<option>Maldives (+960)</option>
-<option>Mexico (+52)</option>
-<option>Morocco (+212)</option>
-<option>Nepal (+977)</option>
-<option>Netherlands (+31)</option>
-<option>New Zealand (+64)</option>
-<option>Nigeria (+234)</option>
-<option>Norway (+47)</option>
-<option>Oman (+968)</option>
-<option>Pakistan (+92)</option>
-<option>Panama (+507)</option>
-<option>Paraguay (+595)</option>
-<option>Peru (+51)</option>
-<option>Philippines (+63)</option>
-<option>Poland (+48)</option>
-<option>Portugal (+351)</option>
-<option>Qatar (+974)</option>
-<option>Romania (+40)</option>
-<option>Russia (+7)</option>
-<option>Saudi Arabia (+966)</option>
-<option>Serbia (+381)</option>
-<option>Singapore (+65)</option>
-<option>Slovakia (+421)</option>
-<option>Slovenia (+386)</option>
-<option>South Africa (+27)</option>
-<option>South Korea (+82)</option>
-<option>Spain (+34)</option>
-<option>Sri Lanka (+94)</option>
-<option>Sweden (+46)</option>
-<option>Switzerland (+41)</option>
-<option>Thailand (+66)</option>
-<option>Turkey (+90)</option>
-<option>Ukraine (+380)</option>
-<option>United Arab Emirates (+971)</option>
-<option>United Kingdom (+44)</option>
-<option>United States (+1)</option>
-<option>Uruguay (+598)</option>
-<option>Venezuela (+58)</option>
-<option>Vietnam (+84)</option>
-</select>
-
-<input type="text" name="phone" placeholder="Phone" required>
-
-<input type="hidden" name="_captcha" value="false">
-<input type="hidden" name="_template" value="table">
-
-<button type="submit" id="submitBtn">SEND</button>
+<button type="submit">SUBMIT</button>
 
 </form>
-</div>
 
-<div class="section" id="s8">
-<h2 class="success">Access Request Received</h2>
-<div class="subtext">Our team will contact you privately.</div>
-<button onclick="next(1)">RETURN</button>
+<iframe name="hiddenFrame" style="display:none;"></iframe>
+
+<p id="msg"></p>
+
 </div>
 
 <script>
+
+function check(){
+if(document.getElementById("code").value==="123A") next(2);
+}
+
 function next(n){
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 document.getElementById("s"+n).classList.add("active");
 }
 
-const form = document.getElementById("formEG");
-const btn = document.getElementById("submitBtn");
+/* SUCESSO SEM CORS */
+document.getElementById("form").addEventListener("submit", function(){
 
-form.addEventListener("submit", function(e){
-e.preventDefault();
+document.getElementById("msg").innerHTML =
+"✔ Request successfully sent<br><br>Our team will contact you shortly.";
 
-btn.innerText = "SENDING...";
-btn.disabled = true;
-
-const data = new FormData(form);
-
-fetch("https://formsubmit.co/really.brussels@gmail.com", {
-method: "POST",
-body: data
-})
-.then(response => {
-if(response.ok){
-setTimeout(() => {
-next(8);
-form.reset();
-}, 1000);
-} else {
-btn.innerText = "ERROR";
-}
-})
-.catch(() => {
-btn.innerText = "FAILED";
 });
-});
+
 </script>
 
 </body>
