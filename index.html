@@ -18,7 +18,6 @@ radial-gradient(circle at 70% 80%, rgba(0,255,150,0.08), transparent 40%),
 #000;
 }
 
-/* SECTIONS */
 .section {
 position:absolute;
 width:100%;
@@ -41,7 +40,6 @@ filter:blur(0);
 pointer-events:auto;
 }
 
-/* TITLES */
 h1 {
 font-size:60px;
 color:#e6c200;
@@ -58,7 +56,6 @@ line-height:1.6;
 color:#00ffa6;
 }
 
-/* BUTTON */
 .btn {
 margin-top:40px;
 font-size:12px;
@@ -79,7 +76,6 @@ font-size:18px;
 line-height:8px;
 }
 
-/* INPUT */
 input, select {
 padding:12px;
 width:260px;
@@ -91,11 +87,6 @@ margin:10px;
 outline:none;
 }
 
-input:focus, select:focus {
-border-color:#00ffa6;
-box-shadow:0 0 10px rgba(0,255,150,0.4);
-}
-
 button {
 padding:12px 35px;
 background:linear-gradient(90deg,#e6c200,#b89600);
@@ -105,31 +96,24 @@ margin-top:20px;
 letter-spacing:2px;
 }
 
-/* PUMA */
-.guardian {
-position:relative;
+/* PUMA SVG DIRETO */
+.puma {
 width:400px;
+stroke:#00ffa6;
+stroke-width:1.5;
+fill:none;
+stroke-dasharray:1500;
+stroke-dashoffset:1500;
+animation:draw 2s ease forwards, glow 2s infinite 2s;
+filter: drop-shadow(0 0 10px #00ffa6);
 }
 
-.puma-img {
-width:100%;
-filter:
-brightness(0)
-invert(1)
-drop-shadow(0 0 10px #00ffa6)
-drop-shadow(0 0 25px rgba(0,255,166,0.5));
-opacity:0;
-animation:fadeIn 2s ease forwards 1s, pulseGlow 3s infinite 3s;
+@keyframes draw {
+to { stroke-dashoffset:0; }
 }
 
-@keyframes fadeIn {
-to { opacity:1; }
-}
-
-@keyframes pulseGlow {
-0% { filter: brightness(0) invert(1) drop-shadow(0 0 10px #00ffa6); }
-50% { filter: brightness(0) invert(1) drop-shadow(0 0 30px #00ffa6); }
-100% { filter: brightness(0) invert(1) drop-shadow(0 0 10px #00ffa6); }
+@keyframes glow {
+50% { filter: drop-shadow(0 0 25px #00ffa6); }
 }
 
 </style>
@@ -161,7 +145,7 @@ CONTINUE
 <!-- TELA 3 -->
 <div class="section" id="s3">
 <h2>Formed over millions of years,</h2>
-<p>The <span class="highlight">Emerald Guardian</span> represents a rare convergence of nature, time, and preservation.</p>
+<p>The <span class="highlight">Emerald Guardian</span> represents a rare convergence.</p>
 
 <div class="btn" onclick="next(4)">
 <span class="arrow">↓</span>
@@ -170,11 +154,24 @@ CONTINUE
 </div>
 </div>
 
-<!-- TELA 4 -->
+<!-- TELA 4 (FIXADA) -->
 <div class="section" id="s4">
-<div class="guardian">
-<img src="https://i.imgur.com/7QZ6bGz.png" class="puma-img">
-</div>
+
+<svg class="puma" viewBox="0 0 600 250">
+<path d="
+M30 160 
+Q 80 110 120 120 
+Q 160 90 200 110 
+Q 240 80 300 90 
+Q 360 85 420 95 
+Q 460 100 500 90 
+M120 120 Q 110 160 100 185 
+M200 110 Q 190 150 180 185 
+M360 95 Q 350 150 340 185 
+M440 95 Q 430 150 420 180 
+M500 90 Q 540 70 570 85 
+"/>
+</svg>
 
 <h2>A singular piece.<br>No known equivalent.</h2>
 <p class="highlight">Non-replicable. Non-substitutable.</p>
@@ -209,7 +206,7 @@ CONTINUE
 </div>
 </div>
 
-<!-- TELA 7 (FORM FINAL) -->
+<!-- TELA 7 -->
 <div class="section" id="s7">
 <h2>Request Direct Access</h2>
 
@@ -234,7 +231,6 @@ CONTINUE
 
 function check(){
 let code = document.getElementById("code").value;
-
 if(code === "123A"){
 next(2);
 }else{
@@ -263,19 +259,10 @@ document.getElementById("msg").innerText="Please complete all fields";
 return;
 }
 
-// DEBUG
 console.log({nome,email,ddi,telefone,data});
 
-// LIMPAR
-document.getElementById("nome").value="";
-document.getElementById("email").value="";
-document.getElementById("ddi").value="";
-document.getElementById("telefone").value="";
-
-// MENSAGEM FINAL
 document.getElementById("msg").innerHTML =
 "✔ Request successfully sent<br><br>Our team will contact you shortly.";
-
 }
 
 </script>
