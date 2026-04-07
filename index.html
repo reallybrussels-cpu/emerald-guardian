@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Emerald Guardian FINAL FIXED</title>
+<title>Emerald Guardian</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
@@ -16,6 +16,7 @@ font-family:'Inter',sans-serif;
 overflow:hidden;
 }
 
+/* TELAS */
 .section{
 position:absolute;
 width:100%;
@@ -26,7 +27,7 @@ justify-content:center;
 align-items:center;
 opacity:0;
 pointer-events:none;
-transition:1s;
+transition:1s ease;
 }
 
 .section.active{
@@ -34,31 +35,38 @@ opacity:1;
 pointer-events:auto;
 }
 
-.shield{
-  width:180px;
-  margin-bottom:25px;
-  opacity:1;
-}
-
+/* TIPOGRAFIA */
 h1{
 font-family:'Playfair Display',serif;
 font-size:56px;
 color:gold;
-text-shadow:0 0 25px gold;
+letter-spacing:1px;
 }
 
-.line{
-width:380px;
-height:2px;
-background:linear-gradient(90deg, transparent, #00ff88, transparent);
-box-shadow:0 0 15px #00ff88;
-margin:20px 0;
+h2{
+font-weight:300;
+font-size:28px;
+text-align:center;
 }
 
+/* ESCUDO */
+.shield{
+width:160px;
+margin-bottom:30px;
+}
+
+/* FELINO (TELA DE IMPACTO) */
+.felino{
+width:340px;
+max-width:80%;
+margin-bottom:30px;
+}
+
+/* BOTÃO */
 .btn{
-width:280px;
+width:260px;
 padding:14px;
-margin-top:20px;
+margin-top:25px;
 background:transparent;
 border:1px solid gold;
 color:gold;
@@ -70,99 +78,78 @@ transition:0.3s;
 .btn:hover{
 background:gold;
 color:black;
-box-shadow:0 0 15px gold;
 }
 
-form{
-display:flex;
-flex-direction:column;
-align-items:center;
-}
-
+/* INPUT */
 input, select{
-width:280px;
+width:260px;
 padding:14px;
-margin:8px;
+margin:10px;
 background:black;
-border:1px solid #00ffa6;
+border:1px solid #333;
 color:white;
 text-align:center;
+transition:0.3s;
 }
 
 input:focus, select:focus{
 border:1px solid #00ff88;
-box-shadow:0 0 12px #00ff88;
 outline:none;
 }
 
+/* SUCCESS */
 .success{
-color:#00ffa6;
+color:#00ff88;
 font-size:22px;
-}
-
-/* ✅ NOVO CSS DO FELINO (onde você estava com dúvida) */
-.felino{
-  width:320px;
-  max-width:80%;
-  margin-bottom:30px;
-  display:block;
 }
 </style>
 </head>
 
 <body>
 
+<!-- TELA 1 -->
 <div class="section active" id="s1">
 <img src="1977.png" class="shield">
 <h1>Emerald Guardian</h1>
-<div class="line"></div>
+
 <input placeholder="ACCESS CODE">
 <button class="btn" onclick="nextSafe(2)">ENTER</button>
 </div>
 
+<!-- TELA 2 -->
 <div class="section" id="s2">
-<img src="1977.png" class="shield">
-<h2>Exclusive Access</h2>
-<div class="line"></div>
+<h2>There is a difference between something valuable...</h2>
 <button class="btn" onclick="nextSafe(3)">CONTINUE</button>
 </div>
 
+<!-- TELA 3 -->
 <div class="section" id="s3">
-<img src="1977.png" class="shield">
 <h2>Formed over millions of years</h2>
-<div class="line"></div>
 <button class="btn" onclick="nextSafe(4)">CONTINUE</button>
 </div>
 
-<!-- ✅ TELA DO FELINO CORRIGIDA -->
+<!-- TELA 4 (IMPACTO FELINO) -->
 <div class="section" id="s4">
-
 <img src="1979.png" class="felino">
-
 <h2>A singular piece</h2>
-
 <button class="btn" onclick="nextSafe(5)">CONTINUE</button>
-
 </div>
 
+<!-- TELA 5 -->
 <div class="section" id="s5">
-<img src="1977.png" class="shield">
 <h2>Absolute rarity</h2>
-<div class="line"></div>
 <button class="btn" onclick="nextSafe(6)">CONTINUE</button>
 </div>
 
+<!-- TELA 6 -->
 <div class="section" id="s6">
-<img src="1977.png" class="shield">
 <h2>Private and selective</h2>
-<div class="line"></div>
 <button class="btn" onclick="nextSafe(7)">CONTINUE</button>
 </div>
 
+<!-- FORM -->
 <div class="section" id="s7">
-<img src="1977.png" class="shield">
 <h2>Request Access</h2>
-<div class="line"></div>
 
 <form id="formEG">
 <input name="name" placeholder="Full Name" required>
@@ -180,10 +167,9 @@ font-size:22px;
 </form>
 </div>
 
+<!-- SUCCESS -->
 <div class="section" id="s8">
-<img src="1977.png" class="shield">
 <h2 class="success">Request received successfully</h2>
-<div class="line"></div>
 <button class="btn" onclick="nextSafe(1)">RETURN</button>
 </div>
 
@@ -210,8 +196,6 @@ body:new FormData(form)
 }).then(()=>{
 nextSafe(8);
 form.reset();
-}).catch(()=>{
-alert("Erro no envio");
 });
 });
 </script>
