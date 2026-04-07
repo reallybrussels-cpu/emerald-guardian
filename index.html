@@ -15,6 +15,7 @@ height:100%;
 font-family:'Inter', sans-serif;
 color:white;
 background: radial-gradient(circle at center, #0b5d2a 0%, #000000 70%);
+overflow:hidden;
 }
 
 /* TELAS */
@@ -96,50 +97,65 @@ border-color:gold;
 box-shadow: 0 0 10px gold;
 }
 
+/* TELA FINAL */
+.success {
+font-size:28px;
+color:#00ffa6;
+text-shadow: 0 0 15px #00ffa6;
+animation: fadeIn 2s ease;
+}
+
+.subtext {
+margin-top:15px;
+opacity:0.7;
+font-size:14px;
+animation: fadeIn 3s ease;
+}
+
+@keyframes fadeIn {
+from {opacity:0; transform: translateY(20px);}
+to {opacity:1; transform: translateY(0);}
+}
+
 </style>
 </head>
 
 <body>
 
-<!-- TELA 1 -->
+<!-- TELAS 1 a 6 (iguais) -->
 <div class="section active" id="s1">
 <h1>Emerald Guardian</h1>
 <input id="code" placeholder="ACCESS CODE">
 <button onclick="next(2)">ENTER</button>
 </div>
 
-<!-- TELA 2 -->
 <div class="section" id="s2">
 <h2>There is a difference between something valuable...</h2>
 <h2 class="highlight">and something truly unique.</h2>
 <button onclick="next(3)">CONTINUE</button>
 </div>
 
-<!-- TELA 3 -->
 <div class="section" id="s3">
 <h2>Formed over millions of years</h2>
 <button onclick="next(4)">CONTINUE</button>
 </div>
 
-<!-- TELA 4 -->
 <div class="section" id="s4">
 <h2>A singular piece</h2>
 <button onclick="next(5)">CONTINUE</button>
 </div>
 
-<!-- TELA 5 -->
 <div class="section" id="s5">
 <h2>Absolute rarity</h2>
 <button onclick="next(6)">CONTINUE</button>
 </div>
 
-<!-- TELA 6 -->
 <div class="section" id="s6">
 <h2>Private and selective</h2>
 <button onclick="next(7)">CONTINUE</button>
 </div>
 
-<!-- TELA 7 -->
+<!-- FORM -->
 <div class="section" id="s7">
 <h2>Request Direct Access</h2>
 
@@ -165,7 +181,13 @@ box-shadow: 0 0 10px gold;
 <button type="submit" id="submitBtn">SEND</button>
 
 </form>
+</div>
 
+<!-- TELA FINAL CINEMATOGRÁFICA -->
+<div class="section" id="s8">
+<h2 class="success">Access Request Received</h2>
+<div class="subtext">Our team will contact you privately.</div>
+<button onclick="next(1)">RETURN</button>
 </div>
 
 <script>
@@ -175,7 +197,7 @@ document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 document.getElementById("s"+n).classList.add("active");
 }
 
-/* ENVIO SEM REDIRECIONAMENTO */
+/* ENVIO CINEMATOGRÁFICO */
 const form = document.getElementById("formEG");
 const btn = document.getElementById("submitBtn");
 
@@ -193,8 +215,12 @@ body: data
 })
 .then(response => {
 if(response.ok){
-btn.innerText = "SENT ✓";
+
+setTimeout(() => {
+next(8); // vai para tela final
 form.reset();
+}, 1000);
+
 } else {
 btn.innerText = "ERROR";
 }
@@ -202,11 +228,6 @@ btn.innerText = "ERROR";
 .catch(() => {
 btn.innerText = "FAILED";
 });
-
-setTimeout(() => {
-btn.innerText = "SEND";
-btn.disabled = false;
-}, 3000);
 
 });
 
