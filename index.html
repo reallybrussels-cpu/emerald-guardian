@@ -7,16 +7,24 @@
 
 <style>
 
-body {
+html, body {
 margin:0;
+height:100%;
 font-family:'Georgia', serif;
 color:white;
-overflow:hidden;
 
-/* FUNDO CORRETO */
-background: linear-gradient(to bottom, #0a5c2f 0%, #000 50%, #0a5c2f 100%);
+/* FUNDO CORRETO DO PDF */
+background: linear-gradient(
+to bottom,
+#0b5d2a 0%,
+#000000 50%,
+#0b5d2a 100%
+);
+
+background-attachment:fixed;
 }
 
+/* TELAS */
 .section {
 position:absolute;
 width:100%;
@@ -36,7 +44,26 @@ opacity:1;
 pointer-events:auto;
 }
 
-/* FORM */
+/* TEXTO */
+h1 {
+font-size:60px;
+color:#e6c200;
+}
+
+.highlight {
+color:#00ffa6;
+}
+
+/* BOTÃO */
+button {
+padding:12px 40px;
+background:gold;
+border:none;
+cursor:pointer;
+margin-top:20px;
+}
+
+/* FORM HORIZONTAL */
 .form-row {
 display:flex;
 gap:20px;
@@ -51,14 +78,6 @@ background:transparent;
 border:1px solid #00ffa6;
 color:white;
 text-align:center;
-}
-
-button {
-padding:12px 40px;
-background:gold;
-border:none;
-cursor:pointer;
-margin-top:20px;
 }
 
 </style>
@@ -76,6 +95,7 @@ margin-top:20px;
 <!-- TELA 2 -->
 <div class="section" id="s2">
 <h2>There is a difference between something valuable...</h2>
+<h2 class="highlight">and something truly unique.</h2>
 <button onclick="next(3)">CONTINUE</button>
 </div>
 
@@ -103,7 +123,7 @@ margin-top:20px;
 <button onclick="next(7)">CONTINUE</button>
 </div>
 
-<!-- TELA 7 (FINAL CORRETA) -->
+<!-- TELA 7 (FORM FINAL CORRETO) -->
 <div class="section" id="s7">
 
 <h2>Request Direct Access</h2>
