@@ -16,7 +16,6 @@ font-family:'Inter',sans-serif;
 overflow:hidden;
 }
 
-/* TELAS */
 .section{
 position:absolute;
 width:100%;
@@ -29,43 +28,34 @@ opacity:0;
 pointer-events:none;
 transition:1s ease;
 }
-
 .section.active{
 opacity:1;
 pointer-events:auto;
 }
 
-/* TIPOGRAFIA */
 h1{
 font-family:'Playfair Display',serif;
 font-size:56px;
 color:gold;
-letter-spacing:1px;
 }
-
 h2{
 font-weight:300;
 font-size:28px;
 text-align:center;
 }
 
-/* ESCUDO */
 .shield{
 width:160px;
 margin-bottom:30px;
 }
-
-/* FELINO (TELA DE IMPACTO) */
 .felino{
 width:340px;
 max-width:80%;
 margin-bottom:30px;
 }
 
-/* BOTÃO */
 .btn{
-width:260px;
-padding:14px;
+padding:14px 30px;
 margin-top:25px;
 background:transparent;
 border:1px solid gold;
@@ -74,30 +64,49 @@ cursor:pointer;
 letter-spacing:2px;
 transition:0.3s;
 }
-
 .btn:hover{
 background:gold;
 color:black;
 }
 
-/* INPUT */
-input, select{
-width:260px;
+/* FORM PREMIUM */
+.form-box{
+width:100%;
+max-width:900px;
+display:flex;
+justify-content:center;
+}
+
+#formEG{
+display:grid;
+grid-template-columns: repeat(4, 1fr);
+gap:20px;
+width:100%;
+}
+
+#formEG input,
+#formEG select{
 padding:14px;
-margin:10px;
 background:black;
 border:1px solid #333;
 color:white;
 text-align:center;
-transition:0.3s;
+width:100%;
 }
 
-input:focus, select:focus{
+#formEG .btn{
+grid-column: span 4;
+width:200px;
+justify-self:start;
+}
+
+#formEG input:focus,
+#formEG select:focus{
 border:1px solid #00ff88;
+box-shadow:0 0 8px rgba(0,255,136,0.3);
 outline:none;
 }
 
-/* SUCCESS */
 .success{
 color:#00ff88;
 font-size:22px;
@@ -107,51 +116,45 @@ font-size:22px;
 
 <body>
 
-<!-- TELA 1 -->
 <div class="section active" id="s1">
 <img src="1977.png" class="shield">
 <h1>Emerald Guardian</h1>
-
 <input placeholder="ACCESS CODE">
 <button class="btn" onclick="nextSafe(2)">ENTER</button>
 </div>
 
-<!-- TELA 2 -->
 <div class="section" id="s2">
 <h2>There is a difference between something valuable...</h2>
 <button class="btn" onclick="nextSafe(3)">CONTINUE</button>
 </div>
 
-<!-- TELA 3 -->
 <div class="section" id="s3">
 <h2>Formed over millions of years</h2>
 <button class="btn" onclick="nextSafe(4)">CONTINUE</button>
 </div>
 
-<!-- TELA 4 (IMPACTO FELINO) -->
 <div class="section" id="s4">
 <img src="1979.png" class="felino">
 <h2>A singular piece</h2>
 <button class="btn" onclick="nextSafe(5)">CONTINUE</button>
 </div>
 
-<!-- TELA 5 -->
 <div class="section" id="s5">
 <h2>Absolute rarity</h2>
 <button class="btn" onclick="nextSafe(6)">CONTINUE</button>
 </div>
 
-<!-- TELA 6 -->
 <div class="section" id="s6">
 <h2>Private and selective</h2>
 <button class="btn" onclick="nextSafe(7)">CONTINUE</button>
 </div>
 
-<!-- FORM -->
 <div class="section" id="s7">
 <h2>Request Access</h2>
 
+<div class="form-box">
 <form id="formEG">
+
 <input name="name" placeholder="Full Name" required>
 <input name="email" placeholder="Email" required>
 
@@ -164,10 +167,12 @@ font-size:22px;
 <input name="phone" placeholder="Phone" required>
 
 <button class="btn">SEND</button>
+
 </form>
 </div>
 
-<!-- SUCCESS -->
+</div>
+
 <div class="section" id="s8">
 <h2 class="success">Request received successfully</h2>
 <button class="btn" onclick="nextSafe(1)">RETURN</button>
@@ -181,12 +186,10 @@ if(!target) return;
 document.querySelectorAll(".section").forEach(s=>{
 s.classList.remove("active");
 });
-
 target.classList.add("active");
 }
 
 const form=document.getElementById("formEG");
-
 form.addEventListener("submit",function(e){
 e.preventDefault();
 
