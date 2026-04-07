@@ -225,11 +225,11 @@ let telefone = document.getElementById("telefone").value;
 let data = new Date().toLocaleString();
 
 if(!nome || !email || !ddi || !telefone){
-document.getElementById("msg").innerText="Please complete all fields";
+document.getElementById("msg").innerText = "Please complete all fields";
 return;
 }
 
-try{
+try {
 
 await fetch("https://script.google.com/macros/s/AKfycbyUPhY7Gc2XN1WBQB5KZa8IoexJijO-vf5mQjzIw6pkBW3Uyk8i6fnfZaRvMxzbG2Pm/exec", {
 method: "POST",
@@ -237,46 +237,29 @@ headers: {
 "Content-Type": "application/json"
 },
 body: JSON.stringify({
-nome: nome,
-email: email,
-ddi: ddi,
-telefone: telefone,
-data: data
+nome,
+email,
+ddi,
+telefone,
+data
 })
 });
 
+/* LIMPAR */
+document.getElementById("nome").value = "";
+document.getElementById("email").value = "";
+document.getElementById("ddi").value = "";
+document.getElementById("telefone").value = "";
+
+/* MENSAGEM */
 document.getElementById("msg").innerHTML =
 "✔ Request successfully sent<br><br>Our team will contact you shortly.";
 
-/* LIMPAR */
-document.getElementById("nome").value="";
-document.getElementById("email").value="";
-document.getElementById("ddi").value="";
-document.getElementById("telefone").value="";
-
-}catch(err){
-document.getElementById("msg").innerText="Error sending data";
+} catch (err) {
 console.error(err);
-}
-}
-document.getElementById("msg").innerText="Please complete all fields";
-return;
+document.getElementById("msg").innerText = "Error sending data";
 }
 
-fetch("https://script.google.com/macros/s/AKfycbyUPhY7Gc2XN1WBQB5KZa8IoexJijO-vf5mQjzIw6pkBW3Uyk8i6fnfZaRvMxzbG2Pm/exec", {
-method: "POST",
-headers: { "Content-Type": "application/json" },
-body: JSON.stringify({ nome, email, ddi, telefone, data })
-});
-
-/* LIMPAR */
-document.getElementById("nome").value="";
-document.getElementById("email").value="";
-document.getElementById("ddi").value="";
-document.getElementById("telefone").value="";
-
-document.getElementById("msg").innerHTML =
-"✔ Request successfully sent<br><br>Our team will contact you shortly.";
 }
 
 </script>
