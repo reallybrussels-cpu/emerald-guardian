@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Emerald Guardian FINAL</title>
+<title>Emerald Guardian Premium</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
@@ -35,7 +35,7 @@ opacity:1;
 pointer-events:auto;
 }
 
-/* TITLES */
+/* TITLE */
 h1{
 font-family:'Playfair Display',serif;
 font-size:60px;
@@ -43,11 +43,16 @@ color:gold;
 text-shadow:0 0 20px gold;
 }
 
-h2{
-font-family:'Playfair Display',serif;
+/* SUBTLE GREEN LINE */
+.line{
+width:400px;
+height:3px;
+background:linear-gradient(90deg, transparent, #00ff88, transparent);
+margin:20px 0;
+box-shadow:0 0 15px #00ff88;
 }
 
-/* BUTTON PREMIUM */
+/* BUTTON */
 .btn{
 width:300px;
 padding:14px;
@@ -66,7 +71,14 @@ color:black;
 box-shadow:0 0 15px gold;
 }
 
-/* FORM */
+/* FORM - ALWAYS VERTICAL */
+form{
+display:flex;
+flex-direction:column;
+align-items:center;
+}
+
+/* INPUT */
 input, select{
 width:300px;
 padding:14px;
@@ -76,58 +88,63 @@ border:1px solid #00ffa6;
 color:white;
 text-align:center;
 box-sizing:border-box;
+transition:0.3s;
+}
+
+/* HOVER EFFECT PREMIUM */
+input:hover, select:hover,
+input:focus, select:focus{
+border:1px solid #00ff88;
+box-shadow:0 0 12px #00ff88;
+outline:none;
 }
 
 /* SUCCESS */
 .success{
 color:#00ffa6;
 font-size:24px;
+text-shadow:0 0 10px #00ffa6;
 }
 </style>
 </head>
 
 <body>
 
-<!-- TELA 1 -->
 <div class="section active" id="s1">
 <h1>Emerald Guardian</h1>
+<div class="line"></div>
 <input placeholder="ACCESS CODE">
 <button class="btn" onclick="next(2)">ENTER</button>
 </div>
 
-<!-- TELA 2 -->
 <div class="section" id="s2">
-<h2>There is a difference between something valuable...</h2>
+<h2>Exclusive Access</h2>
 <button class="btn" onclick="next(3)">CONTINUE</button>
 </div>
 
-<!-- TELA 3 -->
 <div class="section" id="s3">
 <h2>Formed over millions of years</h2>
 <button class="btn" onclick="next(4)">CONTINUE</button>
 </div>
 
-<!-- TELA 4 -->
 <div class="section" id="s4">
 <h2>A singular piece</h2>
 <button class="btn" onclick="next(5)">CONTINUE</button>
 </div>
 
-<!-- TELA 5 -->
 <div class="section" id="s5">
 <h2>Absolute rarity</h2>
 <button class="btn" onclick="next(6)">CONTINUE</button>
 </div>
 
-<!-- TELA 6 -->
 <div class="section" id="s6">
 <h2>Private and selective</h2>
 <button class="btn" onclick="next(7)">CONTINUE</button>
 </div>
 
-<!-- FORM -->
 <div class="section" id="s7">
 <h2>Request Access</h2>
+<div class="line"></div>
 
 <form id="formEG">
 
@@ -173,7 +190,6 @@ font-size:24px;
 </form>
 </div>
 
-<!-- SUCCESS -->
 <div class="section" id="s8">
 <h2 class="success">Request received successfully</h2>
 <p>We will contact you shortly</p>
