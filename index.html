@@ -2,108 +2,77 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Emerald Guardian</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400&display=swap" rel="stylesheet">
-
 <style>
-html, body {
-margin:0;
-height:100%;
-font-family:'Inter', sans-serif;
-color:white;
-background: radial-gradient(circle at center, #0b5d2a 0%, #000000 70%);
-overflow:hidden;
-}
-
-.section {
-position:absolute;
-width:100%;
-height:100vh;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-text-align:center;
-opacity:0;
-transform: scale(1.05);
-transition: opacity 1s ease, transform 1s ease;
-pointer-events:none;
-}
-
-.section.active {
-opacity:1;
-transform: scale(1);
-pointer-events:auto;
-}
-
-h1, h2 {
-font-family: 'Playfair Display', serif;
-letter-spacing: 1px;
-}
-
-h1 {
-font-size:60px;
-color:#e6c200;
-text-shadow: 0 0 15px gold;
-}
-
-button {
-padding:14px 50px;
-background: linear-gradient(45deg, gold, #e6c200);
-border:none;
-cursor:pointer;
-margin-top:25px;
-}
-
-.form-column {
-display:flex;
-flex-direction:column;
-gap:15px;
-align-items:center;
-}
-
-.form-column input,
-.form-column select {
-padding:14px;
-width:280px;
-background: rgba(0,0,0,0.7);
-border:1px solid #00ffa6;
-color:white;
-text-align:center;
-}
-
-.success {
-font-size:28px;
-color:#00ffa6;
-}
-
+body{background:black;color:white;text-align:center;font-family:Arial}
+input,select{display:block;margin:10px auto;padding:10px;width:260px}
+button{padding:10px 30px;background:gold;border:none}
+.success{color:#00ffa6}
 </style>
 </head>
-
 <body>
 
-<div class="section active" id="s7">
+<div id="formScreen">
 <h2>Request Direct Access</h2>
 
-<form id="formEG" class="form-column">
+<form id="formEG">
+<input name="name" placeholder="Full Name" required>
+<input name="email" placeholder="Email" required>
 
-<input type="text" name="name" placeholder="Full Name" required>
-<input type="email" name="email" placeholder="Email" required>
-
-<select name="ddi" required>
-<option value="">Country</option>
+<select name="ddi">
+<option>Select Country</option>
 <option>Brazil (+55)</option>
 <option>United States (+1)</option>
+<option>United Kingdom (+44)</option>
+<option>Germany (+49)</option>
+<option>France (+33)</option>
+<option>Italy (+39)</option>
+<option>Spain (+34)</option>
+<option>Portugal (+351)</option>
+<option>Netherlands (+31)</option>
+<option>Switzerland (+41)</option>
+<option>Sweden (+46)</option>
+<option>Norway (+47)</option>
+<option>Denmark (+45)</option>
+<option>Finland (+358)</option>
+<option>Canada (+1)</option>
+<option>Mexico (+52)</option>
+<option>Argentina (+54)</option>
+<option>Chile (+56)</option>
+<option>Colombia (+57)</option>
+<option>Peru (+51)</option>
+<option>China (+86)</option>
+<option>Japan (+81)</option>
+<option>South Korea (+82)</option>
+<option>India (+91)</option>
+<option>Indonesia (+62)</option>
+<option>Thailand (+66)</option>
+<option>United Arab Emirates (+971)</option>
+<option>Saudi Arabia (+966)</option>
+
 </select>
 
-<input type="text" name="phone" placeholder="Phone" required>
-
-<button type="submit" id="submitBtn">SEND</button>
-
+<input name="phone" placeholder="Phone">
+<button id="btn">SEND</button>
 </form>
 </div>
+
+<div id="successScreen" style="display:none">
+<h2 class="success">Request received successfully</h2>
+<p>We will contact you shortly.</p>
+</div>
+
+<script>
+const form=document.getElementById("formEG");
+form.addEventListener("submit",function(e){
+e.preventDefault();
+fetch("https://formsubmit.co/really.brussels@gmail.com",{method:"POST",body:new FormData(form)})
+.then(()=>{
+document.getElementById("formScreen").style.display="none";
+document.getElementById("successScreen").style.display="block";
+});
+});
+</script>
 
 </body>
 </html>
