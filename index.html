@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Emerald Guardian STABLE FINAL</title>
+<title>Emerald Guardian FINAL FIXED</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
@@ -16,7 +16,6 @@ font-family:'Inter',sans-serif;
 overflow:hidden;
 }
 
-/* SAFE SECTIONS */
 .section{
 position:absolute;
 width:100%;
@@ -35,23 +34,27 @@ opacity:1;
 pointer-events:auto;
 }
 
-/* SHIELD FIX (INLINE SAFE) */
 .shield{
 width:180px;
 margin-bottom:25px;
 opacity:0.95;
-filter: drop-shadow(0 0 12px #00ff88) drop-shadow(0 0 18px gold);
+filter: drop-shadow(0 0 12px #00ff88) drop-shadow(0 0 25px rgba(255,215,0,0.4));
+animation:shieldPulse 3s ease-in-out infinite;
 }
 
-/* TITLE */
+@keyframes shieldPulse{
+0%{transform:scale(1);opacity:0.85;}
+50%{transform:scale(1.03);opacity:1;}
+100%{transform:scale(1);opacity:0.85;}
+}
+
 h1{
 font-family:'Playfair Display',serif;
-font-size:52px;
+font-size:56px;
 color:gold;
-text-shadow:0 0 20px gold;
+text-shadow:0 0 25px gold;
 }
 
-/* LINE */
 .line{
 width:380px;
 height:2px;
@@ -60,7 +63,6 @@ box-shadow:0 0 15px #00ff88;
 margin:20px 0;
 }
 
-/* BUTTON */
 .btn{
 width:280px;
 padding:14px;
@@ -76,9 +78,9 @@ transition:0.3s;
 .btn:hover{
 background:gold;
 color:black;
+box-shadow:0 0 15px gold;
 }
 
-/* FORM LOCKED VERTICAL */
 form{
 display:flex;
 flex-direction:column;
@@ -95,7 +97,12 @@ color:white;
 text-align:center;
 }
 
-/* SUCCESS */
+input:focus, select:focus{
+border:1px solid #00ff88;
+box-shadow:0 0 12px #00ff88;
+outline:none;
+}
+
 .success{
 color:#00ffa6;
 font-size:22px;
@@ -105,58 +112,51 @@ font-size:22px;
 
 <body>
 
-<!-- TELA 1 -->
 <div class="section active" id="s1">
-<img src="https://i.imgur.com/escudo.png" class="shield">
+<img src="escudo.png" class="shield">
 <h1>Emerald Guardian</h1>
 <div class="line"></div>
-<input id="code" placeholder="ACCESS CODE">
+<input placeholder="ACCESS CODE">
 <button class="btn" onclick="nextSafe(2)">ENTER</button>
 </div>
 
-<!-- TELA 2 -->
 <div class="section" id="s2">
-<img src="https://i.imgur.com/placeholder.png" class="shield">
+<img src="escudo.png" class="shield">
 <h2>Exclusive Access</h2>
 <div class="line"></div>
 <button class="btn" onclick="nextSafe(3)">CONTINUE</button>
 </div>
 
-<!-- TELA 3 -->
 <div class="section" id="s3">
-<img src="https://i.imgur.com/placeholder.png" class="shield">
+<img src="escudo.png" class="shield">
 <h2>Formed over millions of years</h2>
 <div class="line"></div>
 <button class="btn" onclick="nextSafe(4)">CONTINUE</button>
 </div>
 
-<!-- TELA 4 -->
 <div class="section" id="s4">
-<img src="https://i.imgur.com/placeholder.png" class="shield">
+<img src="escudo.png" class="shield">
 <h2>A singular piece</h2>
 <div class="line"></div>
 <button class="btn" onclick="nextSafe(5)">CONTINUE</button>
 </div>
 
-<!-- TELA 5 -->
 <div class="section" id="s5">
-<img src="https://i.imgur.com/placeholder.png" class="shield">
+<img src="escudo.png" class="shield">
 <h2>Absolute rarity</h2>
 <div class="line"></div>
 <button class="btn" onclick="nextSafe(6)">CONTINUE</button>
 </div>
 
-<!-- TELA 6 -->
 <div class="section" id="s6">
-<img src="https://i.imgur.com/placeholder.png" class="shield">
+<img src="escudo.png" class="shield">
 <h2>Private and selective</h2>
 <div class="line"></div>
 <button class="btn" onclick="nextSafe(7)">CONTINUE</button>
 </div>
 
-<!-- FORM -->
 <div class="section" id="s7">
-<img src="https://i.imgur.com/placeholder.png" class="shield">
+<img src="escudo.png" class="shield">
 <h2>Request Access</h2>
 <div class="line"></div>
 
@@ -176,9 +176,8 @@ font-size:22px;
 </form>
 </div>
 
-<!-- SUCCESS -->
 <div class="section" id="s8">
-<img src="https://i.imgur.com/placeholder.png" class="shield">
+<img src="escudo.png" class="shield">
 <h2 class="success">Request received successfully</h2>
 <div class="line"></div>
 <button class="btn" onclick="nextSafe(1)">RETURN</button>
