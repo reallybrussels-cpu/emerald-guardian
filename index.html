@@ -52,28 +52,21 @@ cursor:pointer;
 margin-top:20px;
 }
 
-/* 🔥 FORM TRAVADO HORIZONTAL */
-.form-row {
+/* FORM VERTICAL */
+.form-column {
 display:flex;
-flex-direction:row;
-flex-wrap:nowrap; /* NÃO QUEBRA */
-justify-content:center;
+flex-direction:column;
+gap:15px;
 align-items:center;
-gap:10px;
-width:100%;
-max-width:1000px;
-overflow:hidden;
 }
 
-/* 🔥 INPUT MENOR PRA CABER */
 input, select {
-padding:10px;
-width:180px;
+padding:12px;
+width:280px;
 background:black;
 border:1px solid #00ffa6;
 color:white;
 text-align:center;
-flex-shrink:0; /* NÃO DEIXA ENCOLHER */
 }
 
 </style>
@@ -124,7 +117,7 @@ flex-shrink:0; /* NÃO DEIXA ENCOLHER */
 
 <h2>Request Direct Access</h2>
 
-<div class="form-row">
+<div class="form-column">
 
 <input placeholder="Full Name">
 <input placeholder="Email">
@@ -138,9 +131,9 @@ flex-shrink:0; /* NÃO DEIXA ENCOLHER */
 
 <input placeholder="Phone">
 
-</div>
-
 <button>SEND</button>
+
+</div>
 
 </div>
 
