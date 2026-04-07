@@ -5,17 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Emerald Guardian</title>
 
-<style>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
-body {
+<style>
+html, body {
 margin:0;
-font-family:'Georgia', serif;
+height:100%;
+font-family:'Inter', sans-serif;
 color:white;
+background: radial-gradient(circle at center, #0b5d2a 0%, #000000 70%);
 overflow:hidden;
-background:
-radial-gradient(circle at 30% 20%, rgba(0,255,150,0.15), transparent 40%),
-radial-gradient(circle at 70% 80%, rgba(0,255,150,0.08), transparent 40%),
-#000;
 }
 
 .section {
@@ -27,57 +26,106 @@ flex-direction:column;
 justify-content:center;
 align-items:center;
 text-align:center;
-padding:40px;
 opacity:0;
-filter:blur(10px);
-transition: all 1s ease;
+transform: scale(1.05);
+transition: opacity 1s ease, transform 1s ease;
 pointer-events:none;
 }
 
 .section.active {
 opacity:1;
-filter:blur(0);
+transform: scale(1);
 pointer-events:auto;
 }
 
-h1 { font-size:60px; color:#e6c200; }
-.highlight { color:#00ffa6; }
+h1, h2 {
+font-family: 'Playfair Display', serif;
+letter-spacing: 1px;
+}
 
-input, select {
-padding:12px;
-width:260px;
-margin:10px;
-background:transparent;
-border:1px solid rgba(0,255,150,0.4);
+h1 {
+font-size:60px;
+color:#e6c200;
+text-shadow: 0 0 15px gold;
+}
+
+.highlight {
+color:#00ffa6;
+text-shadow: 0 0 10px #00ffa6;
+}
+
+button {
+padding:14px 50px;
+background: linear-gradient(45deg, gold, #e6c200);
+border:none;
+cursor:pointer;
+margin-top:25px;
+font-weight:600;
+letter-spacing:1px;
+transition:0.3s;
+}
+
+button:hover {
+transform: scale(1.05);
+box-shadow: 0 0 20px gold;
+}
+
+button:disabled {
+opacity:0.5;
+cursor:not-allowed;
+}
+
+.form-row {
+display:flex;
+flex-direction:column;
+gap:20px;
+align-items:center;
+}
+
+.input-group {
+display:flex;
+gap:15px;
+flex-wrap:wrap;
+justify-content:center;
+}
+
+.input-group input,
+.input-group select {
+padding:14px;
+width:160px;
+background: rgba(0,0,0,0.7);
+border:1px solid #00ffa6;
 color:white;
 text-align:center;
 }
 
-button {
-padding:12px 35px;
-background:linear-gradient(90deg,#e6c200,#b89600);
-border:none;
-cursor:pointer;
+.success {
+font-size:28px;
+color:#00ffa6;
+text-shadow: 0 0 15px #00ffa6;
+animation: fadeIn 2s ease;
 }
 
-.guardian { width:420px; }
-
-.puma-img {
-width:100%;
-filter: brightness(0) invert(1) drop-shadow(0 0 20px #00ffa6);
+.subtext {
+margin-top:15px;
+opacity:0.7;
+font-size:14px;
+animation: fadeIn 3s ease;
 }
 
+@keyframes fadeIn {
+from {opacity:0; transform: translateY(20px);}
+to {opacity:1; transform: translateY(0);}
+}
 </style>
 </head>
 
 <body>
 
-<!-- TELAS (mantidas iguais) -->
-
 <div class="section active" id="s1">
 <h1>Emerald Guardian</h1>
-<input id="code" placeholder="ACCESS CODE">
-<button onclick="check()">ENTER</button>
+<input placeholder="ACCESS CODE">
+<button onclick="next(2)">ENTER</button>
 </div>
 
 <div class="section" id="s2">
@@ -92,9 +140,7 @@ filter: brightness(0) invert(1) drop-shadow(0 0 20px #00ffa6);
 </div>
 
 <div class="section" id="s4">
-<div class="guardian">
-<img src="puma.png" class="puma-img">
-</div>
+<h2>A singular piece</h2>
 <button onclick="next(5)">CONTINUE</button>
 </div>
 
@@ -108,47 +154,87 @@ filter: brightness(0) invert(1) drop-shadow(0 0 20px #00ffa6);
 <button onclick="next(7)">CONTINUE</button>
 </div>
 
-<!-- FORM -->
 <div class="section" id="s7">
+<h2>Request Direct Access</h2>
 
-<form id="form" target="hiddenFrame"
-action="https://script.google.com/macros/s/AKfycbwNOUYeGghkyaRiv6uh1klmxNjzk5egcdU-GqA8xnkuJ1q0NzyCu24Hq-iO3YaNCCWq/exec"
-method="POST">
+<form id="formEG" class="form-row">
 
-<input name="nome" placeholder="Full Name" required>
-<input name="email" placeholder="Email" required>
-<input name="ddi" placeholder="DDI" required>
-<input name="telefone" placeholder="Phone" required>
+<div class="input-group">
+<input type="text" name="name" placeholder="Full Name" required>
+<input type="email" name="email" placeholder="Email" required>
+</div>
 
-<button type="submit">SUBMIT</button>
+<div class="input-group">
+<select name="ddi" required>
+<option value="">Country</option>
+<option>Brazil (+55)</option>
+<option>United States (+1)</option>
+<option>United Kingdom (+44)</option>
+<option>Germany (+49)</option>
+<option>France (+33)</option>
+</select>
+
+<input type="text" name="phone" placeholder="Phone" required>
+</div>
+
+<button type="submit" id="submitBtn">SEND</button>
 
 </form>
+</div>
 
-<iframe name="hiddenFrame" style="display:none;"></iframe>
-
-<p id="msg"></p>
-
+<div class="section" id="s8">
+<h2 class="success">Access Request Received</h2>
+<div class="subtext">Our team will contact you privately.</div>
+<button onclick="next(1)">RETURN</button>
 </div>
 
 <script>
-
-function check(){
-if(document.getElementById("code").value==="123A") next(2);
-}
-
 function next(n){
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 document.getElementById("s"+n).classList.add("active");
 }
 
-/* SUCESSO SEM CORS */
-document.getElementById("form").addEventListener("submit", function(){
+const form = document.getElementById("formEG");
+const btn = document.getElementById("submitBtn");
 
-document.getElementById("msg").innerHTML =
-"✔ Request successfully sent<br><br>Our team will contact you shortly.";
+let isSubmitting = false;
 
+form.addEventListener("submit", function(e){
+e.preventDefault();
+
+if(isSubmitting) return;
+
+isSubmitting = true;
+btn.innerText = "ENVIANDO...";
+btn.disabled = true;
+
+const data = new FormData(form);
+
+fetch("https://formsubmit.co/really.brussels@gmail.com", {
+method: "POST",
+body: data
+})
+.then(response => {
+if(response.ok){
+setTimeout(()=>{
+next(8);
+form.reset();
+},1000);
+} else {
+btn.innerText = "ERRO";
+}
+})
+.catch(()=>{
+btn.innerText = "FALHA";
+})
+.finally(()=>{
+setTimeout(()=>{
+btn.innerText = "SEND";
+btn.disabled = false;
+isSubmitting = false;
+},3000);
 });
-
+});
 </script>
 
 </body>
