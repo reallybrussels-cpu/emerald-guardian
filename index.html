@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Emerald Guardian ULTRA</title>
+<title>Emerald Guardian Elite</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
@@ -16,7 +16,6 @@ font-family:'Inter',sans-serif;
 overflow:hidden;
 }
 
-/* SECTIONS */
 .section{
 position:absolute;
 width:100%;
@@ -35,34 +34,56 @@ opacity:1;
 pointer-events:auto;
 }
 
-/* TITLE */
 h1{
 font-family:'Playfair Display',serif;
-font-size:64px;
+font-size:60px;
 color:gold;
 text-shadow:0 0 25px gold;
-letter-spacing:2px;
 }
 
-/* GREEN LINE EFFECT */
+/* SHIELD */
+.shield{
+width:120px;
+height:140px;
+border:2px solid gold;
+border-radius:20px 20px 40px 40px;
+position:relative;
+margin-bottom:20px;
+box-shadow:0 0 20px gold;
+animation:pulseShield 2.5s infinite;
+}
+
+.shield:before{
+content:"";
+position:absolute;
+top:10px;
+left:50%;
+transform:translateX(-50%);
+width:60%;
+height:60%;
+border:1px solid #00ff88;
+border-radius:10px;
+box-shadow:0 0 15px #00ff88;
+}
+
+@keyframes pulseShield{
+0%{transform:scale(1); opacity:0.8;}
+50%{transform:scale(1.05); opacity:1;}
+100%{transform:scale(1); opacity:0.8;}
+}
+
+/* LINE */
 .line{
-width:500px;
-height:3px;
-background:linear-gradient(90deg, transparent, #00ff88, transparent);
-box-shadow:0 0 20px #00ff88;
-margin:25px 0;
-animation:pulse 2s infinite;
-}
-
-@keyframes pulse{
-0%{opacity:0.6;}
-50%{opacity:1;}
-100%{opacity:0.6;}
+width:400px;
+height:2px;
+background:linear-gradient(90deg,transparent,#00ff88,transparent);
+box-shadow:0 0 15px #00ff88;
+margin:20px 0;
 }
 
 /* BUTTON */
 .btn{
-width:320px;
+width:300px;
 padding:14px;
 margin-top:20px;
 background:transparent;
@@ -86,32 +107,26 @@ flex-direction:column;
 align-items:center;
 }
 
-/* INPUT */
 input, select{
-width:320px;
+width:300px;
 padding:14px;
 margin:10px;
 background:rgba(0,0,0,0.8);
 border:1px solid #00ffa6;
 color:white;
 text-align:center;
-box-sizing:border-box;
 transition:0.3s;
 }
 
-/* HOVER GLOW */
-input:hover, select:hover,
 input:focus, select:focus{
 border:1px solid #00ff88;
 box-shadow:0 0 15px #00ff88;
 outline:none;
 }
 
-/* SUCCESS */
 .success{
 color:#00ffa6;
-font-size:26px;
-text-shadow:0 0 15px #00ffa6;
+font-size:24px;
 }
 </style>
 </head>
@@ -119,43 +134,15 @@ text-shadow:0 0 15px #00ffa6;
 <body>
 
 <div class="section active" id="s1">
+<div class="shield"></div>
 <h1>Emerald Guardian</h1>
 <div class="line"></div>
 <input placeholder="ACCESS CODE">
 <button class="btn" onclick="next(2)">ENTER</button>
 </div>
 
-<div class="section" id="s2">
-<h2>There is a difference between something valuable...</h2>
-<div class="line"></div>
-<button class="btn" onclick="next(3)">CONTINUE</button>
-</div>
-
-<div class="section" id="s3">
-<h2>Formed over millions of years</h2>
-<div class="line"></div>
-<button class="btn" onclick="next(4)">CONTINUE</button>
-</div>
-
-<div class="section" id="s4">
-<h2>A singular piece</h2>
-<div class="line"></div>
-<button class="btn" onclick="next(5)">CONTINUE</button>
-</div>
-
-<div class="section" id="s5">
-<h2>Absolute rarity</h2>
-<div class="line"></div>
-<button class="btn" onclick="next(6)">CONTINUE</button>
-</div>
-
-<div class="section" id="s6">
-<h2>Private and selective</h2>
-<div class="line"></div>
-<button class="btn" onclick="next(7)">CONTINUE</button>
-</div>
-
 <div class="section" id="s7">
+<div class="shield"></div>
 <h2>Request Access</h2>
 <div class="line"></div>
 
@@ -167,10 +154,6 @@ text-shadow:0 0 15px #00ffa6;
 <option>Brazil (+55)</option>
 <option>United States (+1)</option>
 <option>United Kingdom (+44)</option>
-<option>Germany (+49)</option>
-<option>France (+33)</option>
-<option>Italy (+39)</option>
-<option>Spain (+34)</option>
 </select>
 
 <input name="phone" placeholder="Phone" required>
@@ -180,6 +163,7 @@ text-shadow:0 0 15px #00ffa6;
 </div>
 
 <div class="section" id="s8">
+<div class="shield"></div>
 <h2 class="success">Request received successfully</h2>
 <div class="line"></div>
 <button class="btn" onclick="next(1)">RETURN</button>
@@ -192,7 +176,6 @@ document.getElementById("s"+n).classList.add("active");
 }
 
 const form=document.getElementById("formEG");
-
 form.addEventListener("submit",function(e){
 e.preventDefault();
 
@@ -201,7 +184,6 @@ method:"POST",
 body:new FormData(form)
 }).then(()=>{
 next(8);
-form.reset();
 });
 });
 </script>
