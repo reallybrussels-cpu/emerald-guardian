@@ -40,8 +40,6 @@ opacity:1;
 pointer-events:auto;
 }
 
-h1 { font-size:60px; color:#e6c200; }
-
 button {
 padding:12px 40px;
 background:gold;
@@ -74,33 +72,7 @@ text-align:center;
 <!-- TELAS -->
 <div class="section active" id="s1">
 <h1>Emerald Guardian</h1>
-<input id="code" placeholder="ACCESS CODE">
-<button onclick="next(2)">ENTER</button>
-</div>
-
-<div class="section" id="s2">
-<h2>There is a difference between something valuable...</h2>
-<button onclick="next(3)">CONTINUE</button>
-</div>
-
-<div class="section" id="s3">
-<h2>Formed over millions of years</h2>
-<button onclick="next(4)">CONTINUE</button>
-</div>
-
-<div class="section" id="s4">
-<h2>A singular piece</h2>
-<button onclick="next(5)">CONTINUE</button>
-</div>
-
-<div class="section" id="s5">
-<h2>Absolute rarity</h2>
-<button onclick="next(6)">CONTINUE</button>
-</div>
-
-<div class="section" id="s6">
-<h2>Private and selective</h2>
-<button onclick="next(7)">CONTINUE</button>
+<button onclick="next(7)">ENTER</button>
 </div>
 
 <!-- TELA FINAL -->
@@ -108,7 +80,7 @@ text-align:center;
 
 <h2>Request Direct Access</h2>
 
-<form action="https://formsubmit.co/really.brussels@gmail.com" method="POST" class="form-column">
+<form id="form" action="https://formsubmit.co/really.brussels@gmail.com" method="POST" class="form-column">
 
 <input type="text" name="name" placeholder="Full Name" required>
 <input type="email" name="email" placeholder="Email" required>
@@ -116,21 +88,21 @@ text-align:center;
 <select name="ddi" required>
 <option value="">Select Country</option>
 <option>Brazil (+55)</option>
-<option>United States (+1)</option>
-<option>United Kingdom (+44)</option>
-<option>Germany (+49)</option>
-<option>France (+33)</option>
+<option>USA (+1)</option>
+<option>UK (+44)</option>
 </select>
 
 <input type="text" name="phone" placeholder="Phone" required>
 
-<!-- CONFIG FORM -->
+<!-- CONFIG -->
 <input type="hidden" name="_captcha" value="false">
-<input type="hidden" name="_subject" value="New Lead - Emerald Guardian">
+<input type="hidden" name="_next" value="https://formsubmit.co/thanks">
 
 <button type="submit">SEND</button>
 
 </form>
+
+<p id="msg"></p>
 
 </div>
 
@@ -140,6 +112,12 @@ function next(n){
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 document.getElementById("s"+n).classList.add("active");
 }
+
+/* GARANTE ENVIO */
+document.getElementById("form").addEventListener("submit", function(){
+document.getElementById("msg").innerHTML =
+"✔ Sending... please wait";
+});
 
 </script>
 
