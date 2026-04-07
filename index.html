@@ -3,185 +3,139 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Emerald Guardian</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<title>Emerald Guardian LOCKED PREMIUM</title>
 
 <style>
-body{
+body {
 margin:0;
 background:black;
-font-family:'Inter',sans-serif;
 color:white;
-overflow:hidden;
-}
-
-.section{
-position:absolute;
-width:100%;
-height:100vh;
+font-family:Arial;
 display:flex;
-flex-direction:column;
 justify-content:center;
 align-items:center;
-opacity:0;
-pointer-events:none;
-transition:1.2s ease;
+height:100vh;
 }
 
-.section.active{
-opacity:1;
-pointer-events:auto;
+.container {
+text-align:center;
 }
 
-h1{
-font-family:'Playfair Display',serif;
-font-size:64px;
-color:#e6c200;
-letter-spacing:2px;
-text-shadow:0 0 25px gold;
+input, select {
+width:300px;
+padding:14px;
+margin:10px auto;
+display:block;
+background:black;
+border:1px solid #00ffa6;
+color:white;
+text-align:center;
+box-sizing:border-box;
 }
 
-h2{
-font-family:'Playfair Display',serif;
-font-weight:500;
-letter-spacing:1px;
-}
-
-.highlight{
-color:#00ffa6;
-text-shadow:0 0 15px #00ffa6;
-}
-
-/* BOTÃO PREMIUM */
-.btn{
-padding:14px 50px;
+button {
+width:300px;
+padding:14px;
+margin-top:10px;
 background:transparent;
 border:1px solid gold;
 color:gold;
 cursor:pointer;
 letter-spacing:2px;
-transition:0.4s;
-position:relative;
-overflow:hidden;
 }
 
-.btn:before{
-content:"";
-position:absolute;
-width:0;
-height:100%;
+button:hover {
 background:gold;
-left:0;
-top:0;
-transition:0.4s;
-z-index:-1;
-}
-
-.btn:hover:before{
-width:100%;
-}
-
-.btn:hover{
 color:black;
-box-shadow:0 0 20px gold;
 }
 
-/* FORM */
-input, select{
-display:block;
-margin:10px;
-padding:12px;
-width:260px;
-background:rgba(0,0,0,0.8);
-border:1px solid #00ffa6;
-color:white;
-text-align:center;
-}
-
-.success{
+.success {
 color:#00ffa6;
-font-size:26px;
-text-shadow:0 0 15px #00ffa6;
+font-size:22px;
+margin-top:20px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="section active" id="s1">
-<h1>Emerald Guardian</h1>
-<input placeholder="ACCESS CODE">
-<button class="btn" onclick="next(2)">ENTER</button>
-</div>
+<div class="container" id="formScreen">
 
-<div class="section" id="s2">
-<h2>There is a difference between something valuable...</h2>
-<h2 class="highlight">and something truly unique.</h2>
-<button class="btn" onclick="next(3)">CONTINUE</button>
-</div>
-
-<div class="section" id="s3">
-<h2>Formed over millions of years</h2>
-<button class="btn" onclick="next(4)">CONTINUE</button>
-</div>
-
-<div class="section" id="s4">
-<h2>A singular piece</h2>
-<button class="btn" onclick="next(5)">CONTINUE</button>
-</div>
-
-<div class="section" id="s5">
-<h2>Absolute rarity</h2>
-<button class="btn" onclick="next(6)">CONTINUE</button>
-</div>
-
-<div class="section" id="s6">
-<h2>Private and selective</h2>
-<button class="btn" onclick="next(7)">CONTINUE</button>
-</div>
-
-<div class="section" id="s7">
 <h2>Request Access</h2>
 
 <form id="formEG">
+
 <input name="name" placeholder="Full Name" required>
 <input name="email" placeholder="Email" required>
 
-<select name="ddi">
-<option>Brazil (+55)</option>
-<option>United States (+1)</option>
-<option>United Kingdom (+44)</option>
+<select name="ddi" required>
+<option value="">Select Country</option>
+<option value="Afghanistan (+93)">Afghanistan (+93)</option>
+<option value="Albania (+355)">Albania (+355)</option>
+<option value="Algeria (+213)">Algeria (+213)</option>
+<option value="Andorra (+376)">Andorra (+376)</option>
+<option value="Angola (+244)">Angola (+244)</option>
+<option value="Argentina (+54)">Argentina (+54)</option>
+<option value="Australia (+61)">Australia (+61)</option>
+<option value="Austria (+43)">Austria (+43)</option>
+<option value="Belgium (+32)">Belgium (+32)</option>
+<option value="Brazil (+55)">Brazil (+55)</option>
+<option value="Canada (+1)">Canada (+1)</option>
+<option value="Chile (+56)">Chile (+56)</option>
+<option value="China (+86)">China (+86)</option>
+<option value="Colombia (+57)">Colombia (+57)</option>
+<option value="Denmark (+45)">Denmark (+45)</option>
+<option value="France (+33)">France (+33)</option>
+<option value="Germany (+49)">Germany (+49)</option>
+<option value="India (+91)">India (+91)</option>
+<option value="Indonesia (+62)">Indonesia (+62)</option>
+<option value="Italy (+39)">Italy (+39)</option>
+<option value="Japan (+81)">Japan (+81)</option>
+<option value="Mexico (+52)">Mexico (+52)</option>
+<option value="Netherlands (+31)">Netherlands (+31)</option>
+<option value="Norway (+47)">Norway (+47)</option>
+<option value="Portugal (+351)">Portugal (+351)</option>
+<option value="Russia (+7)">Russia (+7)</option>
+<option value="Saudi Arabia (+966)">Saudi Arabia (+966)</option>
+<option value="South Africa (+27)">South Africa (+27)</option>
+<option value="South Korea (+82)">South Korea (+82)</option>
+<option value="Spain (+34)">Spain (+34)</option>
+<option value="Sweden (+46)">Sweden (+46)</option>
+<option value="Switzerland (+41)">Switzerland (+41)</option>
+<option value="Turkey (+90)">Turkey (+90)</option>
+<option value="United Arab Emirates (+971)">United Arab Emirates (+971)</option>
+<option value="United Kingdom (+44)">United Kingdom (+44)</option>
+<option value="United States (+1)">United States (+1)</option>
+<option value="Uruguay (+598)">Uruguay (+598)</option>
+<option value="Venezuela (+58)">Venezuela (+58)</option>
 </select>
 
 <input name="phone" placeholder="Phone" required>
 
-<button class="btn">SEND</button>
+<button type="submit">SEND</button>
+
 </form>
+
 </div>
 
-<div class="section" id="s8">
+<div class="container" id="successScreen" style="display:none;">
 <h2 class="success">Request received successfully</h2>
 <p>We will contact you shortly</p>
-<button class="btn" onclick="next(1)">RETURN</button>
 </div>
 
 <script>
-function next(n){
-document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-document.getElementById("s"+n).classList.add("active");
-}
+const form = document.getElementById("formEG");
 
-const form=document.getElementById("formEG");
-form.addEventListener("submit",function(e){
+form.addEventListener("submit", function(e){
 e.preventDefault();
 
 fetch("https://formsubmit.co/really.brussels@gmail.com",{
 method:"POST",
 body:new FormData(form)
-}).then(()=>{
-next(8);
-form.reset();
+})
+.then(()=>{
+document.getElementById("formScreen").style.display="none";
+document.getElementById("successScreen").style.display="block";
 });
 });
 </script>
