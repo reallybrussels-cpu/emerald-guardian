@@ -5,22 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Emerald Guardian</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+
 <style>
 
 html, body {
 margin:0;
 height:100%;
-font-family:'Georgia', serif;
+font-family:'Inter', sans-serif;
 color:white;
-
-background: linear-gradient(
-to bottom,
-#0b5d2a 0%,
-#000000 50%,
-#0b5d2a 100%
-);
+background: radial-gradient(circle at center, #0b5d2a 0%, #000000 70%);
 }
 
+/* TELAS */
 .section {
 position:absolute;
 width:100%;
@@ -31,23 +28,51 @@ justify-content:center;
 align-items:center;
 text-align:center;
 opacity:0;
-transition:1s;
+transform: scale(1.05);
+transition: opacity 1s ease, transform 1s ease;
 pointer-events:none;
 }
 
 .section.active {
 opacity:1;
+transform: scale(1);
 pointer-events:auto;
 }
 
-button {
-padding:12px 40px;
-background:gold;
-border:none;
-cursor:pointer;
-margin-top:20px;
+h1, h2 {
+font-family: 'Playfair Display', serif;
+letter-spacing: 1px;
 }
 
+h1 {
+font-size:60px;
+color:#e6c200;
+text-shadow: 0 0 15px gold;
+}
+
+.highlight {
+color:#00ffa6;
+text-shadow: 0 0 10px #00ffa6;
+}
+
+/* BOTÃO */
+button {
+padding:14px 50px;
+background: linear-gradient(45deg, gold, #e6c200);
+border:none;
+cursor:pointer;
+margin-top:25px;
+font-weight:600;
+letter-spacing:1px;
+transition:0.3s;
+}
+
+button:hover {
+transform: scale(1.05);
+box-shadow: 0 0 20px gold;
+}
+
+/* FORM */
 .form-column {
 display:flex;
 flex-direction:column;
@@ -56,18 +81,19 @@ align-items:center;
 }
 
 input, select {
-padding:12px;
+padding:14px;
 width:300px;
-background:black;
+background: rgba(0,0,0,0.7);
 border:1px solid #00ffa6;
 color:white;
 text-align:center;
+transition:0.3s;
 }
 
-#msg {
-margin-top:20px;
-color:#00ffa6;
-font-size:16px;
+input:focus, select:focus {
+outline:none;
+border-color:gold;
+box-shadow: 0 0 10px gold;
 }
 
 </style>
@@ -75,44 +101,49 @@ font-size:16px;
 
 <body>
 
-<!-- TELAS -->
+<!-- TELA 1 -->
 <div class="section active" id="s1">
 <h1>Emerald Guardian</h1>
 <input id="code" placeholder="ACCESS CODE">
 <button onclick="next(2)">ENTER</button>
 </div>
 
+<!-- TELA 2 -->
 <div class="section" id="s2">
 <h2>There is a difference between something valuable...</h2>
+<h2 class="highlight">and something truly unique.</h2>
 <button onclick="next(3)">CONTINUE</button>
 </div>
 
+<!-- TELA 3 -->
 <div class="section" id="s3">
 <h2>Formed over millions of years</h2>
 <button onclick="next(4)">CONTINUE</button>
 </div>
 
+<!-- TELA 4 -->
 <div class="section" id="s4">
 <h2>A singular piece</h2>
 <button onclick="next(5)">CONTINUE</button>
 </div>
 
+<!-- TELA 5 -->
 <div class="section" id="s5">
 <h2>Absolute rarity</h2>
 <button onclick="next(6)">CONTINUE</button>
 </div>
 
+<!-- TELA 6 -->
 <div class="section" id="s6">
 <h2>Private and selective</h2>
 <button onclick="next(7)">CONTINUE</button>
 </div>
 
-<!-- TELA FINAL -->
+<!-- TELA 7 -->
 <div class="section" id="s7">
-
 <h2>Request Direct Access</h2>
 
-<form id="form" action="https://formsubmit.co/really.brussels@gmail.com" method="POST" class="form-column" target="hidden_iframe">
+<form action="https://formsubmit.co/really.brussels@gmail.com" method="POST" class="form-column">
 
 <input type="text" name="name" placeholder="Full Name" required>
 <input type="email" name="email" placeholder="Email" required>
@@ -128,34 +159,19 @@ font-size:16px;
 
 <input type="text" name="phone" placeholder="Phone" required>
 
-<!-- CONFIG -->
 <input type="hidden" name="_captcha" value="false">
 <input type="hidden" name="_template" value="table">
 
 <button type="submit">SEND</button>
 
 </form>
-
-<!-- iframe invisível -->
-<iframe name="hidden_iframe" style="display:none;"></iframe>
-
-<p id="msg"></p>
-
 </div>
 
 <script>
-
 function next(n){
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 document.getElementById("s"+n).classList.add("active");
 }
-
-/* MENSAGEM SEM REDIRECIONAR */
-document.getElementById("form").addEventListener("submit", function(){
-document.getElementById("msg").innerHTML =
-"✔ Request successfully sent<br><br>Our team will contact you shortly.";
-});
-
 </script>
 
 </body>
