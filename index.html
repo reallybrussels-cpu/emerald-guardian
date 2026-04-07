@@ -216,7 +216,7 @@ document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 document.getElementById("s"+n).classList.add("active");
 }
 
-function submitForm(){
+async function submitForm(){
 
 let nome = document.getElementById("nome").value;
 let email = document.getElementById("email").value;
@@ -225,6 +225,40 @@ let telefone = document.getElementById("telefone").value;
 let data = new Date().toLocaleString();
 
 if(!nome || !email || !ddi || !telefone){
+document.getElementById("msg").innerText="Please complete all fields";
+return;
+}
+
+try{
+
+await fetch("https://script.google.com/macros/s/AKfycbyUPhY7Gc2XN1WBQB5KZa8IoexJijO-vf5mQjzIw6pkBW3Uyk8i6fnfZaRvMxzbG2Pm/exec", {
+method: "POST",
+headers: {
+"Content-Type": "application/json"
+},
+body: JSON.stringify({
+nome: nome,
+email: email,
+ddi: ddi,
+telefone: telefone,
+data: data
+})
+});
+
+document.getElementById("msg").innerHTML =
+"✔ Request successfully sent<br><br>Our team will contact you shortly.";
+
+/* LIMPAR */
+document.getElementById("nome").value="";
+document.getElementById("email").value="";
+document.getElementById("ddi").value="";
+document.getElementById("telefone").value="";
+
+}catch(err){
+document.getElementById("msg").innerText="Error sending data";
+console.error(err);
+}
+}
 document.getElementById("msg").innerText="Please complete all fields";
 return;
 }
