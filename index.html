@@ -16,22 +16,6 @@ font-family:'Inter',sans-serif;
 overflow:hidden;
 }
 
-/* BACKGROUND AMBIENT */
-body::before{
-content:"";
-position:fixed;
-width:100%;
-height:100%;
-background:radial-gradient(circle at center, rgba(0,255,136,0.06), transparent 70%);
-animation:ambient 10s ease-in-out infinite;
-z-index:0;
-}
-@keyframes ambient{
-0%{opacity:0.3;}
-50%{opacity:0.5;}
-100%{opacity:0.3;}
-}
-
 /* SECTIONS */
 .section{
 position:absolute;
@@ -45,7 +29,6 @@ opacity:0;
 transform:scale(1.05);
 filter:blur(10px);
 transition:all 1s cubic-bezier(0.22,1,0.36,1);
-z-index:1;
 }
 .section.active{
 opacity:1;
@@ -65,18 +48,10 @@ font-weight:300;
 text-align:center;
 }
 
-/* 🔥 ESCUDO AJUSTADO */
+/* ESCUDO LIMPO (SEM ANIMAÇÃO) */
 .shield{
 width:200px;
 margin-bottom:25px;
-animation:shieldPulse 4s ease-in-out infinite;
-}
-
-/* PULSO SUAVE APENAS NO CONTORNO */
-@keyframes shieldPulse{
-0%{filter:drop-shadow(0 0 4px rgba(255,215,0,0.4));}
-50%{filter:drop-shadow(0 0 12px rgba(255,215,0,0.7));}
-100%{filter:drop-shadow(0 0 4px rgba(255,215,0,0.4));}
 }
 
 /* FELINO */
