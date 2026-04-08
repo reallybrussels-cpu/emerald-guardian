@@ -202,17 +202,35 @@ target.classList.add("active");
 
 const form=document.getElementById("formEG");
 
-form.addEventListener("submit",function(e){
+form.addEventListener("submit", function(e){
 e.preventDefault();
 
-fetch("https://formsubmit.co/really.brussels@gmail.com",{
-method:"POST",
-body:new FormData(form)
-}).then(()=>{
+const btn = form.querySelector("button");
+const originalText = btn.innerText;
+
+// 🔒 bloqueia múltiplos cliques
+btn.disabled = true;
+btn.innerText = "ENVIANDO...";
+
+// envio
+fetch("https://formsubmit.co/really.brussels@gmail.com", {
+method: "POST",
+body: new FormData(form)
+})
+.then(() => {
 nextSafe(8);
 form.reset();
-}).catch(()=>{
+
+// restaura botão
+btn.disabled = false;
+btn.innerText = originalText;
+})
+.catch(() => {
 alert("Erro no envio");
+
+// restaura botão em caso de erro
+btn.disabled = false;
+btn.innerText = originalText;
 });
 
 });
