@@ -16,7 +16,7 @@ font-family:'Inter',sans-serif;
 overflow:hidden;
 }
 
-/* FIX DEFINITIVO DE CLIQUE */
+/* SECTIONS */
 .section{
 position:absolute;
 width:100%;
@@ -39,7 +39,7 @@ transform:scale(1);
 filter:blur(0);
 }
 
-/* TEXT */
+/* TITLES */
 h1{
 font-family:'Playfair Display',serif;
 font-size:56px;
@@ -51,31 +51,50 @@ font-weight:300;
 text-align:center;
 }
 
-/* ESCUDO LIMPO */
-.shield{
-width:200px;
-margin-bottom:25px;
+/* IMAGES */
+.shield{width:200px;margin-bottom:25px;}
+.felino{width:340px;max-width:85%;margin-bottom:25px;}
+
+/* INPUT PREMIUM */
+.input-group{
+position:relative;
+width:280px;
+margin:18px 0;
 }
 
-/* FELINO */
-.felino{
-width:340px;
-max-width:80%;
-margin-bottom:25px;
-}
-
-/* INPUT */
-input, select{
+.input-group input,
+.input-group select{
+width:100%;
 background:transparent;
 border:none;
 border-bottom:1px solid rgba(0,255,136,0.3);
 color:white;
-padding:12px 0;
-margin:12px 0;
-width:260px;
+padding:10px 0;
 outline:none;
+font-size:14px;
+transition:0.3s;
 }
-input:focus, select:focus{
+
+.input-group label{
+position:absolute;
+top:10px;
+left:0;
+font-size:12px;
+color:rgba(255,255,255,0.4);
+transition:0.3s;
+pointer-events:none;
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label,
+.input-group select:focus + label{
+top:-8px;
+font-size:10px;
+color:#00ff88;
+}
+
+.input-group input:focus,
+.input-group select:focus{
 border-bottom:1px solid #00ff88;
 box-shadow:0 6px 10px -6px #00ff88;
 }
@@ -133,6 +152,13 @@ backdrop-filter:blur(6px);
 color:#00ff88;
 font-size:22px;
 }
+
+/* MOBILE */
+@media(max-width:600px){
+h1{font-size:36px;}
+.form-container{width:85%;}
+.felino{width:90%;}
+}
 </style>
 </head>
 
@@ -141,7 +167,10 @@ font-size:22px;
 <div class="section active" id="s1">
 <img src="1977.png" class="shield">
 <h1>Emerald Guardian</h1>
-<input placeholder="ACCESS CODE">
+<div class="input-group">
+<input placeholder=" " />
+<label>ACCESS CODE</label>
+</div>
 <button class="btn" onclick="nextSafe(2)">ENTER</button>
 </div>
 
@@ -176,21 +205,37 @@ font-size:22px;
 <h2>Request Access</h2>
 
 <form id="formEG">
-<input name="name" placeholder="FULL NAME" required>
-<input name="email" placeholder="EMAIL ADDRESS" required>
 
+<div class="input-group">
+<input name="name" placeholder=" " required>
+<label>FULL NAME</label>
+</div>
+
+<div class="input-group">
+<input name="email" placeholder=" " required>
+<label>EMAIL ADDRESS</label>
+</div>
+
+<div class="input-group">
 <select name="ddi">
-<option>COUNTRY</option>
+<option value="">Select Country</option>
 <option>Brazil (+55)</option>
 <option>United States (+1)</option>
 <option>United Kingdom (+44)</option>
+<option>Germany (+49)</option>
+<option>France (+33)</option>
 </select>
+<label>COUNTRY</label>
+</div>
 
-<input name="phone" placeholder="PHONE NUMBER" required>
+<div class="input-group">
+<input name="phone" placeholder=" " required>
+<label>PHONE NUMBER</label>
+</div>
 
 <button type="submit" class="btn">SUBMIT REQUEST</button>
-</form>
 
+</form>
 </div>
 </div>
 
@@ -203,11 +248,7 @@ font-size:22px;
 function nextSafe(n){
 let target=document.getElementById("s"+n);
 if(!target)return;
-
-document.querySelectorAll(".section").forEach(s=>{
-s.classList.remove("active");
-});
-
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 setTimeout(()=>{target.classList.add("active");},60);
 }
 
