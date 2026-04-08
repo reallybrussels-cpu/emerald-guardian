@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Emerald Guardian FINAL</title>
+<title>Emerald Guardian FINAL CLEAN</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
@@ -39,15 +39,8 @@ filter:blur(0);
 }
 
 /* TEXT */
-h1{
-font-family:'Playfair Display';
-font-size:56px;
-color:gold;
-}
-h2{
-font-size:26px;
-font-weight:300;
-}
+h1{font-family:'Playfair Display';font-size:56px;color:gold;}
+h2{font-size:26px;font-weight:300;}
 
 /* IMAGES */
 .shield{width:200px;margin-bottom:20px;}
@@ -83,6 +76,48 @@ font-size:10px;
 color:#00ff88;
 }
 
+/* DROPDOWN FIXED */
+.dropdown{
+width:280px;
+margin:15px 0;
+position:relative;
+cursor:pointer;
+}
+
+.dropdown-selected{
+border-bottom:1px solid rgba(0,255,136,0.3);
+padding:10px 0;
+color:white;
+background:black;
+}
+
+.dropdown-list{
+display:none;
+position:absolute;
+top:100%;
+left:0;
+width:100%;
+background:black; /* 🔥 FIX */
+border:1px solid #00ff88;
+max-height:180px;
+overflow:auto;
+z-index:1000;
+}
+
+.dropdown.open .dropdown-list{
+display:block;
+}
+
+.dropdown-item{
+padding:10px;
+background:black; /* 🔥 FIX */
+color:white;
+}
+
+.dropdown-item:hover{
+background:#002b1a;
+}
+
 /* BUTTON */
 .btn{
 padding:14px 30px;
@@ -93,41 +128,12 @@ color:gold;
 cursor:pointer;
 }
 
-/* DROPDOWN */
-.dropdown{
-width:280px;
-margin:15px 0;
-position:relative;
-cursor:pointer;
-}
-.dropdown-selected{
-border-bottom:1px solid rgba(0,255,136,0.3);
-padding:10px 0;
-}
-.dropdown-list{
-display:none;
-position:absolute;
-width:100%;
-background:black;
-border:1px solid #00ff88;
-max-height:180px;
-overflow:auto;
-}
-.dropdown.open .dropdown-list{
-display:block;
-}
-.dropdown-item{
-padding:10px;
-}
-.dropdown-item:hover{
-background:#002b1a;
-}
-
 /* FORM */
 .form-container{
 width:320px;
 padding:30px;
 border:1px solid rgba(0,255,136,0.1);
+background:black;
 }
 
 /* SUCCESS */
@@ -137,7 +143,6 @@ border:1px solid rgba(0,255,136,0.1);
 
 <body>
 
-<!-- TELA 1 -->
 <div class="section active" id="s1">
 <img src="1977.png" class="shield">
 <h1>Emerald Guardian</h1>
@@ -150,38 +155,11 @@ border:1px solid rgba(0,255,136,0.1);
 <button class="btn" onclick="enterSite()">ENTER</button>
 </div>
 
-<!-- TELA 2 -->
 <div class="section" id="s2">
 <h2>Exclusive Access</h2>
 <button class="btn" onclick="nextSafe(3)">CONTINUE</button>
 </div>
 
-<!-- TELA 3 -->
-<div class="section" id="s3">
-<h2>Formed over millions of years</h2>
-<button class="btn" onclick="nextSafe(4)">CONTINUE</button>
-</div>
-
-<!-- TELA 4 -->
-<div class="section" id="s4">
-<img src="1979.png" class="felino">
-<h2>A singular piece</h2>
-<button class="btn" onclick="nextSafe(5)">CONTINUE</button>
-</div>
-
-<!-- TELA 5 -->
-<div class="section" id="s5">
-<h2>Absolute rarity</h2>
-<button class="btn" onclick="nextSafe(6)">CONTINUE</button>
-</div>
-
-<!-- TELA 6 -->
-<div class="section" id="s6">
-<h2>Private and selective</h2>
-<button class="btn" onclick="nextSafe(7)">CONTINUE</button>
-</div>
-
-<!-- FORM -->
 <div class="section" id="s7">
 <div class="form-container">
 <h2>Request Access</h2>
@@ -215,61 +193,49 @@ border:1px solid rgba(0,255,136,0.1);
 </div>
 
 <button class="btn">SUBMIT</button>
+
 </form>
 </div>
 </div>
 
-<!-- SUCCESS -->
 <div class="section" id="s8">
 <h2 class="success">Request sent successfully</h2>
 <button class="btn" onclick="nextSafe(1)">RETURN</button>
 </div>
 
 <script>
-
-/* ENTER FIX */
 function enterSite(){
 const code = document.getElementById("code").value.trim();
-
-if(code === ""){
-alert("Enter access code");
-return;
-}
-
+if(code===""){alert("Enter access code");return;}
 nextSafe(2);
 }
 
-/* NAV */
 function nextSafe(n){
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-setTimeout(()=>{
-document.getElementById("s"+n).classList.add("active");
-},50);
+setTimeout(()=>{document.getElementById("s"+n).classList.add("active");},50);
 }
 
-/* DROPDOWN */
-const dropdown = document.getElementById("dropdown");
-const selected = dropdown.querySelector(".dropdown-selected");
-const items = dropdown.querySelectorAll(".dropdown-item");
-const hidden = document.getElementById("ddi");
+const dropdown=document.getElementById("dropdown");
+const selected=dropdown.querySelector(".dropdown-selected");
+const items=dropdown.querySelectorAll(".dropdown-item");
+const hidden=document.getElementById("ddi");
 
-selected.onclick = ()=> dropdown.classList.toggle("open");
+selected.onclick=()=>dropdown.classList.toggle("open");
 
 items.forEach(item=>{
-item.onclick = ()=>{
-selected.innerText = item.innerText;
-hidden.value = item.innerText;
+item.onclick=()=>{
+selected.innerText=item.innerText;
+hidden.value=item.innerText;
 dropdown.classList.remove("open");
 };
 });
 
-document.onclick = (e)=>{
+document.onclick=(e)=>{
 if(!dropdown.contains(e.target)){
 dropdown.classList.remove("open");
 }
 };
 
-/* FORM */
 document.getElementById("formEG").addEventListener("submit",function(e){
 e.preventDefault();
 nextSafe(8);
