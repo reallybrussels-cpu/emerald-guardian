@@ -1,22 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Emerald Guardian STABLE</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<title>Emerald Guardian</title>
 
 <style>
 body{
 margin:0;
 background:black;
 color:white;
-font-family:'Inter',sans-serif;
+font-family:system-ui;
 overflow:hidden;
 }
 
-/* SECTIONS FIXED */
 .section{
 position:absolute;
 width:100%;
@@ -35,15 +32,12 @@ opacity:1;
 pointer-events:auto;
 }
 
-/* TEXT */
-h1{font-family:'Playfair Display';font-size:56px;color:gold;}
+h1{font-size:56px;color:#d4af37;}
 h2{font-size:26px;font-weight:300;text-align:center;}
 
-/* IMAGES */
 .shield{width:200px;margin-bottom:20px;}
 .felino{width:340px;max-width:85%;margin-bottom:20px;}
 
-/* INPUT */
 .input-group{
 position:relative;
 width:280px;
@@ -76,7 +70,6 @@ font-size:10px;
 color:#00ff88;
 }
 
-/* DROPDOWN */
 .dropdown{
 width:280px;
 margin:15px 0;
@@ -116,17 +109,15 @@ background:black;
 background:#002b1a;
 }
 
-/* BUTTON */
 .btn{
 padding:14px 30px;
 margin-top:20px;
 background:transparent;
-border:1px solid gold;
-color:gold;
+border:1px solid #d4af37;
+color:#d4af37;
 cursor:pointer;
 }
 
-/* FORM */
 .form-container{
 width:320px;
 padding:30px;
@@ -136,14 +127,22 @@ background:black;
 
 .success{color:#00ff88;}
 </style>
+
+<!-- EMAILJS -->
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+(function(){
+emailjs.init("SUA_PUBLIC_KEY");
+})();
+</script>
+
 </head>
 
 <body>
 
-<!-- 1 -->
 <div class="section active" id="s1">
 <img src="1977.png" class="shield">
-<h1>Emerald Guardian teste</h1>
+<h1>Emerald Guardian</h1>
 
 <div class="input-group">
 <input id="code" placeholder=" ">
@@ -153,38 +152,32 @@ background:black;
 <button class="btn" onclick="enterSite()">ENTER</button>
 </div>
 
-<!-- 2 -->
 <div class="section" id="s2">
 <h2>Exclusive Access</h2>
 <button class="btn" onclick="nextSafe(3)">CONTINUE</button>
 </div>
 
-<!-- 3 -->
 <div class="section" id="s3">
 <h2>Formed over millions of years</h2>
 <button class="btn" onclick="nextSafe(4)">CONTINUE</button>
 </div>
 
-<!-- 4 -->
 <div class="section" id="s4">
 <img src="1979.png" class="felino">
 <h2>A singular piece</h2>
 <button class="btn" onclick="nextSafe(5)">CONTINUE</button>
 </div>
 
-<!-- 5 -->
 <div class="section" id="s5">
 <h2>Absolute rarity</h2>
 <button class="btn" onclick="nextSafe(6)">CONTINUE</button>
 </div>
 
-<!-- 6 -->
 <div class="section" id="s6">
 <h2>Private and selective</h2>
 <button class="btn" onclick="nextSafe(7)">CONTINUE</button>
 </div>
 
-<!-- FORM -->
 <div class="section" id="s7">
 <div class="form-container">
 
@@ -225,7 +218,6 @@ background:black;
 </div>
 </div>
 
-<!-- SUCCESS -->
 <div class="section" id="s8">
 <h2 class="success">Request sent successfully</h2>
 <button class="btn" onclick="nextSafe(1)">RETURN</button>
@@ -240,7 +232,7 @@ if(code===""){alert("Enter access code");return;}
 nextSafe(2);
 }
 
-/* NAV FIX DEFINITIVO */
+/* NAV */
 function nextSafe(n){
 document.querySelectorAll(".section").forEach(s=>{
 s.classList.remove("active");
@@ -273,6 +265,29 @@ dropdown.classList.remove("open");
 /* FORM */
 document.getElementById("formEG").addEventListener("submit",function(e){
 e.preventDefault();
+
+const name=document.querySelector('[name="name"]').value;
+const email=document.querySelector('[name="email"]').value;
+const ddi=document.getElementById("ddi").value;
+const phone=document.querySelector('[name="phone"]').value;
+
+/* EMAIL */
+emailjs.send("SEU_SERVICE_ID","SEU_TEMPLATE_ID",{
+name:name,
+email:email,
+phone:phone,
+ddi:ddi
+});
+
+/* WHATSAPP */
+const message = `New Lead Emerald Guardian:
+Name: ${name}
+Email: ${email}
+Country: ${ddi}
+Phone: ${phone}`;
+
+window.open(`https://wa.me/5511964727202?text=${encodeURIComponent(message)}`, "_blank");
+
 nextSafe(8);
 });
 
