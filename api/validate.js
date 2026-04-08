@@ -7,37 +7,42 @@ export default async function handler(req, res) {
 
   try {
 
-    // BUSCA CÓDIGO
+    // 🔍 BUSCA CÓDIGO
     const response = await fetch(`${SUPABASE_URL}/rest/v1/codes?code=eq.${code}`, {
+      method: "GET",
       headers: {
         apikey: SUPABASE_KEY,
-        Authorization: `Bearer ${SUPABASE_KEY}`
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+        "Content-Type": "application/json"
       }
     });
 
     const data = await response.json();
 
-    if (!data.length) {
+    if (!data || data.length === 0) {
       return res.status(401).json({ error: "invalid" });
     }
 
     const item = data[0];
 
+    // 🔒 INATIVO
     if (!item.active) {
       return res.status(403).json({ error: "inactive" });
     }
 
+    // ⛔ LIMITE
     if (item.used >= item.limit) {
       return res.status(403).json({ error: "expired" });
     }
 
-    // ATUALIZA USO
+    // 🔄 ATUALIZA USO
     await fetch(`${SUPABASE_URL}/rest/v1/codes?id=eq.${item.id}`, {
       method: "PATCH",
       headers: {
         apikey: SUPABASE_KEY,
         Authorization: `Bearer ${SUPABASE_KEY}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        Prefer: "return=minimal"
       },
       body: JSON.stringify({
         used: item.used + 1
@@ -51,6 +56,6 @@ export default async function handler(req, res) {
     });
 
   } catch (err) {
-    return res.status(500).json({ error: "server_error" });
+    return res.status(500).json({ error: "server_error", details: err.message });
   }
 }
