@@ -139,58 +139,48 @@ Only selected clients will be contacted.
 
 <script>
 
-/* 🔒 CLIENTES + LIMITE */
-const clients = [
-{ code:"INVITE-LUX-01", name:"Private Client", limit:1 },
-{ code:"EMERALD777", name:"Selected Client", limit:999 },
-{ code:"VIP2026", name:"VIP Member", limit:3 }
-];
+/* 🚀 BACKEND VALIDATION */
+async function enterSite(){
 
-let currentClient = "";
-let currentCode = "";
-
-/* CONTROLE LOCAL */
-function getUsage(code){
-return parseInt(localStorage.getItem("use_"+code)) || 0;
-}
-
-function incrementUsage(code){
-localStorage.setItem("use_"+code, getUsage(code)+1);
-}
-
-/* ENTER */
-function enterSite(){
 const input = document.getElementById("code").value.trim().toUpperCase();
 const error = document.getElementById("errorMsg");
 
-const found = clients.find(c => c.code === input);
+error.innerText = "Validating...";
 
-if(!found){
-error.innerText="Access denied. Invalid private code.";
+try{
+
+const res = await fetch("/api/validate",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body: JSON.stringify({ code: input })
+});
+
+const data = await res.json();
+
+if(!res.ok){
+error.innerText = "Access denied.";
 return;
 }
-
-if(getUsage(found.code) >= found.limit){
-error.innerText="This access code has expired.";
-return;
-}
-
-incrementUsage(found.code);
-
-currentClient = found.name;
-currentCode = found.code;
 
 /* TRACKING */
 gtag('event','access_granted',{
-client_name:currentClient,
-client_code:currentCode
+client_name: data.name,
+client_code: data.code
 });
 
 /* PERSONALIZA */
-document.getElementById("welcomeMsg").innerText=`Welcome, ${currentClient}`;
+document.getElementById("welcomeMsg").innerText = `Welcome, ${data.name}`;
 
-error.innerText="";
+error.innerText = "";
+
 nextSafe(2);
+
+}catch(e){
+error.innerText = "Connection error.";
+}
+
 }
 
 /* NAV */
@@ -221,9 +211,7 @@ const phone=document.querySelector('[name="phone"]').value;
 
 /* TRACKING */
 gtag('event','conversion',{
-event_category:'lead',
-client_name:currentClient,
-client_code:currentCode
+event_category:'lead'
 });
 
 /* EMAIL */
