@@ -137,7 +137,7 @@ Only selected clients will be contacted.
 
 <script>
 
-/* 🔒 BASE DE CLIENTES (CÓDIGOS + IDENTIDADE) */
+/* 🔒 BASE DE CLIENTES */
 const clients = [
 { code: "INVITE-LUX-01", name: "Private Client" },
 { code: "EMERALD777", name: "Selected Client" },
@@ -145,6 +145,7 @@ const clients = [
 ];
 
 let currentClient = "";
+let currentCode = "";
 
 /* ENTER */
 function enterSite(){
@@ -159,6 +160,14 @@ return;
 }
 
 currentClient = found.name;
+currentCode = found.code;
+
+/* TRACKING ENTRADA */
+gtag('event','access_granted',{
+client_name: currentClient,
+client_code: currentCode
+});
+
 error.innerText = "";
 
 /* PERSONALIZAÇÃO */
@@ -192,8 +201,12 @@ const email=document.querySelector('[name="email"]').value;
 const ddi=document.getElementById("ddi").value;
 const phone=document.querySelector('[name="phone"]').value;
 
-/* ANALYTICS */
-gtag('event','conversion',{event_category:'lead'});
+/* TRACKING CONVERSÃO */
+gtag('event','conversion',{
+event_category:'lead',
+client_name: currentClient,
+client_code: currentCode
+});
 
 /* EMAIL */
 emailjs.send("service_lg8ov1g","template_7zdwxpa",{name,email,phone,ddi});
