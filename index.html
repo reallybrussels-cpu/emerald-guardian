@@ -62,7 +62,7 @@ emailjs.init("l63HL-owZxjATzyae");
 </div>
 
 <div class="section" id="s2">
-<h2>Restricted Entry</h2>
+<h2 id="welcomeMsg">Restricted Entry</h2>
 <button class="btn" onclick="nextSafe(3)">CONTINUE</button>
 </div>
 
@@ -137,24 +137,33 @@ Only selected clients will be contacted.
 
 <script>
 
-/* 🔒 LISTA SECRETA DE CÓDIGOS */
-const validCodes = [
-"EMERALD777",
-"VIP2026",
-"PRIVATE01",
-"LUXURYACCESS"
+/* 🔒 BASE DE CLIENTES (CÓDIGOS + IDENTIDADE) */
+const clients = [
+{ code: "INVITE-LUX-01", name: "Private Client" },
+{ code: "EMERALD777", name: "Selected Client" },
+{ code: "VIP2026", name: "VIP Member" }
 ];
 
+let currentClient = "";
+
+/* ENTER */
 function enterSite(){
-const code = document.getElementById("code").value.trim().toUpperCase();
+const input = document.getElementById("code").value.trim().toUpperCase();
 const error = document.getElementById("errorMsg");
 
-if(!validCodes.includes(code)){
+const found = clients.find(c => c.code === input);
+
+if(!found){
 error.innerText = "Access denied. Invalid private code.";
 return;
 }
 
+currentClient = found.name;
 error.innerText = "";
+
+/* PERSONALIZAÇÃO */
+document.getElementById("welcomeMsg").innerText = `Welcome, ${currentClient}`;
+
 nextSafe(2);
 }
 
