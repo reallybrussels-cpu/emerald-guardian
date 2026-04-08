@@ -1,19 +1,22 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Emerald Guardian</title>
+<title>Emerald Guardian STABLE</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
 <style>
 body{
 margin:0;
-background:#000;
-color:#fff;
-font-family:system-ui,-apple-system,Segoe UI,Roboto;
+background:black;
+color:white;
+font-family:'Inter',sans-serif;
+overflow:hidden;
 }
 
-/* SECTIONS */
+/* SECTIONS FIXED */
 .section{
 position:absolute;
 width:100%;
@@ -24,7 +27,7 @@ justify-content:center;
 align-items:center;
 opacity:0;
 pointer-events:none;
-transition:0.5s ease;
+transition:0.6s ease;
 }
 
 .section.active{
@@ -33,12 +36,12 @@ pointer-events:auto;
 }
 
 /* TEXT */
-h1{font-size:56px;color:#d4af37;letter-spacing:1px;}
-h2{font-size:24px;font-weight:300;text-align:center;max-width:400px;}
+h1{font-family:'Playfair Display';font-size:56px;color:gold;}
+h2{font-size:26px;font-weight:300;text-align:center;}
 
 /* IMAGES */
-.shield{width:180px;margin-bottom:20px;}
-.felino{width:320px;max-width:85%;margin-bottom:20px;}
+.shield{width:200px;margin-bottom:20px;}
+.felino{width:340px;max-width:85%;margin-bottom:20px;}
 
 /* INPUT */
 .input-group{
@@ -51,7 +54,7 @@ margin:15px 0;
 width:100%;
 background:transparent;
 border:none;
-border-bottom:1px solid rgba(0,255,136,0.25);
+border-bottom:1px solid rgba(0,255,136,0.3);
 color:white;
 padding:10px 0;
 outline:none;
@@ -62,8 +65,8 @@ position:absolute;
 top:10px;
 left:0;
 font-size:12px;
-color:#666;
-transition:0.25s;
+color:#888;
+transition:0.3s;
 }
 
 .input-group input:focus + label,
@@ -73,7 +76,7 @@ font-size:10px;
 color:#00ff88;
 }
 
-/* DROPDOWN PREMIUM */
+/* DROPDOWN */
 .dropdown{
 width:280px;
 margin:15px 0;
@@ -82,33 +85,35 @@ cursor:pointer;
 }
 
 .dropdown-selected{
-border-bottom:1px solid rgba(0,255,136,0.25);
+border-bottom:1px solid rgba(0,255,136,0.3);
 padding:10px 0;
+background:black;
 }
 
 .dropdown-list{
+display:none;
 position:absolute;
 top:100%;
 left:0;
 width:100%;
-background:#000;
-border:1px solid rgba(0,255,136,0.3);
-max-height:0;
-overflow:hidden;
-transition:0.3s ease;
+background:black;
+border:1px solid #00ff88;
+max-height:180px;
+overflow:auto;
+z-index:1000;
 }
 
 .dropdown.open .dropdown-list{
-max-height:200px;
+display:block;
 }
 
 .dropdown-item{
-padding:12px;
-transition:0.2s;
+padding:10px;
+background:black;
 }
 
 .dropdown-item:hover{
-background:#001a10;
+background:#002b1a;
 }
 
 /* BUTTON */
@@ -116,22 +121,17 @@ background:#001a10;
 padding:14px 30px;
 margin-top:20px;
 background:transparent;
-border:1px solid #d4af37;
-color:#d4af37;
+border:1px solid gold;
+color:gold;
 cursor:pointer;
-transition:0.3s;
-}
-
-.btn:hover{
-background:#d4af37;
-color:#000;
 }
 
 /* FORM */
 .form-container{
 width:320px;
 padding:30px;
-border:1px solid rgba(0,255,136,0.08);
+border:1px solid rgba(0,255,136,0.1);
+background:black;
 }
 
 .success{color:#00ff88;}
@@ -140,6 +140,7 @@ border:1px solid rgba(0,255,136,0.08);
 
 <body>
 
+<!-- 1 -->
 <div class="section active" id="s1">
 <img src="1977.png" class="shield">
 <h1>Emerald Guardian</h1>
@@ -152,32 +153,38 @@ border:1px solid rgba(0,255,136,0.08);
 <button class="btn" onclick="enterSite()">ENTER</button>
 </div>
 
+<!-- 2 -->
 <div class="section" id="s2">
 <h2>Exclusive Access</h2>
 <button class="btn" onclick="nextSafe(3)">CONTINUE</button>
 </div>
 
+<!-- 3 -->
 <div class="section" id="s3">
 <h2>Formed over millions of years</h2>
 <button class="btn" onclick="nextSafe(4)">CONTINUE</button>
 </div>
 
+<!-- 4 -->
 <div class="section" id="s4">
 <img src="1979.png" class="felino">
 <h2>A singular piece</h2>
 <button class="btn" onclick="nextSafe(5)">CONTINUE</button>
 </div>
 
+<!-- 5 -->
 <div class="section" id="s5">
 <h2>Absolute rarity</h2>
 <button class="btn" onclick="nextSafe(6)">CONTINUE</button>
 </div>
 
+<!-- 6 -->
 <div class="section" id="s6">
 <h2>Private and selective</h2>
 <button class="btn" onclick="nextSafe(7)">CONTINUE</button>
 </div>
 
+<!-- FORM -->
 <div class="section" id="s7">
 <div class="form-container">
 
@@ -192,7 +199,7 @@ border:1px solid rgba(0,255,136,0.08);
 
 <div class="input-group">
 <input name="email" placeholder=" " required>
-<label>EMAIL</label>
+<label>EMAIL ADDRESS</label>
 </div>
 
 <div class="dropdown" id="dropdown">
@@ -218,6 +225,7 @@ border:1px solid rgba(0,255,136,0.08);
 </div>
 </div>
 
+<!-- SUCCESS -->
 <div class="section" id="s8">
 <h2 class="success">Request sent successfully</h2>
 <button class="btn" onclick="nextSafe(1)">RETURN</button>
@@ -227,14 +235,16 @@ border:1px solid rgba(0,255,136,0.08);
 
 /* ENTER */
 function enterSite(){
-const code=document.getElementById("code").value.trim();
-if(!code){alert("Enter access code");return;}
+const code = document.getElementById("code").value.trim();
+if(code===""){alert("Enter access code");return;}
 nextSafe(2);
 }
 
-/* NAV */
+/* NAV FIX DEFINITIVO */
 function nextSafe(n){
-document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+document.querySelectorAll(".section").forEach(s=>{
+s.classList.remove("active");
+});
 document.getElementById("s"+n).classList.add("active");
 }
 
@@ -254,11 +264,11 @@ dropdown.classList.remove("open");
 };
 });
 
-document.addEventListener("click",(e)=>{
+document.onclick=(e)=>{
 if(!dropdown.contains(e.target)){
 dropdown.classList.remove("open");
 }
-});
+};
 
 /* FORM */
 document.getElementById("formEG").addEventListener("submit",function(e){
