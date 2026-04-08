@@ -16,7 +16,7 @@ font-family:'Inter',sans-serif;
 overflow:hidden;
 }
 
-/* SECTIONS */
+/* CINEMATIC TRANSITION */
 .section{
 position:absolute;
 width:100%;
@@ -26,11 +26,16 @@ flex-direction:column;
 justify-content:center;
 align-items:center;
 opacity:0;
+transform:scale(1.05);
+filter:blur(10px);
 pointer-events:none;
-transition:1s;
+transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
+
 .section.active{
 opacity:1;
+transform:scale(1);
+filter:blur(0px);
 pointer-events:auto;
 }
 
@@ -50,7 +55,7 @@ text-align:center;
 .shield{width:160px;margin-bottom:25px;}
 .felino{width:340px;max-width:80%;margin-bottom:25px;}
 
-/* INPUT STYLE */
+/* INPUT */
 input, select{
 background:transparent;
 border:none;
@@ -83,7 +88,7 @@ background:gold;
 color:black;
 }
 
-/* LOADING PREMIUM */
+/* LOADING */
 .btn.loading{
 pointer-events:none;
 opacity:0.7;
@@ -106,7 +111,7 @@ animation:spin 0.8s linear infinite;
 100%{transform:rotate(360deg);}
 }
 
-/* FORM BOX */
+/* FORM */
 .form-container{
 width:320px;
 padding:40px 30px;
@@ -162,7 +167,6 @@ font-size:22px;
 <h2>Request Access</h2>
 
 <form id="formEG">
-
 <input name="name" placeholder="FULL NAME" required>
 <input name="email" placeholder="EMAIL ADDRESS" required>
 
@@ -171,22 +175,11 @@ font-size:22px;
 <option>Brazil (+55)</option>
 <option>United States (+1)</option>
 <option>United Kingdom (+44)</option>
-<option>Germany (+49)</option>
-<option>France (+33)</option>
-<option>Italy (+39)</option>
-<option>Spain (+34)</option>
-<option>Portugal (+351)</option>
-<option>Canada (+1)</option>
-<option>Australia (+61)</option>
-<option>Japan (+81)</option>
-<option>China (+86)</option>
-<option>India (+91)</option>
 </select>
 
 <input name="phone" placeholder="PHONE NUMBER" required>
 
 <button type="submit" class="btn">SUBMIT REQUEST</button>
-
 </form>
 
 </div>
@@ -201,8 +194,14 @@ font-size:22px;
 function nextSafe(n){
 let target=document.getElementById("s"+n);
 if(!target)return;
-document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+
+document.querySelectorAll(".section").forEach(s=>{
+s.classList.remove("active");
+});
+
+setTimeout(()=>{
 target.classList.add("active");
+},50);
 }
 
 const form=document.getElementById("formEG");
