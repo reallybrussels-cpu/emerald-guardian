@@ -20,12 +20,13 @@ body{margin:0;background:black;color:white;font-family:system-ui;overflow:hidden
 .section.active{opacity:1;pointer-events:auto;}
 h1{font-size:56px;color:#d4af37;}
 h2{font-size:26px;font-weight:300;text-align:center;}
+.error{color:#ff4d4d;margin-top:10px;font-size:13px;}
 .shield{width:200px;margin-bottom:20px;}
 .felino{width:340px;max-width:85%;}
 .input-group{position:relative;width:280px;margin:15px 0;}
 .input-group input{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(0,255,136,0.3);color:white;padding:10px 0;}
 .input-group label{position:absolute;top:10px;left:0;font-size:12px;color:#888;}
-.dropdown{width:280px;margin:15px 0;position:relative;}
+.dropdown{width:280px;margin:15px 0;}
 .dropdown-list{display:none;position:absolute;background:black;border:1px solid #00ff88;}
 .dropdown.open .dropdown-list{display:block;}
 .btn{padding:14px 30px;margin-top:20px;border:1px solid #d4af37;color:#d4af37;background:transparent;}
@@ -54,6 +55,8 @@ emailjs.init("l63HL-owZxjATzyae");
 <input id="code" placeholder=" ">
 <label>PRIVATE ACCESS CODE</label>
 </div>
+
+<div id="errorMsg" class="error"></div>
 
 <button class="btn" onclick="enterSite()">ENTER</button>
 </div>
@@ -134,7 +137,26 @@ Only selected clients will be contacted.
 
 <script>
 
-function enterSite(){nextSafe(2);}
+/* 🔒 LISTA SECRETA DE CÓDIGOS */
+const validCodes = [
+"EMERALD777",
+"VIP2026",
+"PRIVATE01",
+"LUXURYACCESS"
+];
+
+function enterSite(){
+const code = document.getElementById("code").value.trim().toUpperCase();
+const error = document.getElementById("errorMsg");
+
+if(!validCodes.includes(code)){
+error.innerText = "Access denied. Invalid private code.";
+return;
+}
+
+error.innerText = "";
+nextSafe(2);
+}
 
 function nextSafe(n){
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
@@ -161,16 +183,11 @@ const email=document.querySelector('[name="email"]').value;
 const ddi=document.getElementById("ddi").value;
 const phone=document.querySelector('[name="phone"]').value;
 
-/* EVENTO GOOGLE */
-gtag('event', 'conversion', {
-event_category: 'lead',
-event_label: 'request_access'
-});
+/* ANALYTICS */
+gtag('event','conversion',{event_category:'lead'});
 
 /* EMAIL */
-emailjs.send("service_lg8ov1g","template_7zdwxpa",{
-name,email,phone,ddi
-});
+emailjs.send("service_lg8ov1g","template_7zdwxpa",{name,email,phone,ddi});
 
 /* WHATSAPP */
 const msg=`Hello,
@@ -184,7 +201,6 @@ Phone: ${phone}`;
 
 window.open(`https://wa.me/5511964727202?text=${encodeURIComponent(msg)}`);
 
-/* SUCCESS */
 nextSafe(8);
 });
 
