@@ -16,7 +16,7 @@ font-family:'Inter',sans-serif;
 overflow:hidden;
 }
 
-/* TELAS */
+/* SECTIONS */
 .section{
 position:absolute;
 width:100%;
@@ -34,32 +34,23 @@ opacity:1;
 pointer-events:auto;
 }
 
-/* TITULOS */
+/* TITLES */
 h1{
 font-family:'Playfair Display',serif;
 font-size:56px;
 color:gold;
 }
-
 h2{
 font-size:26px;
 font-weight:300;
 text-align:center;
 }
 
-/* IMAGENS */
-.shield{
-width:160px;
-margin-bottom:25px;
-}
+/* IMAGES */
+.shield{width:160px;margin-bottom:25px;}
+.felino{width:340px;max-width:80%;margin-bottom:25px;}
 
-.felino{
-width:340px;
-max-width:80%;
-margin-bottom:25px;
-}
-
-/* INPUT LINHA (SEM CAIXA BRANCA) */
+/* INPUT STYLE */
 input, select{
 background:transparent;
 border:none;
@@ -70,14 +61,12 @@ margin:12px 0;
 width:260px;
 outline:none;
 }
-
-/* FOCO VERDE */
 input:focus, select:focus{
 border-bottom:1px solid #00ff88;
 box-shadow:0 6px 10px -6px #00ff88;
 }
 
-/* BOTÃO */
+/* BUTTON */
 .btn{
 padding:14px 30px;
 margin-top:20px;
@@ -86,11 +75,35 @@ border:1px solid gold;
 color:gold;
 cursor:pointer;
 letter-spacing:2px;
+transition:0.3s;
+position:relative;
 }
-
 .btn:hover{
 background:gold;
 color:black;
+}
+
+/* LOADING PREMIUM */
+.btn.loading{
+pointer-events:none;
+opacity:0.7;
+}
+.btn.loading::after{
+content:"";
+position:absolute;
+top:50%;
+left:50%;
+width:18px;
+height:18px;
+margin:-9px 0 0 -9px;
+border:2px solid gold;
+border-top:2px solid transparent;
+border-radius:50%;
+animation:spin 0.8s linear infinite;
+}
+@keyframes spin{
+0%{transform:rotate(0deg);}
+100%{transform:rotate(360deg);}
 }
 
 /* FORM BOX */
@@ -110,7 +123,6 @@ font-size:22px;
 
 <body>
 
-<!-- TELA 1 -->
 <div class="section active" id="s1">
 <img src="1977.png" class="shield">
 <h1>Emerald Guardian</h1>
@@ -118,38 +130,32 @@ font-size:22px;
 <button class="btn" onclick="nextSafe(2)">ENTER</button>
 </div>
 
-<!-- TELA 2 -->
 <div class="section" id="s2">
 <h2>Exclusive Access</h2>
 <button class="btn" onclick="nextSafe(3)">CONTINUE</button>
 </div>
 
-<!-- TELA 3 -->
 <div class="section" id="s3">
 <h2>Formed over millions of years</h2>
 <button class="btn" onclick="nextSafe(4)">CONTINUE</button>
 </div>
 
-<!-- TELA 4 FELINO -->
 <div class="section" id="s4">
 <img src="1979.png" class="felino">
 <h2>A singular piece</h2>
 <button class="btn" onclick="nextSafe(5)">CONTINUE</button>
 </div>
 
-<!-- TELA 5 -->
 <div class="section" id="s5">
 <h2>Absolute rarity</h2>
 <button class="btn" onclick="nextSafe(6)">CONTINUE</button>
 </div>
 
-<!-- TELA 6 -->
 <div class="section" id="s6">
 <h2>Private and selective</h2>
 <button class="btn" onclick="nextSafe(7)">CONTINUE</button>
 </div>
 
-<!-- FORM FINAL -->
 <div class="section" id="s7">
 <div class="form-container">
 
@@ -186,7 +192,6 @@ font-size:22px;
 </div>
 </div>
 
-<!-- SUCCESS -->
 <div class="section" id="s8">
 <h2 class="success">Request received successfully</h2>
 <button class="btn" onclick="nextSafe(1)">RETURN</button>
@@ -208,11 +213,9 @@ e.preventDefault();
 const btn = form.querySelector("button");
 const originalText = btn.innerText;
 
-// 🔒 bloqueia múltiplos cliques
-btn.disabled = true;
-btn.innerText = "ENVIANDO...";
+btn.classList.add("loading");
+btn.innerText = "ENVIANDO";
 
-// envio
 fetch("https://formsubmit.co/really.brussels@gmail.com", {
 method: "POST",
 body: new FormData(form)
@@ -220,19 +223,14 @@ body: new FormData(form)
 .then(() => {
 nextSafe(8);
 form.reset();
-
-// restaura botão
-btn.disabled = false;
+btn.classList.remove("loading");
 btn.innerText = originalText;
 })
 .catch(() => {
 alert("Erro no envio");
-
-// restaura botão em caso de erro
-btn.disabled = false;
+btn.classList.remove("loading");
 btn.innerText = originalText;
 });
-
 });
 </script>
 
