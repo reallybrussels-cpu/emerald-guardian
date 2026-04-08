@@ -16,7 +16,7 @@ font-family:'Inter',sans-serif;
 overflow:hidden;
 }
 
-/* SECTIONS */
+/* TELAS */
 .section{
 position:absolute;
 width:100%;
@@ -29,8 +29,12 @@ opacity:0;
 pointer-events:none;
 transition:1s;
 }
-.section.active{opacity:1;pointer-events:auto;}
+.section.active{
+opacity:1;
+pointer-events:auto;
+}
 
+/* TITULOS */
 h1{
 font-family:'Playfair Display',serif;
 font-size:56px;
@@ -38,12 +42,24 @@ color:gold;
 }
 
 h2{
-font-weight:300;
 font-size:26px;
+font-weight:300;
 text-align:center;
 }
 
-/* INPUT PADRÃO (LINHA, NÃO CAIXA) */
+/* IMAGENS */
+.shield{
+width:160px;
+margin-bottom:25px;
+}
+
+.felino{
+width:340px;
+max-width:80%;
+margin-bottom:25px;
+}
+
+/* INPUT LINHA (SEM CAIXA BRANCA) */
 input, select{
 background:transparent;
 border:none;
@@ -52,7 +68,6 @@ color:white;
 padding:12px 0;
 margin:12px 0;
 width:260px;
-text-align:left;
 outline:none;
 }
 
@@ -78,7 +93,7 @@ background:gold;
 color:black;
 }
 
-/* FORM LUXO */
+/* FORM BOX */
 .form-container{
 width:320px;
 padding:40px 30px;
@@ -95,37 +110,46 @@ font-size:22px;
 
 <body>
 
+<!-- TELA 1 -->
 <div class="section active" id="s1">
+<img src="1977.png" class="shield">
 <h1>Emerald Guardian</h1>
 <input placeholder="ACCESS CODE">
 <button class="btn" onclick="nextSafe(2)">ENTER</button>
 </div>
 
+<!-- TELA 2 -->
 <div class="section" id="s2">
 <h2>Exclusive Access</h2>
 <button class="btn" onclick="nextSafe(3)">CONTINUE</button>
 </div>
 
+<!-- TELA 3 -->
 <div class="section" id="s3">
 <h2>Formed over millions of years</h2>
 <button class="btn" onclick="nextSafe(4)">CONTINUE</button>
 </div>
 
+<!-- TELA 4 FELINO -->
 <div class="section" id="s4">
+<img src="1979.png" class="felino">
 <h2>A singular piece</h2>
 <button class="btn" onclick="nextSafe(5)">CONTINUE</button>
 </div>
 
+<!-- TELA 5 -->
 <div class="section" id="s5">
 <h2>Absolute rarity</h2>
 <button class="btn" onclick="nextSafe(6)">CONTINUE</button>
 </div>
 
+<!-- TELA 6 -->
 <div class="section" id="s6">
 <h2>Private and selective</h2>
 <button class="btn" onclick="nextSafe(7)">CONTINUE</button>
 </div>
 
+<!-- FORM FINAL -->
 <div class="section" id="s7">
 <div class="form-container">
 
@@ -137,7 +161,7 @@ font-size:22px;
 <input name="email" placeholder="EMAIL ADDRESS" required>
 
 <select name="ddi">
-<option value="">COUNTRY</option>
+<option>COUNTRY</option>
 <option>Brazil (+55)</option>
 <option>United States (+1)</option>
 <option>United Kingdom (+44)</option>
@@ -162,6 +186,7 @@ font-size:22px;
 </div>
 </div>
 
+<!-- SUCCESS -->
 <div class="section" id="s8">
 <h2 class="success">Request received successfully</h2>
 <button class="btn" onclick="nextSafe(1)">RETURN</button>
@@ -187,7 +212,7 @@ body:new FormData(form)
 nextSafe(8);
 form.reset();
 }).catch(()=>{
-alert("Erro no envio - verifique conexão");
+alert("Erro no envio");
 });
 
 });
