@@ -16,7 +16,24 @@ font-family:'Inter',sans-serif;
 overflow:hidden;
 }
 
-/* CINEMATIC TRANSITION */
+/* PARTICLES BACKGROUND */
+body::before{
+content:"";
+position:fixed;
+width:100%;
+height:100%;
+background:radial-gradient(circle at 50% 50%, rgba(0,255,136,0.08), transparent 70%);
+animation:ambient 8s ease-in-out infinite;
+z-index:0;
+}
+
+@keyframes ambient{
+0%{opacity:0.3;}
+50%{opacity:0.6;}
+100%{opacity:0.3;}
+}
+
+/* SECTIONS CINEMATIC */
 .section{
 position:absolute;
 width:100%;
@@ -26,24 +43,24 @@ flex-direction:column;
 justify-content:center;
 align-items:center;
 opacity:0;
-transform:scale(1.05);
-filter:blur(10px);
-pointer-events:none;
-transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+transform:scale(1.08);
+filter:blur(12px);
+transition:all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+z-index:1;
 }
 
 .section.active{
 opacity:1;
 transform:scale(1);
-filter:blur(0px);
-pointer-events:auto;
+filter:blur(0);
 }
 
-/* TITLES */
+/* TEXT */
 h1{
 font-family:'Playfair Display',serif;
 font-size:56px;
 color:gold;
+letter-spacing:1px;
 }
 h2{
 font-size:26px;
@@ -51,9 +68,25 @@ font-weight:300;
 text-align:center;
 }
 
-/* IMAGES */
-.shield{width:160px;margin-bottom:25px;}
-.felino{width:340px;max-width:80%;margin-bottom:25px;}
+/* SHIELD GLOW */
+.shield{
+width:160px;
+margin-bottom:25px;
+animation:shieldGlow 4s ease-in-out infinite;
+}
+
+@keyframes shieldGlow{
+0%{filter:drop-shadow(0 0 5px gold);}
+50%{filter:drop-shadow(0 0 20px gold);}
+100%{filter:drop-shadow(0 0 5px gold);}
+}
+
+/* FELINE */
+.felino{
+width:340px;
+max-width:80%;
+margin-bottom:25px;
+}
 
 /* INPUT */
 input, select{
@@ -80,9 +113,10 @@ border:1px solid gold;
 color:gold;
 cursor:pointer;
 letter-spacing:2px;
-transition:0.3s;
 position:relative;
+transition:0.3s;
 }
+
 .btn:hover{
 background:gold;
 color:black;
@@ -116,6 +150,7 @@ animation:spin 0.8s linear infinite;
 width:320px;
 padding:40px 30px;
 border:1px solid rgba(0,255,136,0.1);
+backdrop-filter:blur(6px);
 }
 
 /* SUCCESS */
@@ -201,7 +236,7 @@ s.classList.remove("active");
 
 setTimeout(()=>{
 target.classList.add("active");
-},50);
+},60);
 }
 
 const form=document.getElementById("formEG");
