@@ -5,126 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Emerald Guardian</title>
 
+<!-- GOOGLE ANALYTICS -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TZ0PVG0KN5"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-TZ0PVG0KN5');
+</script>
+
 <style>
-body{
-margin:0;
-background:black;
-color:white;
-font-family:system-ui;
-overflow:hidden;
-}
-
-.section{
-position:absolute;
-width:100%;
-height:100vh;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-opacity:0;
-pointer-events:none;
-transition:0.6s ease;
-}
-
-.section.active{
-opacity:1;
-pointer-events:auto;
-}
-
+body{margin:0;background:black;color:white;font-family:system-ui;overflow:hidden;}
+.section{position:absolute;width:100%;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;opacity:0;pointer-events:none;transition:0.6s;}
+.section.active{opacity:1;pointer-events:auto;}
 h1{font-size:56px;color:#d4af37;}
 h2{font-size:26px;font-weight:300;text-align:center;}
-
 .shield{width:200px;margin-bottom:20px;}
-.felino{width:340px;max-width:85%;margin-bottom:20px;}
-
-.input-group{
-position:relative;
-width:280px;
-margin:15px 0;
-}
-
-.input-group input{
-width:100%;
-background:transparent;
-border:none;
-border-bottom:1px solid rgba(0,255,136,0.3);
-color:white;
-padding:10px 0;
-outline:none;
-}
-
-.input-group label{
-position:absolute;
-top:10px;
-left:0;
-font-size:12px;
-color:#888;
-transition:0.3s;
-}
-
-.input-group input:focus + label,
-.input-group input:not(:placeholder-shown) + label{
-top:-8px;
-font-size:10px;
-color:#00ff88;
-}
-
-.dropdown{
-width:280px;
-margin:15px 0;
-position:relative;
-cursor:pointer;
-}
-
-.dropdown-selected{
-border-bottom:1px solid rgba(0,255,136,0.3);
-padding:10px 0;
-background:black;
-}
-
-.dropdown-list{
-display:none;
-position:absolute;
-top:100%;
-left:0;
-width:100%;
-background:black;
-border:1px solid #00ff88;
-max-height:180px;
-overflow:auto;
-z-index:1000;
-}
-
-.dropdown.open .dropdown-list{
-display:block;
-}
-
-.dropdown-item{
-padding:10px;
-background:black;
-}
-
-.dropdown-item:hover{
-background:#002b1a;
-}
-
-.btn{
-padding:14px 30px;
-margin-top:20px;
-background:transparent;
-border:1px solid #d4af37;
-color:#d4af37;
-cursor:pointer;
-}
-
-.form-container{
-width:320px;
-padding:30px;
-border:1px solid rgba(0,255,136,0.1);
-background:black;
-}
-
+.felino{width:340px;max-width:85%;}
+.input-group{position:relative;width:280px;margin:15px 0;}
+.input-group input{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(0,255,136,0.3);color:white;padding:10px 0;}
+.input-group label{position:absolute;top:10px;left:0;font-size:12px;color:#888;}
+.dropdown{width:280px;margin:15px 0;position:relative;}
+.dropdown-list{display:none;position:absolute;background:black;border:1px solid #00ff88;}
+.dropdown.open .dropdown-list{display:block;}
+.btn{padding:14px 30px;margin-top:20px;border:1px solid #d4af37;color:#d4af37;background:transparent;}
+.form-container{width:320px;padding:30px;}
 .success{color:#00ff88;}
 </style>
 
@@ -144,7 +49,7 @@ emailjs.init("l63HL-owZxjATzyae");
 <img src="1977.png" class="shield">
 <h1>Emerald Guardian</h1>
 <h2 style="opacity:0.7">Private Access Only</h2>
-  
+
 <div class="input-group">
 <input id="code" placeholder=" ">
 <label>PRIVATE ACCESS CODE</label>
@@ -183,7 +88,7 @@ emailjs.init("l63HL-owZxjATzyae");
 <div class="form-container">
 
 <h2>Request Private Access</h2>
-<p style="opacity:0.6; font-size:13px; text-align:center;">
+<p style="opacity:0.6;font-size:13px;text-align:center;">
 Submissions are individually reviewed.<br>
 Only selected clients will be contacted.
 </p>
@@ -191,13 +96,13 @@ Only selected clients will be contacted.
 <form id="formEG">
 
 <div class="input-group">
-<input name="name" placeholder=" " required>
+<input name="name" required>
 <label>FULL NAME</label>
 </div>
 
 <div class="input-group">
-<input name="email" placeholder=" " required>
-<label>EMAIL ADDRESS</label>
+<input name="email" required>
+<label>EMAIL</label>
 </div>
 
 <div class="dropdown" id="dropdown">
@@ -212,7 +117,7 @@ Only selected clients will be contacted.
 <input type="hidden" name="ddi" id="ddi">
 
 <div class="input-group">
-<input name="phone" placeholder=" " required>
+<input name="phone" required>
 <label>PHONE</label>
 </div>
 
@@ -225,45 +130,27 @@ Only selected clients will be contacted.
 
 <div class="section" id="s8">
 <h2 class="success">Request sent successfully</h2>
-<button class="btn" onclick="nextSafe(1)">RETURN</button>
 </div>
 
 <script>
 
-function enterSite(){
-const code = document.getElementById("code").value.trim();
-if(code===""){alert("Enter access code");return;}
-nextSafe(2);
-}
+function enterSite(){nextSafe(2);}
 
 function nextSafe(n){
-document.querySelectorAll(".section").forEach(s=>{
-s.classList.remove("active");
-});
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 document.getElementById("s"+n).classList.add("active");
 }
 
 /* DROPDOWN */
 const dropdown=document.getElementById("dropdown");
-const selected=dropdown.querySelector(".dropdown-selected");
-const items=dropdown.querySelectorAll(".dropdown-item");
-const hidden=document.getElementById("ddi");
+dropdown.onclick=()=>dropdown.classList.toggle("open");
 
-selected.onclick=()=>dropdown.classList.toggle("open");
-
-items.forEach(item=>{
+document.querySelectorAll(".dropdown-item").forEach(item=>{
 item.onclick=()=>{
-selected.innerText=item.innerText;
-hidden.value=item.innerText;
-dropdown.classList.remove("open");
+document.querySelector(".dropdown-selected").innerText=item.innerText;
+document.getElementById("ddi").value=item.innerText;
 };
 });
-
-document.onclick=(e)=>{
-if(!dropdown.contains(e.target)){
-dropdown.classList.remove("open");
-}
-};
 
 /* FORM */
 document.getElementById("formEG").addEventListener("submit",function(e){
@@ -274,29 +161,30 @@ const email=document.querySelector('[name="email"]').value;
 const ddi=document.getElementById("ddi").value;
 const phone=document.querySelector('[name="phone"]').value;
 
+/* EVENTO GOOGLE */
+gtag('event', 'conversion', {
+event_category: 'lead',
+event_label: 'request_access'
+});
+
 /* EMAIL */
 emailjs.send("service_lg8ov1g","template_7zdwxpa",{
-name:name,
-email:email,
-phone:phone,
-ddi:ddi
+name,email,phone,ddi
 });
 
 /* WHATSAPP */
-const message = `Hello,
+const msg=`Hello,
 
 I would like to request private access to the Emerald Guardian collection.
 
-My details:
 Name: ${name}
 Email: ${email}
 Country: ${ddi}
-Phone: ${phone}
+Phone: ${phone}`;
 
-I understand that access is limited and subject to approval.`;
+window.open(`https://wa.me/5511964727202?text=${encodeURIComponent(msg)}`);
 
-window.open(`https://wa.me/5511964727202?text=${encodeURIComponent(message)}`, "_blank");
-
+/* SUCCESS */
 nextSafe(8);
 });
 
