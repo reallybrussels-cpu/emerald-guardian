@@ -31,7 +31,6 @@ transform:scale(1.05);
 filter:blur(10px);
 transition:all 1s cubic-bezier(0.22,1,0.36,1);
 }
-
 .section.active{
 opacity:1;
 pointer-events:auto;
@@ -39,31 +38,21 @@ transform:scale(1);
 filter:blur(0);
 }
 
-/* TITLES */
-h1{
-font-family:'Playfair Display',serif;
-font-size:56px;
-color:gold;
-}
-h2{
-font-size:26px;
-font-weight:300;
-text-align:center;
-}
+/* TEXT */
+h1{font-family:'Playfair Display';font-size:56px;color:gold;}
+h2{font-size:26px;font-weight:300;text-align:center;}
 
-/* IMAGES */
 .shield{width:200px;margin-bottom:25px;}
 .felino{width:340px;max-width:85%;margin-bottom:25px;}
 
-/* INPUT PREMIUM */
+/* INPUT GROUP */
 .input-group{
 position:relative;
 width:280px;
 margin:18px 0;
 }
 
-.input-group input,
-.input-group select{
+.input-group input{
 width:100%;
 background:transparent;
 border:none;
@@ -71,8 +60,6 @@ border-bottom:1px solid rgba(0,255,136,0.3);
 color:white;
 padding:10px 0;
 outline:none;
-font-size:14px;
-transition:0.3s;
 }
 
 .input-group label{
@@ -86,17 +73,55 @@ pointer-events:none;
 }
 
 .input-group input:focus + label,
-.input-group input:not(:placeholder-shown) + label,
-.input-group select:focus + label{
+.input-group input:not(:placeholder-shown) + label{
 top:-8px;
 font-size:10px;
 color:#00ff88;
 }
 
-.input-group input:focus,
-.input-group select:focus{
+.input-group input:focus{
 border-bottom:1px solid #00ff88;
 box-shadow:0 6px 10px -6px #00ff88;
+}
+
+/* CUSTOM DROPDOWN */
+.dropdown{
+position:relative;
+width:280px;
+margin:18px 0;
+cursor:pointer;
+}
+
+.dropdown-selected{
+border-bottom:1px solid rgba(0,255,136,0.3);
+padding:10px 0;
+color:white;
+}
+
+.dropdown-list{
+position:absolute;
+top:100%;
+left:0;
+width:100%;
+background:black;
+border:1px solid rgba(0,255,136,0.2);
+max-height:180px;
+overflow-y:auto;
+display:none;
+z-index:10;
+}
+
+.dropdown.open .dropdown-list{
+display:block;
+}
+
+.dropdown-item{
+padding:10px;
+transition:0.2s;
+}
+
+.dropdown-item:hover{
+background:rgba(0,255,136,0.1);
 }
 
 /* BUTTON */
@@ -109,18 +134,13 @@ color:gold;
 cursor:pointer;
 letter-spacing:2px;
 position:relative;
-transition:0.3s;
-}
-.btn:hover{
-background:gold;
-color:black;
 }
 
-/* LOADING */
 .btn.loading{
 pointer-events:none;
 opacity:0.7;
 }
+
 .btn.loading::after{
 content:"";
 position:absolute;
@@ -134,31 +154,19 @@ border-top:2px solid transparent;
 border-radius:50%;
 animation:spin 0.8s linear infinite;
 }
+
 @keyframes spin{
-0%{transform:rotate(0deg);}
+0%{transform:rotate(0);}
 100%{transform:rotate(360deg);}
 }
 
-/* FORM */
 .form-container{
 width:320px;
 padding:40px 30px;
 border:1px solid rgba(0,255,136,0.1);
-backdrop-filter:blur(6px);
 }
 
-/* SUCCESS */
-.success{
-color:#00ff88;
-font-size:22px;
-}
-
-/* MOBILE */
-@media(max-width:600px){
-h1{font-size:36px;}
-.form-container{width:85%;}
-.felino{width:90%;}
-}
+.success{color:#00ff88;font-size:22px;}
 </style>
 </head>
 
@@ -168,36 +176,10 @@ h1{font-size:36px;}
 <img src="1977.png" class="shield">
 <h1>Emerald Guardian</h1>
 <div class="input-group">
-<input placeholder=" " />
+<input placeholder=" ">
 <label>ACCESS CODE</label>
 </div>
 <button class="btn" onclick="nextSafe(2)">ENTER</button>
-</div>
-
-<div class="section" id="s2">
-<h2>Exclusive Access</h2>
-<button class="btn" onclick="nextSafe(3)">CONTINUE</button>
-</div>
-
-<div class="section" id="s3">
-<h2>Formed over millions of years</h2>
-<button class="btn" onclick="nextSafe(4)">CONTINUE</button>
-</div>
-
-<div class="section" id="s4">
-<img src="1979.png" class="felino">
-<h2>A singular piece</h2>
-<button class="btn" onclick="nextSafe(5)">CONTINUE</button>
-</div>
-
-<div class="section" id="s5">
-<h2>Absolute rarity</h2>
-<button class="btn" onclick="nextSafe(6)">CONTINUE</button>
-</div>
-
-<div class="section" id="s6">
-<h2>Private and selective</h2>
-<button class="btn" onclick="nextSafe(7)">CONTINUE</button>
 </div>
 
 <div class="section" id="s7">
@@ -216,17 +198,19 @@ h1{font-size:36px;}
 <label>EMAIL ADDRESS</label>
 </div>
 
-<div class="input-group">
-<select name="ddi">
-<option value="">Select Country</option>
-<option>Brazil (+55)</option>
-<option>United States (+1)</option>
-<option>United Kingdom (+44)</option>
-<option>Germany (+49)</option>
-<option>France (+33)</option>
-</select>
-<label>COUNTRY</label>
+<!-- CUSTOM DROPDOWN -->
+<div class="dropdown" id="dropdown">
+<div class="dropdown-selected">Select Country</div>
+<div class="dropdown-list">
+<div class="dropdown-item">Brazil (+55)</div>
+<div class="dropdown-item">United States (+1)</div>
+<div class="dropdown-item">United Kingdom (+44)</div>
+<div class="dropdown-item">Germany (+49)</div>
+<div class="dropdown-item">France (+33)</div>
 </div>
+</div>
+
+<input type="hidden" name="ddi" id="ddi">
 
 <div class="input-group">
 <input name="phone" placeholder=" " required>
@@ -239,45 +223,28 @@ h1{font-size:36px;}
 </div>
 </div>
 
-<div class="section" id="s8">
-<h2 class="success">Request received successfully</h2>
-<button class="btn" onclick="nextSafe(1)">RETURN</button>
-</div>
-
 <script>
-function nextSafe(n){
-let target=document.getElementById("s"+n);
-if(!target)return;
-document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-setTimeout(()=>{target.classList.add("active");},60);
-}
+const dropdown = document.getElementById("dropdown");
+const selected = dropdown.querySelector(".dropdown-selected");
+const items = dropdown.querySelectorAll(".dropdown-item");
+const hidden = document.getElementById("ddi");
 
-const form=document.getElementById("formEG");
-
-form.addEventListener("submit", function(e){
-e.preventDefault();
-
-const btn = form.querySelector("button");
-const originalText = btn.innerText;
-
-btn.classList.add("loading");
-btn.innerText = "ENVIANDO";
-
-fetch("https://formsubmit.co/really.brussels@gmail.com", {
-method: "POST",
-body: new FormData(form)
-})
-.then(()=>{
-nextSafe(8);
-form.reset();
-btn.classList.remove("loading");
-btn.innerText = originalText;
-})
-.catch(()=>{
-alert("Erro no envio");
-btn.classList.remove("loading");
-btn.innerText = originalText;
+selected.addEventListener("click", ()=>{
+dropdown.classList.toggle("open");
 });
+
+items.forEach(item=>{
+item.addEventListener("click", ()=>{
+selected.innerText = item.innerText;
+hidden.value = item.innerText;
+dropdown.classList.remove("open");
+});
+});
+
+document.addEventListener("click", (e)=>{
+if(!dropdown.contains(e.target)){
+dropdown.classList.remove("open");
+}
 });
 </script>
 
