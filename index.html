@@ -132,7 +132,7 @@ background:black;
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 <script>
 (function(){
-emailjs.init("SUA_PUBLIC_KEY");
+emailjs.init("l63HL-owZxjATzyae");
 })();
 </script>
 
@@ -225,14 +225,12 @@ emailjs.init("SUA_PUBLIC_KEY");
 
 <script>
 
-/* ENTER */
 function enterSite(){
 const code = document.getElementById("code").value.trim();
 if(code===""){alert("Enter access code");return;}
 nextSafe(2);
 }
 
-/* NAV */
 function nextSafe(n){
 document.querySelectorAll(".section").forEach(s=>{
 s.classList.remove("active");
@@ -272,7 +270,7 @@ const ddi=document.getElementById("ddi").value;
 const phone=document.querySelector('[name="phone"]').value;
 
 /* EMAIL */
-emailjs.send("SEU_SERVICE_ID","SEU_TEMPLATE_ID",{
+emailjs.send("service_lg8ov1g","template_7zdwxpa",{
 name:name,
 email:email,
 phone:phone,
