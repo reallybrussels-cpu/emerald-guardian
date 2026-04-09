@@ -30,11 +30,20 @@ background:#d4af37;
 color:#000;
 }
 
+input, select{
+padding:10px;
+margin:5px;
+background:#000;
+border:1px solid rgba(0,255,136,0.3);
+color:#fff;
+}
+
 .hidden{display:none;}
 
 .table{
 width:100%;
 border-collapse:collapse;
+margin-top:15px;
 }
 
 .table th, .table td{
@@ -49,6 +58,7 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 margin-bottom:20px;
+flex-wrap:wrap;
 }
 </style>
 </head>
@@ -71,6 +81,18 @@ margin-bottom:20px;
 </div>
 </div>
 
+<!-- FILTROS -->
+<div>
+<input type="text" id="search" placeholder="Buscar nome ou email" onkeyup="applyFilters()">
+
+<select id="filterCountry" onchange="applyFilters()">
+<option value="">Todos os países</option>
+<option value="Brazil (+55)">Brazil</option>
+<option value="USA (+1)">USA</option>
+<option value="UK (+44)">UK</option>
+</select>
+</div>
+
 <table class="table">
 <thead>
 <tr>
@@ -89,6 +111,7 @@ margin-bottom:20px;
 <script>
 
 const ADMIN_PASSWORD = "1234";
+let allLeads = [];
 
 function login(){
   if(document.getElementById("password").value === ADMIN_PASSWORD){
@@ -123,7 +146,11 @@ async function loadLeads(){
   });
 
   const data = await res.json();
+  allLeads = data;
+  renderTable(data);
+}
 
+function renderTable(data){
   const tbody = document.getElementById("tbody");
   tbody.innerHTML = "";
 
@@ -140,41 +167,46 @@ async function loadLeads(){
   });
 }
 
-// 🔥 EXPORTAÇÃO DIRETA (SEM VARIÁVEL)
+// 🔍 FILTROS
+function applyFilters(){
+  const search = document.getElementById("search").value.toLowerCase();
+  const country = document.getElementById("filterCountry").value;
+
+  const filtered = allLeads.filter(l=>{
+    const matchText = 
+      l.name.toLowerCase().includes(search) ||
+      l.email.toLowerCase().includes(search);
+
+    const matchCountry = !country || l.ddi === country;
+
+    return matchText && matchCountry;
+  });
+
+  renderTable(filtered);
+}
+
+// EXPORT CSV
 async function exportCSV(){
-  try{
-    const res = await fetch('https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?select=*', {
-      headers:{
-        'apikey':'sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL',
-        'Authorization':'Bearer sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL'
-      }
-    });
+  const data = allLeads;
 
-    const data = await res.json();
-
-    if(data.length === 0){
-      alert("Sem dados");
-      return;
-    }
-
-    let csv = "Nome,Email,Telefone,Pais,Data\n";
-
-    data.forEach(l=>{
-      csv += `"${l.name}","${l.email}","${l.phone}","${l.ddi}","${l.created_at}"\n`;
-    });
-
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "leads.csv";
-    a.click();
-
-  }catch(err){
-    console.error(err);
-    alert("Erro ao exportar");
+  if(data.length === 0){
+    alert("Sem dados");
+    return;
   }
+
+  let csv = "Nome,Email,Telefone,Pais,Data\n";
+
+  data.forEach(l=>{
+    csv += `"${l.name}","${l.email}","${l.phone}","${l.ddi}","${l.created_at}"\n`;
+  });
+
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "leads.csv";
+  a.click();
 }
 
 </script>
