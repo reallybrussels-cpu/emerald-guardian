@@ -10,16 +10,45 @@
 <style>
 body{
 margin:0;
-background:#fff;
 font-family:Arial;
-padding:20px;
 font-size:12px;
 }
 
-h1{
-color:#b8962e;
-font-size:18px;
+/* LOGIN */
+#login{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:#000;
+color:#fff;
+flex-direction:column;
 }
+
+#login input{
+margin:5px;
+padding:8px;
+border:none;
+outline:none;
+}
+
+#login button{
+padding:8px 20px;
+background:#b8962e;
+border:none;
+color:#000;
+cursor:pointer;
+}
+
+/* CRM */
+#app{
+display:none;
+padding:20px;
+background:#fff;
+color:#000;
+}
+
+h1{color:#b8962e;}
 
 .topbar{
 display:flex;
@@ -33,20 +62,6 @@ border:1px solid #b8962e;
 background:#fff;
 color:#b8962e;
 cursor:pointer;
-font-size:12px;
-}
-
-.dashboard{
-display:flex;
-gap:10px;
-margin-bottom:15px;
-flex-wrap:wrap;
-}
-
-.card{
-border:1px solid #ddd;
-padding:8px;
-min-width:140px;
 }
 
 /* STATUS */
@@ -60,22 +75,28 @@ width:100%;
 border-collapse:collapse;
 }
 
-.table th, .table td{
+.table th,.table td{
 padding:6px;
 border-bottom:1px solid #ddd;
 }
 
-.table th{
-background:#f5f5f5;
-}
-
-.star{
-color:#b8962e;
-}
+.table th{background:#f5f5f5;}
+.star{color:#b8962e;}
 </style>
 </head>
 
 <body>
+
+<!-- LOGIN -->
+<div id="login">
+<h2>Emerald Access</h2>
+<input id="user" placeholder="Usuário">
+<input id="pass" type="password" placeholder="Senha">
+<button onclick="login()">Entrar</button>
+</div>
+
+<!-- CRM -->
+<div id="app">
 
 <div class="topbar">
 <h1>Emerald CRM</h1>
@@ -86,15 +107,15 @@ color:#b8962e;
 </div>
 
 <div class="dashboard">
-<div class="card">Total: <strong id="total">0</strong></div>
-<div class="card">Hoje: <strong id="today">--</strong></div>
-<div class="card">Clientes: <strong id="clientes">0</strong></div>
-<div class="card">Quentes: <strong id="quentes">0</strong></div>
-<div class="card">Mornos: <strong id="mornos">0</strong></div>
-<div class="card">Frios: <strong id="frios">0</strong></div>
+<div>Total: <strong id="total">0</strong></div>
+<div>Hoje: <strong id="today">--</strong></div>
+<div>Clientes: <strong id="clientes">0</strong></div>
+<div>Quentes: <strong id="quentes">0</strong></div>
+<div>Mornos: <strong id="mornos">0</strong></div>
+<div>Frios: <strong id="frios">0</strong></div>
 </div>
 
-<h1>Lista de Leads</h1>
+<h1>Leads</h1>
 
 <table class="table">
 <thead>
@@ -108,21 +129,52 @@ color:#b8962e;
 <th>Ações</th>
 </tr>
 </thead>
-
-<!-- 🔥 AQUI ESTAVA FALTANDO -->
 <tbody id="tbody"></tbody>
-
 </table>
+
+</div>
 
 <script>
 
-let leads = [];
-let lastCount = 0;
+// LOGIN FIXO (SEUS USUÁRIOS)
+const users = {
+  "Fernando":"EmeraldFernando2026",
+  "Almir":"AlmirEsmeralda2025",
+  "Renato":"RPDiamonds2027"
+};
+
+function login(){
+  const u = document.getElementById("user").value;
+  const p = document.getElementById("pass").value;
+
+  if(users[u] === p){
+    localStorage.setItem("auth", "ok");
+    showApp();
+  } else {
+    alert("Acesso negado");
+  }
+}
 
 function logout(){
   localStorage.removeItem("auth");
   location.reload();
 }
+
+function showApp(){
+  document.getElementById("login").style.display="none";
+  document.getElementById("app").style.display="block";
+  load();
+}
+
+// AUTO LOGIN
+if(localStorage.getItem("auth") === "ok"){
+  showApp();
+}
+
+// ================= CRM =================
+
+let leads = [];
+let lastCount = 0;
 
 async function load(){
   const res = await fetch('https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?select=*', {
@@ -145,7 +197,6 @@ async function load(){
 }
 
 function stats(){
-
   document.getElementById("total").innerText = leads.length;
 
   const hoje = new Date();
@@ -158,7 +209,6 @@ function stats(){
 
   leads.forEach(l=>{
     const d = new Date(l.created_at).toDateString();
-
     if(d === hojeStr) hojeCount++;
     if(d === ontem.toDateString()) ontemCount++;
   });
@@ -166,14 +216,12 @@ function stats(){
   const formatada = hoje.toLocaleDateString("pt-BR");
 
   let crescimento = 0;
-
   if(ontemCount > 0){
     crescimento = ((hojeCount - ontemCount) / ontemCount * 100).toFixed(0);
   }
 
   document.getElementById("today").innerText =
     `${formatada} (${hojeCount}) ↑ ${crescimento}%`;
-
 }
 
 function getScore(status){
@@ -190,7 +238,6 @@ function render(){
   let clientes=0,quentes=0,mornos=0,frios=0;
 
   leads.forEach(l=>{
-
     const status = l.status || "frio";
 
     if(status==="cliente") clientes++;
@@ -279,8 +326,6 @@ function exportCSV(){
 }
 
 setInterval(load, 10000);
-
-load();
 
 </script>
 
