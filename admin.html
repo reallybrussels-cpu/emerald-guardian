@@ -54,19 +54,27 @@ h1{color:#b8962e;}
 .topbar{
 display:flex;
 justify-content:space-between;
+align-items:center;
 margin-bottom:15px;
 }
 
+.actions{
+display:flex;
+gap:8px;
+align-items:center;
+}
+
 /* BOTÕES */
-button{
+button, select{
 padding:5px 10px;
 border:1px solid #b8962e;
 background:#fff;
 color:#b8962e;
 cursor:pointer;
+font-size:12px;
 }
 
-/* DASHBOARD CARDS */
+/* DASHBOARD */
 .dashboard{
 display:flex;
 gap:10px;
@@ -91,14 +99,17 @@ background:#fafafa;
 .table{
 width:100%;
 border-collapse:collapse;
+text-align:center;
 }
 
 .table th,.table td{
-padding:6px;
+padding:8px;
 border-bottom:1px solid #ddd;
 }
 
-.table th{background:#f5f5f5;}
+.table th{
+background:#f5f5f5;
+}
 
 .star{color:#b8962e;}
 </style>
@@ -119,48 +130,38 @@ border-bottom:1px solid #ddd;
 
 <div class="topbar">
 <h1>Emerald CRM</h1>
-<div>
+
+<div class="actions">
+
+<select id="filterStatus" onchange="render()">
+<option value="todos">Todos</option>
+<option value="frio">Frio</option>
+<option value="morno">Morno</option>
+<option value="quente">Quente</option>
+<option value="cliente">Cliente</option>
+</select>
+
+<select id="filterCountry" onchange="render()">
+<option value="todos">País</option>
+</select>
+
 <button onclick="exportCSV()">Exportar</button>
 <button onclick="logout()">Logout</button>
+
 </div>
 </div>
 
-<!-- CARDS CORRIGIDOS -->
+<!-- DASHBOARD -->
 <div class="dashboard">
-
-<div class="card">
-Total<br>
-<strong id="total">0</strong>
+<div class="card">Total<br><strong id="total">0</strong></div>
+<div class="card">Hoje<br><strong id="today">--</strong></div>
+<div class="card">Clientes<br><strong id="clientes">0</strong></div>
+<div class="card">Quentes<br><strong id="quentes">0</strong></div>
+<div class="card">Mornos<br><strong id="mornos">0</strong></div>
+<div class="card">Frios<br><strong id="frios">0</strong></div>
 </div>
 
-<div class="card">
-Hoje<br>
-<strong id="today">--</strong>
-</div>
-
-<div class="card">
-Clientes<br>
-<strong id="clientes">0</strong>
-</div>
-
-<div class="card">
-Quentes<br>
-<strong id="quentes">0</strong>
-</div>
-
-<div class="card">
-Mornos<br>
-<strong id="mornos">0</strong>
-</div>
-
-<div class="card">
-Frios<br>
-<strong id="frios">0</strong>
-</div>
-
-</div>
-
-<h1>Leads</h1>
+<h1>Lista de Leads</h1>
 
 <table class="table">
 <thead>
@@ -211,62 +212,58 @@ function showApp(){
   load();
 }
 
-// AUTO LOGIN
-if(localStorage.getItem("auth") === "ok"){
+if(localStorage.getItem("auth")==="ok"){
   showApp();
 }
 
 // ================= CRM =================
 
-let leads = [];
-let lastCount = 0;
+let leads=[];
 
 async function load(){
-  const res = await fetch('https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?select=*', {
+  const res = await fetch('https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?select=*',{
     headers:{
       'apikey':'sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL',
       'Authorization':'Bearer sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL'
     }
   });
 
-  const data = await res.json();
+  leads = await res.json();
 
-  if(lastCount && data.length > lastCount){
-    alert("🚀 Novo lead recebido");
-  }
-
-  lastCount = data.length;
-  leads = data;
-
+  loadCountries();
   render();
+}
+
+function loadCountries(){
+  const select = document.getElementById("filterCountry");
+  const countries = [...new Set(leads.map(l=>l.ddi))];
+
+  select.innerHTML = '<option value="todos">País</option>';
+
+  countries.forEach(c=>{
+    const opt=document.createElement("option");
+    opt.value=c;
+    opt.textContent=c;
+    select.appendChild(opt);
+  });
 }
 
 function stats(){
   document.getElementById("total").innerText = leads.length;
 
-  const hoje = new Date();
-  const hojeStr = hoje.toDateString();
-  const ontem = new Date();
-  ontem.setDate(ontem.getDate()-1);
-
-  let hojeCount = 0;
-  let ontemCount = 0;
+  const hoje = new Date().toDateString();
+  let hojeCount=0;
 
   leads.forEach(l=>{
-    const d = new Date(l.created_at).toDateString();
-    if(d === hojeStr) hojeCount++;
-    if(d === ontem.toDateString()) ontemCount++;
+    if(new Date(l.created_at).toDateString()===hoje){
+      hojeCount++;
+    }
   });
 
-  const formatada = hoje.toLocaleDateString("pt-BR");
-
-  let crescimento = 0;
-  if(ontemCount > 0){
-    crescimento = ((hojeCount - ontemCount) / ontemCount * 100).toFixed(0);
-  }
+  const data = new Date().toLocaleDateString("pt-BR");
 
   document.getElementById("today").innerText =
-    `${formatada} (${hojeCount}) ↑ ${crescimento}%`;
+    `${data} (${hojeCount})`;
 }
 
 function getScore(status){
@@ -277,13 +274,21 @@ function getScore(status){
 }
 
 function render(){
-  const tbody = document.getElementById("tbody");
+
+  const statusFilter = document.getElementById("filterStatus").value;
+  const countryFilter = document.getElementById("filterCountry").value;
+
+  const tbody=document.getElementById("tbody");
   tbody.innerHTML="";
 
   let clientes=0,quentes=0,mornos=0,frios=0;
 
   leads.forEach(l=>{
-    const status = l.status || "frio";
+
+    const status=l.status||"frio";
+
+    if(statusFilter!=="todos" && status!==statusFilter) return;
+    if(countryFilter!=="todos" && l.ddi!==countryFilter) return;
 
     if(status==="cliente") clientes++;
     else if(status==="quente") quentes++;
@@ -291,29 +296,28 @@ function render(){
     else frios++;
 
     const tr=document.createElement("tr");
-    tr.className=status;
 
     tr.innerHTML=`
-      <td>${l.name}</td>
-      <td>${l.email}</td>
-      <td>${l.phone}</td>
-      <td>${l.ddi}</td>
+<td>${l.name}</td>
+<td>${l.email}</td>
+<td>${l.phone}</td>
+<td>${l.ddi}</td>
 
-      <td>
-        <select onchange="updateStatus(${l.id}, this.value)">
-          <option value="frio" ${status==="frio"?"selected":""}>Frio</option>
-          <option value="morno" ${status==="morno"?"selected":""}>Morno</option>
-          <option value="quente" ${status==="quente"?"selected":""}>Quente</option>
-          <option value="cliente" ${status==="cliente"?"selected":""}>Cliente</option>
-        </select>
-      </td>
+<td>
+<select onchange="updateStatus(${l.id}, this.value)">
+<option value="frio" ${status==="frio"?"selected":""}>Frio</option>
+<option value="morno" ${status==="morno"?"selected":""}>Morno</option>
+<option value="quente" ${status==="quente"?"selected":""}>Quente</option>
+<option value="cliente" ${status==="cliente"?"selected":""}>Cliente</option>
+</select>
+</td>
 
-      <td class="star">${getScore(status)}</td>
+<td class="star">${getScore(status)}</td>
 
-      <td>
-        <button onclick="del(${l.id})">Excluir</button>
-      </td>
-    `;
+<td>
+<button onclick="del(${l.id})">Excluir</button>
+</td>
+`;
 
     tbody.appendChild(tr);
   });
@@ -327,7 +331,7 @@ function render(){
 }
 
 async function updateStatus(id,status){
-  await fetch(`https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?id=eq.${id}`, {
+  await fetch(`https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?id=eq.${id}`,{
     method:"PATCH",
     headers:{
       'Content-Type':'application/json',
@@ -343,7 +347,7 @@ async function updateStatus(id,status){
 async function del(id){
   if(!confirm("Excluir lead?")) return;
 
-  await fetch(`https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?id=eq.${id}`, {
+  await fetch(`https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?id=eq.${id}`,{
     method:"DELETE",
     headers:{
       'apikey':'sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL',
@@ -370,7 +374,7 @@ function exportCSV(){
   a.click();
 }
 
-setInterval(load, 10000);
+load();
 
 </script>
 
