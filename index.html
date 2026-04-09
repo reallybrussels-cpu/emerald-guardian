@@ -13,7 +13,6 @@ color:#fff;
 font-family:system-ui,-apple-system,Segoe UI,Roboto;
 }
 
-/* SECTIONS */
 .section{
 position:absolute;
 width:100%;
@@ -32,15 +31,12 @@ opacity:1;
 pointer-events:auto;
 }
 
-/* TEXT */
-h1{font-size:56px;color:#d4af37;letter-spacing:1px;}
+h1{font-size:56px;color:#d4af37;}
 h2{font-size:24px;font-weight:300;text-align:center;max-width:400px;}
 
-/* IMAGES */
 .shield{width:180px;margin-bottom:20px;}
 .felino{width:320px;max-width:85%;margin-bottom:20px;}
 
-/* INPUT */
 .input-group{
 position:relative;
 width:280px;
@@ -73,7 +69,6 @@ font-size:10px;
 color:#00ff88;
 }
 
-/* DROPDOWN PREMIUM */
 .dropdown{
 width:280px;
 margin:15px 0;
@@ -111,7 +106,6 @@ transition:0.2s;
 background:#001a10;
 }
 
-/* BUTTON */
 .btn{
 padding:14px 30px;
 margin-top:20px;
@@ -127,7 +121,6 @@ background:#d4af37;
 color:#000;
 }
 
-/* FORM */
 .form-container{
 width:320px;
 padding:30px;
@@ -225,20 +218,17 @@ border:1px solid rgba(0,255,136,0.08);
 
 <script>
 
-/* ENTER */
 function enterSite(){
 const code=document.getElementById("code").value.trim();
 if(!code){alert("Enter access code");return;}
 nextSafe(2);
 }
 
-/* NAV */
 function nextSafe(n){
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 document.getElementById("s"+n).classList.add("active");
 }
 
-/* DROPDOWN */
 const dropdown=document.getElementById("dropdown");
 const selected=dropdown.querySelector(".dropdown-selected");
 const items=dropdown.querySelectorAll(".dropdown-item");
@@ -260,7 +250,7 @@ dropdown.classList.remove("open");
 }
 });
 
-/* FORM */
+/* FORM SUPABASE */
 document.getElementById("formEG").addEventListener("submit", async function(e){
   e.preventDefault();
 
@@ -278,8 +268,8 @@ document.getElementById("formEG").addEventListener("submit", async function(e){
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'apikey': 'SUA_ANON_KEY_AQUI',
-        'Authorization': 'Bearer SUA_ANON_KEY_AQUI',
+        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1paHJzZm90cmJpZ2l4cWtwd2h1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NDA1NTksImV4cCI6MjA5MTMxNjU1OX0.w-8I1XF62mNDG4TNqnqeakFRk7e-xxDkwFivTlvb2oM',
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1paHJzZm90cmJpZ2l4cWtwd2h1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NDA1NTksImV4cCI6MjA5MTMxNjU1OX0.w-8I1XF62mNDG4TNqnqeakFRk7e-xxDkwFivTlvb2oM',
         'Prefer': 'return=minimal'
       },
       body: JSON.stringify(payload)
