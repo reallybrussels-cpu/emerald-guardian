@@ -266,30 +266,34 @@ document.getElementById("formEG").addEventListener("submit", async function(e){
 
   const form = e.target;
 
-  const data = {
-    username: form.email.value,
-    password: form.phone.value
+  const payload = {
+    name: form.name.value,
+    email: form.email.value,
+    phone: form.phone.value,
+    ddi: form.ddi.value
   };
 
   try {
-    const response = await fetch('/api/login', {
+    const response = await fetch('https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': 'SUA_ANON_KEY_AQUI',
+        'Authorization': 'Bearer SUA_ANON_KEY_AQUI',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(payload)
     });
 
-    const result = await response.json();
-
-    if(result.success){
-      localStorage.setItem('token', result.token);
+    if(response.ok){
       nextSafe(8);
     } else {
-      alert('Acesso negado');
+      alert('Erro ao salvar dados');
     }
 
   } catch (error) {
     console.error(error);
-    alert('Erro ao conectar com o servidor');
+    alert('Erro de conexão');
   }
 });
 
