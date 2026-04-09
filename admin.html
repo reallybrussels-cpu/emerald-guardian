@@ -16,21 +16,6 @@ padding:30px;
 
 h1{color:#d4af37;}
 
-.login-box{
-max-width:300px;
-margin:100px auto;
-text-align:center;
-}
-
-input{
-width:100%;
-padding:12px;
-margin:10px 0;
-background:#000;
-border:1px solid rgba(0,255,136,0.3);
-color:#fff;
-}
-
 button{
 padding:10px 20px;
 border:1px solid #d4af37;
@@ -46,25 +31,6 @@ color:#000;
 }
 
 .hidden{display:none;}
-
-.dashboard{
-display:flex;
-gap:20px;
-margin-bottom:20px;
-flex-wrap:wrap;
-}
-
-.card{
-border:1px solid rgba(0,255,136,0.1);
-padding:20px;
-min-width:180px;
-}
-
-.card h2{
-margin:0;
-font-size:28px;
-color:#00ff88;
-}
 
 .table{
 width:100%;
@@ -89,7 +55,7 @@ margin-bottom:20px;
 
 <body>
 
-<div id="loginBox" class="login-box">
+<div id="loginBox">
 <h1>Admin Access</h1>
 <input type="password" id="password" placeholder="Senha">
 <button onclick="login()">Entrar</button>
@@ -102,18 +68,6 @@ margin-bottom:20px;
 <div>
 <button onclick="exportCSV()">Exportar CSV</button>
 <button onclick="logout()">Logout</button>
-</div>
-</div>
-
-<div class="dashboard">
-<div class="card">
-<div>Total Leads</div>
-<h2 id="totalLeads">0</h2>
-</div>
-
-<div class="card">
-<div>Hoje</div>
-<h2 id="todayLeads">0</h2>
 </div>
 </div>
 
@@ -137,8 +91,7 @@ margin-bottom:20px;
 const ADMIN_PASSWORD = "1234";
 
 function login(){
-  const pass = document.getElementById("password").value;
-  if(pass === ADMIN_PASSWORD){
+  if(document.getElementById("password").value === ADMIN_PASSWORD){
     localStorage.setItem("admin_auth","true");
     showPanel();
   }else{
@@ -161,75 +114,68 @@ if(localStorage.getItem("admin_auth") === "true"){
   showPanel();
 }
 
-let leadsData = [];
-
 async function loadLeads(){
+  const res = await fetch('https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?select=*', {
+    headers:{
+      'apikey':'sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL',
+      'Authorization':'Bearer sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL'
+    }
+  });
+
+  const data = await res.json();
+
+  const tbody = document.getElementById("tbody");
+  tbody.innerHTML = "";
+
+  data.forEach(lead=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${lead.name}</td>
+      <td>${lead.email}</td>
+      <td>${lead.phone}</td>
+      <td>${lead.ddi}</td>
+      <td>${new Date(lead.created_at).toLocaleString()}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// 🔥 EXPORTAÇÃO DIRETA (SEM VARIÁVEL)
+async function exportCSV(){
   try{
-    const response = await fetch('https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?select=*', {
+    const res = await fetch('https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?select=*', {
       headers:{
         'apikey':'sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL',
         'Authorization':'Bearer sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL'
       }
     });
 
-    const data = await response.json();
-    leadsData = data;
+    const data = await res.json();
 
-    const tbody = document.getElementById("tbody");
-    tbody.innerHTML = "";
+    if(data.length === 0){
+      alert("Sem dados");
+      return;
+    }
 
-    let today = 0;
-    const now = new Date().toDateString();
+    let csv = "Nome,Email,Telefone,Pais,Data\n";
 
-    data.forEach(lead=>{
-      if(new Date(lead.created_at).toDateString() === now) today++;
-
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${lead.name}</td>
-        <td>${lead.email}</td>
-        <td>${lead.phone}</td>
-        <td>${lead.ddi}</td>
-        <td>${new Date(lead.created_at).toLocaleString()}</td>
-      `;
-      tbody.appendChild(tr);
+    data.forEach(l=>{
+      csv += `"${l.name}","${l.email}","${l.phone}","${l.ddi}","${l.created_at}"\n`;
     });
 
-    document.getElementById("totalLeads").innerText = data.length;
-    document.getElementById("todayLeads").innerText = today;
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "leads.csv";
+    a.click();
 
   }catch(err){
-    alert("Erro ao carregar dados");
+    console.error(err);
+    alert("Erro ao exportar");
   }
 }
-
-// 🔥 EXPORTAR CSV
-function exportCSV(){
-  if(leadsData.length === 0){
-    alert("Nenhum dado para exportar");
-    return;
-  }
-
-  let csv = "Nome,Email,Telefone,Pais,Data\n";
-
-  leadsData.forEach(l=>{
-    csv += `"${l.name}","${l.email}","${l.phone}","${l.ddi}","${l.created_at}"\n`;
-  });
-
-  const blob = new Blob([csv], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "leads.csv";
-  a.click();
-}
-
-setInterval(()=>{
-  if(localStorage.getItem("admin_auth") === "true"){
-    loadLeads();
-  }
-},10000);
 
 </script>
 
