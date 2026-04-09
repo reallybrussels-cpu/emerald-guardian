@@ -22,6 +22,7 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 margin-bottom:15px;
+flex-wrap:wrap;
 }
 
 h1{
@@ -56,10 +57,6 @@ padding:8px;
 min-width:100px;
 }
 
-.card strong{
-font-size:14px;
-}
-
 .grid{
 display:grid;
 grid-template-columns: 2fr 1fr;
@@ -68,13 +65,14 @@ margin-top:20px;
 }
 
 canvas{
-max-height:220px;
+max-height:200px;
 }
 
-/* ranking */
+/* tabela */
 .table{
 width:100%;
 border-collapse:collapse;
+margin-top:15px;
 }
 
 .table th, .table td{
@@ -97,11 +95,19 @@ font-weight:bold;
 
 <div class="topbar">
 <h1>Emerald CRM</h1>
+
 <div>
-<select id="filter" onchange="load()">
+<select id="filterDate" onchange="load()">
 <option value="all">Todos</option>
 <option value="today">Hoje</option>
-<option value="7">Últimos 7 dias</option>
+<option value="7">7 dias</option>
+</select>
+
+<select id="filterCountry" onchange="applyFilters()">
+<option value="">País</option>
+<option value="Brazil (+55)">Brazil</option>
+<option value="USA (+1)">USA</option>
+<option value="UK (+44)">UK</option>
 </select>
 
 <button onclick="exportCSV()">Exportar</button>
@@ -110,19 +116,17 @@ font-weight:bold;
 </div>
 
 <div class="dashboard">
-<div class="card">Total<br><strong id="total">0</strong></div>
-<div class="card">Hoje<br><strong id="today">0</strong></div>
+<div class="card">Total: <strong id="total">0</strong></div>
+<div class="card">Hoje: <strong id="today">0</strong></div>
 </div>
 
 <div class="grid">
 
-<!-- GRÁFICO -->
 <div>
 <h1>Leads</h1>
 <canvas id="chart"></canvas>
 </div>
 
-<!-- RANKING -->
 <div>
 <h1>Top Leads</h1>
 <table class="table">
@@ -135,9 +139,26 @@ font-weight:bold;
 
 </div>
 
+<!-- TABELA COMPLETA -->
+<h1 style="margin-top:25px;">Lista de Leads</h1>
+
+<table class="table">
+<thead>
+<tr>
+<th>Nome</th>
+<th>Email</th>
+<th>Telefone</th>
+<th>País</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+
 <script>
 
 let leads = [];
+let filtered = [];
 
 function logout(){
   localStorage.removeItem("auth");
@@ -154,7 +175,7 @@ async function load(){
 
   let data = await res.json();
 
-  const filter = document.getElementById("filter").value;
+  const filter = document.getElementById("filterDate").value;
   const now = new Date();
 
   if(filter === "today"){
@@ -169,10 +190,43 @@ async function load(){
   }
 
   leads = data;
+  filtered = data;
 
   stats();
   chart();
   ranking();
+  renderTable();
+}
+
+// FILTRO POR PAÍS
+function applyFilters(){
+  const country = document.getElementById("filterCountry").value;
+
+  filtered = leads.filter(l=>{
+    return !country || l.ddi === country;
+  });
+
+  renderTable();
+}
+
+// TABELA
+function renderTable(){
+  const tbody = document.getElementById("tbody");
+  tbody.innerHTML = "";
+
+  filtered.forEach(l=>{
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${l.name}</td>
+      <td>${l.email}</td>
+      <td>${l.phone}</td>
+      <td>${l.ddi}</td>
+      <td>${new Date(l.created_at).toLocaleString()}</td>
+    `;
+
+    tbody.appendChild(tr);
+  });
 }
 
 // STATS
@@ -202,10 +256,7 @@ function chart(){
     type:"line",
     data:{
       labels:Object.keys(map),
-      datasets:[{
-        data:Object.values(map),
-        borderWidth:2
-      }]
+      datasets:[{ data:Object.values(map) }]
     },
     options:{
       plugins:{legend:{display:false}},
@@ -233,7 +284,7 @@ function ranking(){
   sorted.forEach((r,i)=>{
     const tr = document.createElement("tr");
 
-    if(i === 0) tr.classList.add("top");
+    if(i===0) tr.classList.add("top");
 
     tr.innerHTML = `
       <td>${i+1}</td>
@@ -247,10 +298,10 @@ function ranking(){
 
 // EXPORT
 function exportCSV(){
-  let csv = "Nome,Email,Telefone,Data\n";
+  let csv = "Nome,Email,Telefone,Pais,Data\n";
 
   leads.forEach(l=>{
-    csv += `"${l.name}","${l.email}","${l.phone}","${l.created_at}"\n`;
+    csv += `"${l.name}","${l.email}","${l.phone}","${l.ddi}","${l.created_at}"\n`;
   });
 
   const blob = new Blob([csv], { type: "text/csv" });
