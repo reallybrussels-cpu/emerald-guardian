@@ -16,44 +16,71 @@ padding:30px;
 
 h1{
 color:#d4af37;
-margin-bottom:20px;
+}
+
+.login-box{
+max-width:300px;
+margin:100px auto;
+text-align:center;
+}
+
+input{
+width:100%;
+padding:12px;
+margin:10px 0;
+background:#000;
+border:1px solid rgba(0,255,136,0.3);
+color:#fff;
+}
+
+button{
+padding:12px 20px;
+border:1px solid #d4af37;
+background:transparent;
+color:#d4af37;
+cursor:pointer;
+}
+
+button:hover{
+background:#d4af37;
+color:#000;
+}
+
+.hidden{
+display:none;
 }
 
 .table{
 width:100%;
 border-collapse:collapse;
+margin-top:20px;
 }
 
 .table th, .table td{
 padding:12px;
 border-bottom:1px solid rgba(0,255,136,0.2);
-text-align:left;
 }
 
 .table th{
 color:#00ff88;
-font-weight:500;
 }
-
-.table tr:hover{
-background:#001a10;
-}
-
-.card{
-border:1px solid rgba(0,255,136,0.1);
-padding:20px;
-margin-bottom:20px;
-}
-
 </style>
 </head>
 
 <body>
 
+<!-- LOGIN -->
+<div id="loginBox" class="login-box">
+<h1>Admin Access</h1>
+<input type="password" id="password" placeholder="Senha">
+<button onclick="login()">Entrar</button>
+</div>
+
+<!-- PAINEL -->
+<div id="panel" class="hidden">
 <h1>Emerald Guardian - Leads</h1>
 
-<div class="card">
-<table class="table" id="leadsTable">
+<table class="table">
 <thead>
 <tr>
 <th>Nome</th>
@@ -63,12 +90,40 @@ margin-bottom:20px;
 <th>Data</th>
 </tr>
 </thead>
-<tbody></tbody>
+<tbody id="tbody"></tbody>
 </table>
 </div>
 
 <script>
 
+// 🔒 SENHA
+const ADMIN_PASSWORD = "1234";
+
+// LOGIN
+function login(){
+  const pass = document.getElementById("password").value;
+
+  if(pass === ADMIN_PASSWORD){
+    localStorage.setItem("admin_auth","true");
+    showPanel();
+  }else{
+    alert("Senha incorreta");
+  }
+}
+
+// MOSTRAR PAINEL
+function showPanel(){
+  document.getElementById("loginBox").classList.add("hidden");
+  document.getElementById("panel").classList.remove("hidden");
+  loadLeads();
+}
+
+// VERIFICA SE JÁ ESTÁ LOGADO
+if(localStorage.getItem("admin_auth") === "true"){
+  showPanel();
+}
+
+// CARREGAR LEADS
 async function loadLeads(){
   try{
     const response = await fetch('https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?select=*', {
@@ -80,7 +135,7 @@ async function loadLeads(){
 
     const data = await response.json();
 
-    const tbody = document.querySelector("#leadsTable tbody");
+    const tbody = document.getElementById("tbody");
     tbody.innerHTML = "";
 
     data.reverse().forEach(lead=>{
@@ -99,11 +154,9 @@ async function loadLeads(){
 
   }catch(err){
     console.error(err);
-    alert("Erro ao carregar leads");
+    alert("Erro ao carregar dados");
   }
 }
-
-loadLeads();
 
 </script>
 
