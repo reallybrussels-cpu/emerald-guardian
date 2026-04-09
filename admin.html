@@ -40,7 +40,7 @@ color:#000;
 cursor:pointer;
 }
 
-/* CRM */
+/* APP */
 #app{
 display:none;
 padding:20px;
@@ -50,12 +50,14 @@ color:#000;
 
 h1{color:#b8962e;}
 
+/* TOP */
 .topbar{
 display:flex;
 justify-content:space-between;
 margin-bottom:15px;
 }
 
+/* BOTÕES */
 button{
 padding:5px 10px;
 border:1px solid #b8962e;
@@ -64,12 +66,28 @@ color:#b8962e;
 cursor:pointer;
 }
 
+/* DASHBOARD CARDS */
+.dashboard{
+display:flex;
+gap:10px;
+margin-bottom:20px;
+flex-wrap:wrap;
+}
+
+.card{
+border:1px solid #ddd;
+padding:10px;
+min-width:120px;
+background:#fafafa;
+}
+
 /* STATUS */
 .frio{background:#f5f5f5;}
 .morno{background:#fff3cd;}
 .quente{background:#d4edda;}
 .cliente{background:#c3f7d4;}
 
+/* TABELA */
 .table{
 width:100%;
 border-collapse:collapse;
@@ -81,6 +99,7 @@ border-bottom:1px solid #ddd;
 }
 
 .table th{background:#f5f5f5;}
+
 .star{color:#b8962e;}
 </style>
 </head>
@@ -95,7 +114,7 @@ border-bottom:1px solid #ddd;
 <button onclick="login()">Entrar</button>
 </div>
 
-<!-- CRM -->
+<!-- APP -->
 <div id="app">
 
 <div class="topbar">
@@ -106,13 +125,39 @@ border-bottom:1px solid #ddd;
 </div>
 </div>
 
+<!-- CARDS CORRIGIDOS -->
 <div class="dashboard">
-<div>Total: <strong id="total">0</strong></div>
-<div>Hoje: <strong id="today">--</strong></div>
-<div>Clientes: <strong id="clientes">0</strong></div>
-<div>Quentes: <strong id="quentes">0</strong></div>
-<div>Mornos: <strong id="mornos">0</strong></div>
-<div>Frios: <strong id="frios">0</strong></div>
+
+<div class="card">
+Total<br>
+<strong id="total">0</strong>
+</div>
+
+<div class="card">
+Hoje<br>
+<strong id="today">--</strong>
+</div>
+
+<div class="card">
+Clientes<br>
+<strong id="clientes">0</strong>
+</div>
+
+<div class="card">
+Quentes<br>
+<strong id="quentes">0</strong>
+</div>
+
+<div class="card">
+Mornos<br>
+<strong id="mornos">0</strong>
+</div>
+
+<div class="card">
+Frios<br>
+<strong id="frios">0</strong>
+</div>
+
 </div>
 
 <h1>Leads</h1>
@@ -136,7 +181,7 @@ border-bottom:1px solid #ddd;
 
 <script>
 
-// LOGIN FIXO (SEUS USUÁRIOS)
+// LOGIN
 const users = {
   "Fernando":"EmeraldFernando2026",
   "Almir":"AlmirEsmeralda2025",
