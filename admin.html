@@ -14,9 +14,7 @@ font-family:system-ui;
 padding:30px;
 }
 
-h1{
-color:#d4af37;
-}
+h1{color:#d4af37;}
 
 .login-box{
 max-width:300px;
@@ -78,9 +76,7 @@ padding:12px;
 border-bottom:1px solid rgba(0,255,136,0.2);
 }
 
-.table th{
-color:#00ff88;
-}
+.table th{color:#00ff88;}
 
 .topbar{
 display:flex;
@@ -93,22 +89,22 @@ margin-bottom:20px;
 
 <body>
 
-<!-- LOGIN -->
 <div id="loginBox" class="login-box">
 <h1>Admin Access</h1>
 <input type="password" id="password" placeholder="Senha">
 <button onclick="login()">Entrar</button>
 </div>
 
-<!-- PAINEL -->
 <div id="panel" class="hidden">
 
 <div class="topbar">
 <h1>Emerald Guardian</h1>
+<div>
+<button onclick="exportCSV()">Exportar CSV</button>
 <button onclick="logout()">Logout</button>
 </div>
+</div>
 
-<!-- DASHBOARD -->
 <div class="dashboard">
 <div class="card">
 <div>Total Leads</div>
@@ -138,13 +134,10 @@ margin-bottom:20px;
 
 <script>
 
-// 🔒 SENHA
 const ADMIN_PASSWORD = "1234";
 
-// LOGIN
 function login(){
   const pass = document.getElementById("password").value;
-
   if(pass === ADMIN_PASSWORD){
     localStorage.setItem("admin_auth","true");
     showPanel();
@@ -153,25 +146,23 @@ function login(){
   }
 }
 
-// LOGOUT
 function logout(){
   localStorage.removeItem("admin_auth");
   location.reload();
 }
 
-// MOSTRAR PAINEL
 function showPanel(){
   document.getElementById("loginBox").classList.add("hidden");
   document.getElementById("panel").classList.remove("hidden");
   loadLeads();
 }
 
-// AUTO LOGIN
 if(localStorage.getItem("admin_auth") === "true"){
   showPanel();
 }
 
-// CARREGAR LEADS
+let leadsData = [];
+
 async function loadLeads(){
   try{
     const response = await fetch('https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?select=*', {
@@ -182,6 +173,7 @@ async function loadLeads(){
     });
 
     const data = await response.json();
+    leadsData = data;
 
     const tbody = document.getElementById("tbody");
     tbody.innerHTML = "";
@@ -190,11 +182,9 @@ async function loadLeads(){
     const now = new Date().toDateString();
 
     data.forEach(lead=>{
-      const leadDate = new Date(lead.created_at).toDateString();
-      if(leadDate === now) today++;
+      if(new Date(lead.created_at).toDateString() === now) today++;
 
       const tr = document.createElement("tr");
-
       tr.innerHTML = `
         <td>${lead.name}</td>
         <td>${lead.email}</td>
@@ -202,7 +192,6 @@ async function loadLeads(){
         <td>${lead.ddi}</td>
         <td>${new Date(lead.created_at).toLocaleString()}</td>
       `;
-
       tbody.appendChild(tr);
     });
 
@@ -210,12 +199,32 @@ async function loadLeads(){
     document.getElementById("todayLeads").innerText = today;
 
   }catch(err){
-    console.error(err);
     alert("Erro ao carregar dados");
   }
 }
 
-// 🔄 AUTO REFRESH A CADA 10s
+// 🔥 EXPORTAR CSV
+function exportCSV(){
+  if(leadsData.length === 0){
+    alert("Nenhum dado para exportar");
+    return;
+  }
+
+  let csv = "Nome,Email,Telefone,Pais,Data\n";
+
+  leadsData.forEach(l=>{
+    csv += `"${l.name}","${l.email}","${l.phone}","${l.ddi}","${l.created_at}"\n`;
+  });
+
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "leads.csv";
+  a.click();
+}
+
 setInterval(()=>{
   if(localStorage.getItem("admin_auth") === "true"){
     loadLeads();
