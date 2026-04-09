@@ -3,36 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Emerald CRM</title>
+<title>Emerald Executive</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 body{
 margin:0;
 background:#000;
 color:#fff;
-font-family:system-ui;
-padding:30px;
+font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto;
+padding:40px;
 }
 
 h1{
 color:#d4af37;
-margin-bottom:20px;
+font-weight:500;
+letter-spacing:1px;
 }
 
 .topbar{
 display:flex;
 justify-content:space-between;
 align-items:center;
-margin-bottom:20px;
+margin-bottom:30px;
 }
 
 button{
-padding:8px 16px;
+padding:8px 18px;
 border:1px solid #d4af37;
 background:transparent;
 color:#d4af37;
 cursor:pointer;
-margin-left:5px;
 }
 
 button:hover{
@@ -40,83 +42,103 @@ background:#d4af37;
 color:#000;
 }
 
-select{
-background:#000;
-color:#fff;
-border:1px solid #00ff88;
-padding:5px;
+.dashboard{
+display:flex;
+gap:20px;
+margin-bottom:30px;
+flex-wrap:wrap;
 }
 
 .card{
-border:1px solid #00ff88;
-padding:15px;
-display:inline-block;
-margin-bottom:20px;
+border:1px solid rgba(212,175,55,0.3);
+padding:25px;
+min-width:200px;
+background:rgba(255,255,255,0.02);
+}
+
+.card h2{
+margin:0;
+font-size:32px;
+color:#00ff88;
+}
+
+.section{
+margin-top:40px;
 }
 
 .table{
 width:100%;
 border-collapse:collapse;
+margin-top:15px;
 }
 
 .table th, .table td{
-padding:12px;
-border-bottom:1px solid rgba(0,255,136,0.4);
+padding:14px;
+border-bottom:1px solid rgba(255,255,255,0.08);
 }
 
 .table th{
 color:#00ff88;
-border-bottom:2px solid #00ff88;
+font-weight:400;
 }
 
-.table tr{
-border-bottom:1px solid rgba(0,255,136,0.3);
+.rank{
+color:#d4af37;
+font-weight:bold;
 }
-
-.hot{background:rgba(0,255,136,0.15);}
-.warm{background:rgba(255,200,0,0.15);}
-.cold{background:rgba(255,255,255,0.08);}
 </style>
 </head>
 
 <body>
 
 <div class="topbar">
-<h1>Emerald CRM</h1>
+<h1>Emerald Executive</h1>
 <div>
 <button onclick="exportCSV()">Exportar</button>
 <button onclick="logout()">Logout</button>
 </div>
 </div>
 
+<div class="dashboard">
 <div class="card">
-Total: <span id="total">0</span>
+<div>Total Leads</div>
+<h2 id="total">0</h2>
 </div>
 
+<div class="card">
+<div>Hoje</div>
+<h2 id="today">0</h2>
+</div>
+</div>
+
+<div class="section">
+<h1>Leads por Dia</h1>
+<canvas id="chart"></canvas>
+</div>
+
+<div class="section">
+<h1>Ranking de Interação</h1>
 <table class="table">
 <thead>
 <tr>
+<th>#</th>
 <th>Nome</th>
-<th>Email</th>
-<th>Telefone</th>
-<th>Status</th>
-<th>Ações</th>
+<th>Total Interações</th>
 </tr>
 </thead>
-<tbody id="tbody"></tbody>
+<tbody id="ranking"></tbody>
 </table>
+</div>
 
 <script>
 
 let leads = [];
 
-// LOGOUT
 function logout(){
   localStorage.removeItem("auth");
   location.reload();
 }
 
-// LOAD
 async function load(){
   const res = await fetch('https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?select=*', {
     headers:{
@@ -126,87 +148,87 @@ async function load(){
   });
 
   leads = await res.json();
-  render();
+
+  buildStats();
+  buildChart();
+  buildRanking();
 }
 
-function getClass(status){
-  if(status === "hot") return "hot";
-  if(status === "warm") return "warm";
-  return "cold";
-}
+// STATS
+function buildStats(){
+  const total = leads.length;
 
-// RENDER
-function render(){
-  const tbody = document.getElementById("tbody");
-  tbody.innerHTML = "";
+  const todayDate = new Date().toDateString();
+  let today = 0;
 
   leads.forEach(l=>{
+    if(new Date(l.created_at).toDateString() === todayDate){
+      today++;
+    }
+  });
+
+  document.getElementById("total").innerText = total;
+  document.getElementById("today").innerText = today;
+}
+
+// CHART
+function buildChart(){
+  const map = {};
+
+  leads.forEach(l=>{
+    const d = new Date(l.created_at).toLocaleDateString();
+    map[d] = (map[d] || 0) + 1;
+  });
+
+  const labels = Object.keys(map);
+  const values = Object.values(map);
+
+  new Chart(document.getElementById("chart"), {
+    type:"line",
+    data:{
+      labels:labels,
+      datasets:[{
+        label:"Leads",
+        data:values,
+        borderWidth:2
+      }]
+    }
+  });
+}
+
+// RANKING
+function buildRanking(){
+  const count = {};
+
+  leads.forEach(l=>{
+    count[l.name] = (count[l.name] || 0) + 1;
+  });
+
+  const sorted = Object.entries(count)
+    .sort((a,b)=>b[1]-a[1]);
+
+  const tbody = document.getElementById("ranking");
+  tbody.innerHTML = "";
+
+  sorted.forEach((item,i)=>{
     const tr = document.createElement("tr");
-    tr.className = getClass(l.status);
 
     tr.innerHTML = `
-      <td>${l.name}</td>
-      <td>${l.email}</td>
-      <td>${l.phone}</td>
-
-      <td>
-        <select id="status-${l.id}">
-          <option value="cold" ${l.status==="cold"?"selected":""}>Frio</option>
-          <option value="warm" ${l.status==="warm"?"selected":""}>Morno</option>
-          <option value="hot" ${l.status==="hot"?"selected":""}>Quente</option>
-        </select>
-      </td>
-
-      <td>
-        <button onclick="save(${l.id})">Salvar</button>
-        <button onclick="del(${l.id})">Excluir</button>
-      </td>
+      <td class="rank">${i+1}</td>
+      <td>${item[0]}</td>
+      <td>${item[1]}</td>
     `;
 
     tbody.appendChild(tr);
   });
-
-  document.getElementById("total").innerText = leads.length;
-}
-
-// SALVAR STATUS
-async function save(id){
-  const status = document.getElementById(`status-${id}`).value;
-
-  await fetch(`https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?id=eq.${id}`, {
-    method:"PATCH",
-    headers:{
-      'Content-Type':'application/json',
-      'apikey':'sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL',
-      'Authorization':'Bearer sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL'
-    },
-    body:JSON.stringify({status})
-  });
-
-  load();
-}
-
-// DELETE
-async function del(id){
-  if(!confirm("Excluir lead?")) return;
-
-  await fetch(`https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?id=eq.${id}`, {
-    method:"DELETE",
-    headers:{
-      'apikey':'sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL',
-      'Authorization':'Bearer sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL'
-    }
-  });
-
-  load();
 }
 
 // EXPORT
 function exportCSV(){
-  let csv = "Nome,Email,Telefone,Status,Data\n";
+  let csv = "Nome,Email,Telefone,Data\n";
 
   leads.forEach(l=>{
-    csv += `"${l.name}","${l.email}","${l.phone}","${l.status}","${l.created_at}"\n`;
+    csv += `"${l.name}","${l.email}","${l.phone}","${l.created_at}"\n`;
   });
 
   const blob = new Blob([csv], { type: "text/csv" });
