@@ -8,95 +8,33 @@
 <meta name="robots" content="noindex">
 
 <style>
-body{
-margin:0;
-font-family:Arial;
-font-size:12px;
-}
+body{margin:0;font-family:Arial;font-size:12px;}
 
 #login{
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-background:#000;
-color:#fff;
-flex-direction:column;
+height:100vh;display:flex;justify-content:center;align-items:center;
+background:#000;color:#fff;flex-direction:column;
 }
 
-#login input{
-margin:5px;
-padding:8px;
-border:none;
-outline:none;
-}
+#login input{margin:5px;padding:10px;border:none;outline:none;width:200px;}
+#login button{padding:10px 20px;background:#b8962e;border:none;color:#000;cursor:pointer;}
 
-#login button{
-padding:8px 20px;
-background:#b8962e;
-border:none;
-color:#000;
-cursor:pointer;
-}
-
-#app{
-display:none;
-padding:20px;
-background:#fff;
-color:#000;
-}
+#app{display:none;padding:20px;background:#fff;color:#000;}
 
 h1{color:#b8962e;}
 
-.topbar{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:15px;
-}
-
-.actions{
-display:flex;
-gap:8px;
-align-items:center;
-}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;}
+.actions{display:flex;gap:8px;align-items:center;}
 
 button, select, input{
-padding:5px 10px;
-border:1px solid #b8962e;
-background:#fff;
-color:#b8962e;
-font-size:12px;
+padding:5px 10px;border:1px solid #b8962e;background:#fff;color:#b8962e;font-size:12px;
 }
 
-.dashboard{
-display:flex;
-gap:10px;
-margin-bottom:20px;
-flex-wrap:wrap;
-}
+.dashboard{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+.card{border:1px solid #ddd;padding:10px;min-width:120px;background:#fafafa;}
 
-.card{
-border:1px solid #ddd;
-padding:10px;
-min-width:120px;
-background:#fafafa;
-}
-
-.table{
-width:100%;
-border-collapse:collapse;
-text-align:center;
-}
-
-.table th,.table td{
-padding:8px;
-border-bottom:1px solid #ddd;
-}
-
-.table th{
-background:#f5f5f5;
-}
+.table{width:100%;border-collapse:collapse;text-align:center;}
+.table th,.table td{padding:8px;border-bottom:1px solid #ddd;}
+.table th{background:#f5f5f5;}
 
 .star{color:#b8962e;}
 </style>
@@ -104,20 +42,21 @@ background:#f5f5f5;
 
 <body>
 
+<!-- LOGIN -->
 <div id="login">
-<h2>Emerald Access</h2>
-<input id="user" placeholder="Usuário">
-<input id="pass" type="password" placeholder="Senha">
+<h2>Emerald Secure Access</h2>
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Senha">
 <button onclick="login()">Entrar</button>
 </div>
 
+<!-- APP -->
 <div id="app">
 
 <div class="topbar">
 <h1>Emerald CRM</h1>
 
 <div class="actions">
-
 <input id="search" placeholder="Buscar..." oninput="render()">
 
 <select id="filterStatus" onchange="render()">
@@ -135,7 +74,6 @@ background:#f5f5f5;
 
 <button onclick="exportCSV()">Exportar</button>
 <button onclick="logout()">Logout</button>
-
 </div>
 </div>
 
@@ -168,30 +106,46 @@ background:#f5f5f5;
 
 </div>
 
+<!-- SUPABASE SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 
-const users = {
-  "Fernando":"EmeraldFernando2026",
-  "Almir":"AlmirEsmeralda2025",
-  "Renato":"RPDiamonds2027"
-};
+const supabase = window.supabase.createClient(
+  "https://mihrsfotrbigixqkpwhu.supabase.co",
+  "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
+);
 
-function login(){
-  const u = document.getElementById("user").value;
-  const p = document.getElementById("pass").value;
+// LOGIN REAL
+async function login(){
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-  if(users[u] === p){
-    localStorage.setItem("auth", "ok");
-    showApp();
+  const { error } = await supabase.auth.signInWithPassword({
+    email, password
+  });
+
+  if(error){
+    alert("Login inválido");
   } else {
-    alert("Acesso negado");
+    showApp();
   }
 }
 
-function logout(){
-  localStorage.removeItem("auth");
+// LOGOUT
+async function logout(){
+  await supabase.auth.signOut();
   location.reload();
 }
+
+// SESSION CHECK
+async function checkSession(){
+  const { data } = await supabase.auth.getSession();
+  if(data.session){
+    showApp();
+  }
+}
+checkSession();
 
 function showApp(){
   document.getElementById("login").style.display="none";
@@ -199,23 +153,19 @@ function showApp(){
   load();
 }
 
-if(localStorage.getItem("auth")==="ok"){
-  showApp();
-}
+// ================= CRM =================
 
 let leads=[];
 
 async function load(){
   const res = await fetch('https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?select=*',{
     headers:{
-      'apikey':'sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL',
-      'Authorization':'Bearer sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL'
+      'apikey':'sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL'
     }
   });
 
   leads = await res.json();
 
-  // 🔥 ORDENAÇÃO POR MAIS RECENTE
   leads.sort((a,b)=> new Date(b.created_at) - new Date(a.created_at));
 
   loadCountries();
@@ -239,22 +189,14 @@ function loadCountries(){
 function stats(){
   document.getElementById("total").innerText = leads.length;
 
-  const hoje = new Date().toDateString();
-  let hojeCount=0;
-
   let novos=0,clientes=0,quentes=0,mornos=0,frios=0;
 
   leads.forEach(l=>{
-    const status=l.status||"novo";
-
-    if(new Date(l.created_at).toDateString()===hoje){
-      hojeCount++;
-    }
-
-    if(status==="novo") novos++;
-    else if(status==="cliente") clientes++;
-    else if(status==="quente") quentes++;
-    else if(status==="morno") mornos++;
+    const s=l.status||"novo";
+    if(s==="novo") novos++;
+    else if(s==="cliente") clientes++;
+    else if(s==="quente") quentes++;
+    else if(s==="morno") mornos++;
     else frios++;
   });
 
@@ -263,9 +205,6 @@ function stats(){
   document.getElementById("quentes").innerText=quentes;
   document.getElementById("mornos").innerText=mornos;
   document.getElementById("frios").innerText=frios;
-
-  const data = new Date().toLocaleDateString("pt-BR");
-  document.getElementById("today").innerText = `${data} (${hojeCount})`;
 }
 
 function getScore(status){
@@ -277,27 +216,18 @@ function getScore(status){
 }
 
 function render(){
-
   const search = document.getElementById("search").value.toLowerCase();
-  const statusFilter = document.getElementById("filterStatus").value;
-  const countryFilter = document.getElementById("filterCountry").value;
-
   const tbody=document.getElementById("tbody");
   tbody.innerHTML="";
 
   leads.forEach(l=>{
-
     const status=l.status||"novo";
 
-    // 🔍 BUSCA
     if(
       search &&
       !l.name.toLowerCase().includes(search) &&
       !l.email.toLowerCase().includes(search)
     ) return;
-
-    if(statusFilter!=="todos" && status!==statusFilter) return;
-    if(countryFilter!=="todos" && l.ddi!==countryFilter) return;
 
     const tr=document.createElement("tr");
 
@@ -335,8 +265,7 @@ async function updateStatus(id,status){
     method:"PATCH",
     headers:{
       'Content-Type':'application/json',
-      'apikey':'sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL',
-      'Authorization':'Bearer sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL'
+      'apikey':'sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL'
     },
     body:JSON.stringify({status})
   });
@@ -350,8 +279,7 @@ async function del(id){
   await fetch(`https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?id=eq.${id}`,{
     method:"DELETE",
     headers:{
-      'apikey':'sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8rL',
-      'Authorization':'Bearer sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8rL'
+      'apikey':'sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL'
     }
   });
 
@@ -373,8 +301,6 @@ function exportCSV(){
   a.download="leads.csv";
   a.click();
 }
-
-load();
 
 </script>
 
