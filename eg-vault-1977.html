@@ -61,12 +61,11 @@ gap:8px;
 align-items:center;
 }
 
-button, select{
+button, select, input{
 padding:5px 10px;
 border:1px solid #b8962e;
 background:#fff;
 color:#b8962e;
-cursor:pointer;
 font-size:12px;
 }
 
@@ -118,6 +117,8 @@ background:#f5f5f5;
 <h1>Emerald CRM</h1>
 
 <div class="actions">
+
+<input id="search" placeholder="Buscar..." oninput="render()">
 
 <select id="filterStatus" onchange="render()">
 <option value="todos">Todos</option>
@@ -214,6 +215,9 @@ async function load(){
 
   leads = await res.json();
 
+  // 🔥 ORDENAÇÃO POR MAIS RECENTE
+  leads.sort((a,b)=> new Date(b.created_at) - new Date(a.created_at));
+
   loadCountries();
   render();
 }
@@ -274,6 +278,7 @@ function getScore(status){
 
 function render(){
 
+  const search = document.getElementById("search").value.toLowerCase();
   const statusFilter = document.getElementById("filterStatus").value;
   const countryFilter = document.getElementById("filterCountry").value;
 
@@ -283,6 +288,13 @@ function render(){
   leads.forEach(l=>{
 
     const status=l.status||"novo";
+
+    // 🔍 BUSCA
+    if(
+      search &&
+      !l.name.toLowerCase().includes(search) &&
+      !l.email.toLowerCase().includes(search)
+    ) return;
 
     if(statusFilter!=="todos" && status!==statusFilter) return;
     if(countryFilter!=="todos" && l.ddi!==countryFilter) return;
@@ -338,8 +350,8 @@ async function del(id){
   await fetch(`https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?id=eq.${id}`,{
     method:"DELETE",
     headers:{
-      'apikey':'sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL',
-      'Authorization':'Bearer sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL'
+      'apikey':'sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8rL',
+      'Authorization':'Bearer sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8rL'
     }
   });
 
