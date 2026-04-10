@@ -14,7 +14,6 @@ font-family:Arial;
 font-size:12px;
 }
 
-/* LOGIN */
 #login{
 height:100vh;
 display:flex;
@@ -40,7 +39,6 @@ color:#000;
 cursor:pointer;
 }
 
-/* APP */
 #app{
 display:none;
 padding:20px;
@@ -50,7 +48,6 @@ color:#000;
 
 h1{color:#b8962e;}
 
-/* TOP */
 .topbar{
 display:flex;
 justify-content:space-between;
@@ -64,7 +61,6 @@ gap:8px;
 align-items:center;
 }
 
-/* BOTÕES */
 button, select{
 padding:5px 10px;
 border:1px solid #b8962e;
@@ -74,7 +70,6 @@ cursor:pointer;
 font-size:12px;
 }
 
-/* DASHBOARD */
 .dashboard{
 display:flex;
 gap:10px;
@@ -89,13 +84,6 @@ min-width:120px;
 background:#fafafa;
 }
 
-/* STATUS */
-.frio{background:#f5f5f5;}
-.morno{background:#fff3cd;}
-.quente{background:#d4edda;}
-.cliente{background:#c3f7d4;}
-
-/* TABELA */
 .table{
 width:100%;
 border-collapse:collapse;
@@ -117,7 +105,6 @@ background:#f5f5f5;
 
 <body>
 
-<!-- LOGIN -->
 <div id="login">
 <h2>Emerald Access</h2>
 <input id="user" placeholder="Usuário">
@@ -125,7 +112,6 @@ background:#f5f5f5;
 <button onclick="login()">Entrar</button>
 </div>
 
-<!-- APP -->
 <div id="app">
 
 <div class="topbar">
@@ -135,6 +121,7 @@ background:#f5f5f5;
 
 <select id="filterStatus" onchange="render()">
 <option value="todos">Todos</option>
+<option value="novo">Novo</option>
 <option value="frio">Frio</option>
 <option value="morno">Morno</option>
 <option value="quente">Quente</option>
@@ -151,10 +138,10 @@ background:#f5f5f5;
 </div>
 </div>
 
-<!-- DASHBOARD -->
 <div class="dashboard">
 <div class="card">Total<br><strong id="total">0</strong></div>
 <div class="card">Hoje<br><strong id="today">--</strong></div>
+<div class="card">Novos<br><strong id="novos">0</strong></div>
 <div class="card">Clientes<br><strong id="clientes">0</strong></div>
 <div class="card">Quentes<br><strong id="quentes">0</strong></div>
 <div class="card">Mornos<br><strong id="mornos">0</strong></div>
@@ -182,7 +169,6 @@ background:#f5f5f5;
 
 <script>
 
-// LOGIN
 const users = {
   "Fernando":"EmeraldFernando2026",
   "Almir":"AlmirEsmeralda2025",
@@ -215,8 +201,6 @@ function showApp(){
 if(localStorage.getItem("auth")==="ok"){
   showApp();
 }
-
-// ================= CRM =================
 
 let leads=[];
 
@@ -254,23 +238,38 @@ function stats(){
   const hoje = new Date().toDateString();
   let hojeCount=0;
 
+  let novos=0,clientes=0,quentes=0,mornos=0,frios=0;
+
   leads.forEach(l=>{
+    const status=l.status||"novo";
+
     if(new Date(l.created_at).toDateString()===hoje){
       hojeCount++;
     }
+
+    if(status==="novo") novos++;
+    else if(status==="cliente") clientes++;
+    else if(status==="quente") quentes++;
+    else if(status==="morno") mornos++;
+    else frios++;
   });
 
-  const data = new Date().toLocaleDateString("pt-BR");
+  document.getElementById("novos").innerText=novos;
+  document.getElementById("clientes").innerText=clientes;
+  document.getElementById("quentes").innerText=quentes;
+  document.getElementById("mornos").innerText=mornos;
+  document.getElementById("frios").innerText=frios;
 
-  document.getElementById("today").innerText =
-    `${data} (${hojeCount})`;
+  const data = new Date().toLocaleDateString("pt-BR");
+  document.getElementById("today").innerText = `${data} (${hojeCount})`;
 }
 
 function getScore(status){
   if(status==="cliente") return "⭐⭐⭐⭐";
   if(status==="quente") return "⭐⭐⭐";
   if(status==="morno") return "⭐⭐";
-  return "⭐";
+  if(status==="frio") return "⭐";
+  return "🆕";
 }
 
 function render(){
@@ -281,19 +280,12 @@ function render(){
   const tbody=document.getElementById("tbody");
   tbody.innerHTML="";
 
-  let clientes=0,quentes=0,mornos=0,frios=0;
-
   leads.forEach(l=>{
 
-    const status=l.status||"frio";
+    const status=l.status||"novo";
 
     if(statusFilter!=="todos" && status!==statusFilter) return;
     if(countryFilter!=="todos" && l.ddi!==countryFilter) return;
-
-    if(status==="cliente") clientes++;
-    else if(status==="quente") quentes++;
-    else if(status==="morno") mornos++;
-    else frios++;
 
     const tr=document.createElement("tr");
 
@@ -305,6 +297,7 @@ function render(){
 
 <td>
 <select onchange="updateStatus(${l.id}, this.value)">
+<option value="novo" ${status==="novo"?"selected":""}>Novo</option>
 <option value="frio" ${status==="frio"?"selected":""}>Frio</option>
 <option value="morno" ${status==="morno"?"selected":""}>Morno</option>
 <option value="quente" ${status==="quente"?"selected":""}>Quente</option>
@@ -321,11 +314,6 @@ function render(){
 
     tbody.appendChild(tr);
   });
-
-  document.getElementById("clientes").innerText=clientes;
-  document.getElementById("quentes").innerText=quentes;
-  document.getElementById("mornos").innerText=mornos;
-  document.getElementById("frios").innerText=frios;
 
   stats();
 }
@@ -362,7 +350,7 @@ function exportCSV(){
   let csv="Nome,Email,Telefone,Pais,Status\n";
 
   leads.forEach(l=>{
-    csv+=`"${l.name}","${l.email}","${l.phone}","${l.ddi}","${l.status || "frio"}"\n`;
+    csv+=`"${l.name}","${l.email}","${l.phone}","${l.ddi}","${l.status || "novo"}"\n`;
   });
 
   const blob=new Blob([csv],{type:"text/csv"});
