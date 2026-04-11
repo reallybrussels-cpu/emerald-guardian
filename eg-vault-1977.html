@@ -106,39 +106,41 @@ padding:5px 10px;border:1px solid #b8962e;background:#fff;color:#b8962e;font-siz
 
 </div>
 
-<!-- SUPABASE SDK -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- 🔥 SUPABASE CORRIGIDO -->
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-<script>
-
-const supabase = window.supabase.createClient(
+const supabase = createClient(
   "https://mihrsfotrbigixqkpwhu.supabase.co",
   "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
 );
 
-// LOGIN REAL
-async function login(){
+window.login = async function(){
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
+  if(!email || !password){
+    alert("Preencha email e senha");
+    return;
+  }
+
   const { error } = await supabase.auth.signInWithPassword({
-    email, password
+    email,
+    password
   });
 
   if(error){
-    alert("Login inválido");
+    alert(error.message);
   } else {
     showApp();
   }
 }
 
-// LOGOUT
-async function logout(){
+window.logout = async function(){
   await supabase.auth.signOut();
   location.reload();
 }
 
-// SESSION CHECK
 async function checkSession(){
   const { data } = await supabase.auth.getSession();
   if(data.session){
@@ -153,7 +155,7 @@ function showApp(){
   load();
 }
 
-// ================= CRM =================
+// ===== RESTO DO SEU CRM (INALTERADO) =====
 
 let leads=[];
 
