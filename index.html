@@ -309,9 +309,52 @@ Only selected individuals will be contacted.
 <script>
 
 function enterSite(){
-const code=document.getElementById("code").value.trim();
-if(!code){alert("Enter access code");return;}
-nextSafe(2);
+
+  const input = document.getElementById("code");
+  const value = input.value.trim();
+
+  if(!value){
+    alert("Enter credentials");
+    return;
+  }
+
+  // formato esperado: usuario:senha
+  if(!value.includes(":")){
+    alert("Use format: user:password");
+    return;
+  }
+
+  const [user, pass] = value.split(":");
+
+  // 🔐 BASE DE USUÁRIOS (SEU CONTROLE)
+  const users = {
+    "Fernando": "EmeraldFernando2026",
+    "Almir": "AlmirEsmeralda2025",
+    "Renato": "RPDiamonds2027"
+  };
+
+  // validação
+  if(users[user] !== pass){
+    alert("Invalid credentials");
+    input.value = "";
+    return;
+  }
+
+  // 🔑 GERAR CÓDIGO ÚNICO DE SESSÃO
+  const sessionCode = user + "-" + Date.now();
+
+  // salvar sessão
+  localStorage.setItem("EG_USER", user);
+  localStorage.setItem("EG_SESSION", sessionCode);
+
+  // limpa campo
+  input.value = "";
+
+  // segue fluxo
+  setTimeout(()=>{
+    nextSafe(2);
+  }, 300);
+}
 }
 
 function nextSafe(n){
