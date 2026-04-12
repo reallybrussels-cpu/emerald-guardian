@@ -78,12 +78,20 @@ margin:20px 0;
 
 .input-group input{
 width:100%;
-background:transparent;
-border:none;
-border-bottom:1px solid rgba(0,255,136,0.25);
+background:rgba(0,255,136,0.03);
+border:1px solid rgba(0,255,136,0.25);
 color:white;
-padding:10px 0;
+padding:12px 14px;
 outline:none;
+letter-spacing:2px;
+transition:0.3s;
+}
+
+/* HOVER / FOCO PREMIUM */
+.input-group input:focus{
+border:1px solid #00ff88;
+box-shadow:0 0 10px rgba(0,255,136,0.25);
+background:rgba(0,255,136,0.05);
 }
 
 .input-group label{
