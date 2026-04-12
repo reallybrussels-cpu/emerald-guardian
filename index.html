@@ -14,7 +14,6 @@ font-family:system-ui,-apple-system,Segoe UI,Roboto;
 overflow:hidden;
 }
 
-/* TRANSIÇÃO PREMIUM */
 .section{
 position:absolute;
 width:100%;
@@ -33,7 +32,6 @@ opacity:1;
 pointer-events:auto;
 }
 
-/* TIPOGRAFIA */
 h1{
 font-size:56px;
 color:#d4af37;
@@ -56,11 +54,9 @@ color:#666;
 margin-bottom:10px;
 }
 
-/* IMAGENS */
 .shield{
 width:140px;
 margin-bottom:30px;
-opacity:0.9;
 }
 
 .felino{
@@ -69,7 +65,6 @@ max-width:85%;
 margin-bottom:25px;
 }
 
-/* INPUT */
 .input-group{
 position:relative;
 width:280px;
@@ -83,76 +78,23 @@ border:1px solid rgba(0,255,136,0.25);
 color:white;
 padding:12px 14px;
 outline:none;
-letter-spacing:2px;
+letter-spacing:1px;
 transition:0.3s;
 }
 
-/* HOVER / FOCO PREMIUM */
 .input-group input:focus{
 border:1px solid #00ff88;
 box-shadow:0 0 10px rgba(0,255,136,0.25);
-background:rgba(0,255,136,0.05);
 }
 
 .input-group label{
 position:absolute;
-top:10px;
-left:0;
-font-size:11px;
-color:#555;
-transition:0.3s;
-letter-spacing:1px;
-}
-
-.input-group input:focus + label,
-.input-group input:not(:placeholder-shown) + label{
 top:-10px;
-font-size:9px;
+left:0;
+font-size:10px;
 color:#00ff88;
 }
 
-/* DROPDOWN */
-.dropdown{
-width:280px;
-margin:20px 0;
-position:relative;
-cursor:pointer;
-}
-
-.dropdown-selected{
-border-bottom:1px solid rgba(0,255,136,0.25);
-padding:10px 0;
-color:#aaa;
-}
-
-.dropdown-list{
-position:absolute;
-top:100%;
-left:0;
-width:100%;
-background:#000;
-border:1px solid rgba(0,255,136,0.2);
-max-height:0;
-overflow:auto;
-transition:0.3s ease;
-z-index:10;
-}
-
-.dropdown.open .dropdown-list{
-max-height:240px;
-}
-
-.dropdown-item{
-padding:12px;
-transition:0.2s;
-font-size:13px;
-}
-
-.dropdown-item:hover{
-background:#001a10;
-}
-
-/* BOTÃO PREMIUM */
 .btn{
 padding:14px 40px;
 margin-top:25px;
@@ -170,46 +112,40 @@ color:#000;
 box-shadow:0 0 25px rgba(212,175,55,0.4);
 }
 
-/* FORM */
 .form-container{
 width:320px;
 padding:35px;
 border:1px solid rgba(0,255,136,0.08);
-backdrop-filter: blur(6px);
 }
 
-/* SUCESSO */
 .success{
 color:#00ff88;
-}
-
-/* FADE IN */
-.fade{
-animation:fade 1.5s ease forwards;
-}
-
-@keyframes fade{
-from{opacity:0;transform:translateY(20px);}
-to{opacity:1;transform:translateY(0);}
 }
 </style>
 </head>
 
 <body>
 
-<!-- S1 -->
-<div class="section active fade" id="s1">
+<!-- LOGIN -->
+<div class="section active" id="s1">
+
 <img src="1977.png" class="shield">
 
 <div class="sub">PRIVATE ACCESS</div>
 <h1>Emerald Guardian</h1>
 
 <div class="input-group">
-<input id="code" placeholder=" ">
-<label>ACCESS CODE</label>
+<input id="email" placeholder=" ">
+<label>EMAIL</label>
 </div>
 
-<button class="btn" onclick="enterSite()">ENTER</button>
+<div class="input-group">
+<input id="password" type="password" placeholder=" ">
+<label>PASSWORD</label>
+</div>
+
+<button class="btn" onclick="login()">ENTER</button>
+
 </div>
 
 <!-- S2 -->
@@ -258,16 +194,11 @@ and discreet.
 <button class="btn" onclick="nextSafe(7)">CONTINUE</button>
 </div>
 
-<!-- S7 FORM -->
+<!-- FORM -->
 <div class="section" id="s7">
 <div class="form-container">
 
 <h2>Private Acquisition Request</h2>
-
-<p style="font-size:12px;color:#777;text-align:center;margin-bottom:15px;">
-Submissions are manually reviewed.<br>
-Only selected individuals will be contacted.
-</p>
 
 <form id="formEG">
 
@@ -281,13 +212,6 @@ Only selected individuals will be contacted.
 <label>EMAIL</label>
 </div>
 
-<div class="dropdown" id="dropdown">
-<div class="dropdown-selected">Select Country</div>
-<div class="dropdown-list"></div>
-</div>
-
-<input type="hidden" name="ddi" id="ddi">
-
 <div class="input-group">
 <input name="phone" placeholder=" " required>
 <label>PHONE</label>
@@ -300,151 +224,79 @@ Only selected individuals will be contacted.
 </div>
 </div>
 
-<!-- S8 -->
+<!-- SUCCESS -->
 <div class="section" id="s8">
 <h2 class="success">Request sent successfully</h2>
 <button class="btn" onclick="nextSafe(1)">RETURN</button>
 </div>
 
-<script>
+<script type="module">
 
-function enterSite(){
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-  const input = document.getElementById("code");
-  const value = input.value.trim();
+const supabase = createClient(
+  "https://mihrsfotrbigixqkpwhu.supabase.co",
+  "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
+);
 
-  if(!value){
-    alert("Enter credentials");
+window.login = async function(){
+
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  if(!email || !password){
+    alert("Preencha email e senha");
     return;
   }
 
-  // formato esperado: usuario:senha
-  if(!value.includes(":")){
-    alert("Use format: user:password");
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if(error){
+    alert("Invalid login credentials");
     return;
   }
 
-  const [user, pass] = value.split(":");
+  const { data } = await supabase
+    .from("users_access")
+    .select("status")
+    .eq("email", email)
+    .single();
 
-  // 🔐 BASE DE USUÁRIOS (SEU CONTROLE)
-  const users = {
-    "Fernando": "EmeraldFernando2026",
-    "Almir": "AlmirEsmeralda2025",
-    "Renato": "RPDiamonds2027"
-  };
-
-  // validação
-  if(users[user] !== pass){
-    alert("Invalid credentials");
-    input.value = "";
+  if(!data || data.status !== "aprovado"){
+    alert("Access not approved");
     return;
   }
 
-  // 🔑 GERAR CÓDIGO ÚNICO DE SESSÃO
-  const sessionCode = user + "-" + Date.now();
-
-  // salvar sessão
-  localStorage.setItem("EG_USER", user);
-  localStorage.setItem("EG_SESSION", sessionCode);
-
-  // limpa campo
-  input.value = "";
-
-  // segue fluxo
-  setTimeout(()=>{
-    nextSafe(2);
-  }, 300);
-}
+  nextSafe(2);
 }
 
-function nextSafe(n){
-document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-document.getElementById("s"+n).classList.add("active");
+window.nextSafe = function(n){
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.getElementById("s"+n).classList.add("active");
 }
 
-/* COUNTRIES */
-const countries = [
-"Brazil (+55)","USA (+1)","UK (+44)","Germany (+49)","France (+33)","Italy (+39)",
-"Spain (+34)","Portugal (+351)","Netherlands (+31)","Belgium (+32)","Switzerland (+41)",
-"Austria (+43)","Sweden (+46)","Norway (+47)","Denmark (+45)","Finland (+358)",
-"Poland (+48)","Czech Republic (+420)","Hungary (+36)","Romania (+40)",
-"Russia (+7)","Ukraine (+380)","Turkey (+90)",
-"UAE (+971)","Saudi Arabia (+966)","Qatar (+974)","Kuwait (+965)",
-"South Africa (+27)","Egypt (+20)",
-"India (+91)","China (+86)","Japan (+81)","South Korea (+82)",
-"Singapore (+65)","Hong Kong (+852)","Thailand (+66)","Indonesia (+62)",
-"Australia (+61)","New Zealand (+64)",
-"Argentina (+54)","Chile (+56)","Colombia (+57)","Mexico (+52)","Peru (+51)"
-];
-
-const dropdown=document.getElementById("dropdown");
-const selected=dropdown.querySelector(".dropdown-selected");
-const list=dropdown.querySelector(".dropdown-list");
-const hidden=document.getElementById("ddi");
-
-countries.forEach(c=>{
-  const div=document.createElement("div");
-  div.className="dropdown-item";
-  div.textContent=c;
-
-  div.onclick=()=>{
-    selected.innerText=c;
-    hidden.value=c;
-    dropdown.classList.remove("open");
-  };
-
-  list.appendChild(div);
-});
-
-selected.onclick=()=>dropdown.classList.toggle("open");
-
-document.addEventListener("click",(e)=>{
-if(!dropdown.contains(e.target)){
-dropdown.classList.remove("open");
-}
-});
-
-/* FORM */
 document.getElementById("formEG").addEventListener("submit", async function(e){
   e.preventDefault();
 
   const form = e.target;
 
-  if(!form.ddi.value){
-    alert("Select country");
-    return;
-  }
-
-  if(!form.email.value.includes("@")){
-    alert("Invalid email");
-    return;
-  }
-
   const payload = {
     name: form.name.value,
     email: form.email.value,
     phone: form.phone.value,
-    ddi: form.ddi.value,
-    status: 'novo',
-    created_at: new Date().toISOString()
+    status: 'novo'
   };
 
-  try {
-    const response = await fetch('/api/leads', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
+  await fetch('/api/leads',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(payload)
+  });
 
-    if(response.ok){
-      nextSafe(8);
-    } else {
-      alert('Erro ao salvar');
-    }
-
-  } catch (error) {
-    alert('Erro de conexão');
-  }
+  nextSafe(8);
 });
 
 </script>
