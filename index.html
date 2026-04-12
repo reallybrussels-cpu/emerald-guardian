@@ -65,6 +65,7 @@ max-width:85%;
 margin-bottom:25px;
 }
 
+/* INPUT PREMIUM */
 .input-group{
 position:relative;
 width:280px;
@@ -78,7 +79,6 @@ border:1px solid rgba(0,255,136,0.25);
 color:white;
 padding:12px 14px;
 outline:none;
-letter-spacing:1px;
 transition:0.3s;
 }
 
@@ -95,6 +95,47 @@ font-size:10px;
 color:#00ff88;
 }
 
+/* DROPDOWN */
+.dropdown{
+width:280px;
+margin:20px 0;
+position:relative;
+cursor:pointer;
+}
+
+.dropdown-selected{
+border:1px solid rgba(0,255,136,0.25);
+padding:12px;
+color:#aaa;
+}
+
+.dropdown-list{
+position:absolute;
+top:100%;
+left:0;
+width:100%;
+background:#000;
+border:1px solid rgba(0,255,136,0.3);
+max-height:0;
+overflow:auto;
+transition:0.3s ease;
+z-index:10;
+}
+
+.dropdown.open .dropdown-list{
+max-height:240px;
+}
+
+.dropdown-item{
+padding:12px;
+transition:0.2s;
+}
+
+.dropdown-item:hover{
+background:#001a10;
+}
+
+/* BOTÃO */
 .btn{
 padding:14px 40px;
 margin-top:25px;
@@ -150,47 +191,32 @@ color:#00ff88;
 
 <!-- S2 -->
 <div class="section" id="s2">
-<h2>
-Access is restricted to a limited number of qualified individuals.
-</h2>
+<h2>Access is restricted to a limited number of qualified individuals.</h2>
 <button class="btn" onclick="nextSafe(3)">CONTINUE</button>
 </div>
 
 <!-- S3 -->
 <div class="section" id="s3">
-<h2>
-Forged beneath extreme geological pressure,<br>
-over millions of years,<br>
-to exist only once.
-</h2>
+<h2>Forged beneath extreme geological pressure,<br>over millions of years,<br>to exist only once.</h2>
 <button class="btn" onclick="nextSafe(4)">CONTINUE</button>
 </div>
 
 <!-- S4 -->
 <div class="section" id="s4">
 <img src="1979.png" class="felino">
-<h2>
-A singular specimen,<br>
-beyond conventional classification.
-</h2>
+<h2>A singular specimen,<br>beyond conventional classification.</h2>
 <button class="btn" onclick="nextSafe(5)">CONTINUE</button>
 </div>
 
 <!-- S5 -->
 <div class="section" id="s5">
-<h2>
-Its rarity transcends market availability.
-</h2>
+<h2>Its rarity transcends market availability.</h2>
 <button class="btn" onclick="nextSafe(6)">CONTINUE</button>
 </div>
 
 <!-- S6 -->
 <div class="section" id="s6">
-<h2>
-Acquisition is private,<br>
-selective,<br>
-and discreet.
-</h2>
+<h2>Acquisition is private,<br>selective,<br>and discreet.</h2>
 <button class="btn" onclick="nextSafe(7)">CONTINUE</button>
 </div>
 
@@ -199,6 +225,11 @@ and discreet.
 <div class="form-container">
 
 <h2>Private Acquisition Request</h2>
+
+<p style="font-size:12px;color:#777;text-align:center;margin-bottom:15px;">
+Submissions are manually reviewed.<br>
+Only selected individuals will be contacted.
+</p>
 
 <form id="formEG">
 
@@ -211,6 +242,14 @@ and discreet.
 <input name="email" placeholder=" " required>
 <label>EMAIL</label>
 </div>
+
+<!-- DROPDOWN GLOBAL -->
+<div class="dropdown" id="dropdown">
+<div class="dropdown-selected">Select Country</div>
+<div class="dropdown-list"></div>
+</div>
+
+<input type="hidden" name="ddi" id="ddi">
 
 <div class="input-group">
 <input name="phone" placeholder=" " required>
@@ -239,13 +278,14 @@ const supabase = createClient(
   "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
 );
 
+/* LOGIN */
 window.login = async function(){
 
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
   if(!email || !password){
-    alert("Preencha email e senha");
+    alert("Enter email and password");
     return;
   }
 
@@ -273,20 +313,70 @@ window.login = async function(){
   nextSafe(2);
 }
 
+/* NAVEGAÇÃO */
 window.nextSafe = function(n){
   document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
   document.getElementById("s"+n).classList.add("active");
 }
 
+/* DROPDOWN GLOBAL */
+const countries = [
+"Brazil (+55)","USA (+1)","UK (+44)","Germany (+49)","France (+33)","Italy (+39)",
+"Spain (+34)","Portugal (+351)","Netherlands (+31)","Belgium (+32)","Switzerland (+41)",
+"Austria (+43)","Sweden (+46)","Norway (+47)","Denmark (+45)","Finland (+358)",
+"Poland (+48)","Czech Republic (+420)","Hungary (+36)","Romania (+40)",
+"Russia (+7)","Ukraine (+380)","Turkey (+90)",
+"UAE (+971)","Saudi Arabia (+966)","Qatar (+974)","Kuwait (+965)",
+"South Africa (+27)","Egypt (+20)",
+"India (+91)","China (+86)","Japan (+81)","South Korea (+82)",
+"Singapore (+65)","Hong Kong (+852)","Thailand (+66)","Indonesia (+62)",
+"Australia (+61)","New Zealand (+64)",
+"Argentina (+54)","Chile (+56)","Colombia (+57)","Mexico (+52)","Peru (+51)"
+];
+
+const dropdown=document.getElementById("dropdown");
+const selected=dropdown.querySelector(".dropdown-selected");
+const list=dropdown.querySelector(".dropdown-list");
+const hidden=document.getElementById("ddi");
+
+countries.forEach(c=>{
+  const div=document.createElement("div");
+  div.className="dropdown-item";
+  div.textContent=c;
+
+  div.onclick=()=>{
+    selected.innerText=c;
+    hidden.value=c;
+    dropdown.classList.remove("open");
+  };
+
+  list.appendChild(div);
+});
+
+selected.onclick=()=>dropdown.classList.toggle("open");
+
+document.addEventListener("click",(e)=>{
+if(!dropdown.contains(e.target)){
+dropdown.classList.remove("open");
+}
+});
+
+/* FORM */
 document.getElementById("formEG").addEventListener("submit", async function(e){
   e.preventDefault();
 
   const form = e.target;
 
+  if(!form.ddi.value){
+    alert("Select country");
+    return;
+  }
+
   const payload = {
     name: form.name.value,
     email: form.email.value,
     phone: form.phone.value,
+    ddi: form.ddi.value,
     status: 'novo'
   };
 
