@@ -11,8 +11,10 @@ margin:0;
 background:#000;
 color:#fff;
 font-family:system-ui,-apple-system,Segoe UI,Roboto;
+overflow:hidden;
 }
 
+/* TRANSIÇÃO PREMIUM */
 .section{
 position:absolute;
 width:100%;
@@ -23,7 +25,7 @@ justify-content:center;
 align-items:center;
 opacity:0;
 pointer-events:none;
-transition:0.5s ease;
+transition:1.2s ease;
 }
 
 .section.active{
@@ -31,16 +33,47 @@ opacity:1;
 pointer-events:auto;
 }
 
-h1{font-size:56px;color:#d4af37;}
-h2{font-size:24px;font-weight:300;text-align:center;max-width:400px;}
+/* TIPOGRAFIA */
+h1{
+font-size:56px;
+color:#d4af37;
+letter-spacing:2px;
+}
 
-.shield{width:180px;margin-bottom:20px;}
-.felino{width:320px;max-width:85%;margin-bottom:20px;}
+h2{
+font-size:20px;
+font-weight:300;
+text-align:center;
+max-width:420px;
+color:#aaa;
+line-height:1.6;
+}
 
+.sub{
+font-size:12px;
+letter-spacing:3px;
+color:#666;
+margin-bottom:10px;
+}
+
+/* IMAGENS */
+.shield{
+width:140px;
+margin-bottom:30px;
+opacity:0.9;
+}
+
+.felino{
+width:340px;
+max-width:85%;
+margin-bottom:25px;
+}
+
+/* INPUT */
 .input-group{
 position:relative;
 width:280px;
-margin:15px 0;
+margin:20px 0;
 }
 
 .input-group input{
@@ -57,21 +90,23 @@ outline:none;
 position:absolute;
 top:10px;
 left:0;
-font-size:12px;
-color:#666;
-transition:0.25s;
+font-size:11px;
+color:#555;
+transition:0.3s;
+letter-spacing:1px;
 }
 
 .input-group input:focus + label,
 .input-group input:not(:placeholder-shown) + label{
-top:-8px;
-font-size:10px;
+top:-10px;
+font-size:9px;
 color:#00ff88;
 }
 
+/* DROPDOWN */
 .dropdown{
 width:280px;
-margin:15px 0;
+margin:20px 0;
 position:relative;
 cursor:pointer;
 }
@@ -79,6 +114,7 @@ cursor:pointer;
 .dropdown-selected{
 border-bottom:1px solid rgba(0,255,136,0.25);
 padding:10px 0;
+color:#aaa;
 }
 
 .dropdown-list{
@@ -87,7 +123,7 @@ top:100%;
 left:0;
 width:100%;
 background:#000;
-border:1px solid rgba(0,255,136,0.3);
+border:1px solid rgba(0,255,136,0.2);
 max-height:0;
 overflow:auto;
 transition:0.3s ease;
@@ -101,41 +137,63 @@ max-height:240px;
 .dropdown-item{
 padding:12px;
 transition:0.2s;
+font-size:13px;
 }
 
 .dropdown-item:hover{
 background:#001a10;
 }
 
+/* BOTÃO PREMIUM */
 .btn{
-padding:14px 30px;
-margin-top:20px;
+padding:14px 40px;
+margin-top:25px;
 background:transparent;
 border:1px solid #d4af37;
 color:#d4af37;
 cursor:pointer;
-transition:0.3s;
+transition:0.4s;
+letter-spacing:2px;
 }
 
 .btn:hover{
 background:#d4af37;
 color:#000;
+box-shadow:0 0 25px rgba(212,175,55,0.4);
 }
 
+/* FORM */
 .form-container{
 width:320px;
-padding:30px;
+padding:35px;
 border:1px solid rgba(0,255,136,0.08);
+backdrop-filter: blur(6px);
 }
 
-.success{color:#00ff88;}
+/* SUCESSO */
+.success{
+color:#00ff88;
+}
+
+/* FADE IN */
+.fade{
+animation:fade 1.5s ease forwards;
+}
+
+@keyframes fade{
+from{opacity:0;transform:translateY(20px);}
+to{opacity:1;transform:translateY(0);}
+}
 </style>
 </head>
 
 <body>
 
-<div class="section active" id="s1">
+<!-- S1 -->
+<div class="section active fade" id="s1">
 <img src="1977.png" class="shield">
+
+<div class="sub">PRIVATE ACCESS</div>
 <h1>Emerald Guardian</h1>
 
 <div class="input-group">
@@ -146,36 +204,62 @@ border:1px solid rgba(0,255,136,0.08);
 <button class="btn" onclick="enterSite()">ENTER</button>
 </div>
 
+<!-- S2 -->
 <div class="section" id="s2">
-<h2>Exclusive Access</h2>
+<h2>
+Access is restricted to a limited number of qualified individuals.
+</h2>
 <button class="btn" onclick="nextSafe(3)">CONTINUE</button>
 </div>
 
+<!-- S3 -->
 <div class="section" id="s3">
-<h2>Formed over millions of years</h2>
+<h2>
+Forged beneath extreme geological pressure,<br>
+over millions of years,<br>
+to exist only once.
+</h2>
 <button class="btn" onclick="nextSafe(4)">CONTINUE</button>
 </div>
 
+<!-- S4 -->
 <div class="section" id="s4">
 <img src="1979.png" class="felino">
-<h2>A singular piece</h2>
+<h2>
+A singular specimen,<br>
+beyond conventional classification.
+</h2>
 <button class="btn" onclick="nextSafe(5)">CONTINUE</button>
 </div>
 
+<!-- S5 -->
 <div class="section" id="s5">
-<h2>Absolute rarity</h2>
+<h2>
+Its rarity transcends market availability.
+</h2>
 <button class="btn" onclick="nextSafe(6)">CONTINUE</button>
 </div>
 
+<!-- S6 -->
 <div class="section" id="s6">
-<h2>Private and selective</h2>
+<h2>
+Acquisition is private,<br>
+selective,<br>
+and discreet.
+</h2>
 <button class="btn" onclick="nextSafe(7)">CONTINUE</button>
 </div>
 
+<!-- S7 FORM -->
 <div class="section" id="s7">
 <div class="form-container">
 
-<h2>Request Access</h2>
+<h2>Private Acquisition Request</h2>
+
+<p style="font-size:12px;color:#777;text-align:center;margin-bottom:15px;">
+Submissions are manually reviewed.<br>
+Only selected individuals will be contacted.
+</p>
 
 <form id="formEG">
 
@@ -208,6 +292,7 @@ border:1px solid rgba(0,255,136,0.08);
 </div>
 </div>
 
+<!-- S8 -->
 <div class="section" id="s8">
 <h2 class="success">Request sent successfully</h2>
 <button class="btn" onclick="nextSafe(1)">RETURN</button>
@@ -226,7 +311,7 @@ document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 document.getElementById("s"+n).classList.add("active");
 }
 
-// 🌍 LISTA GLOBAL ISO (principais + completa funcional)
+/* COUNTRIES */
 const countries = [
 "Brazil (+55)","USA (+1)","UK (+44)","Germany (+49)","France (+33)","Italy (+39)",
 "Spain (+34)","Portugal (+351)","Netherlands (+31)","Belgium (+32)","Switzerland (+41)",
@@ -246,7 +331,6 @@ const selected=dropdown.querySelector(".dropdown-selected");
 const list=dropdown.querySelector(".dropdown-list");
 const hidden=document.getElementById("ddi");
 
-// gerar lista dinamicamente
 countries.forEach(c=>{
   const div=document.createElement("div");
   div.className="dropdown-item";
@@ -269,7 +353,7 @@ dropdown.classList.remove("open");
 }
 });
 
-// FORM
+/* FORM */
 document.getElementById("formEG").addEventListener("submit", async function(e){
   e.preventDefault();
 
