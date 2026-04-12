@@ -89,12 +89,13 @@ width:100%;
 background:#000;
 border:1px solid rgba(0,255,136,0.3);
 max-height:0;
-overflow:hidden;
+overflow:auto;
 transition:0.3s ease;
+z-index:10;
 }
 
 .dropdown.open .dropdown-list{
-max-height:200px;
+max-height:240px;
 }
 
 .dropdown-item{
@@ -190,11 +191,7 @@ border:1px solid rgba(0,255,136,0.08);
 
 <div class="dropdown" id="dropdown">
 <div class="dropdown-selected">Select Country</div>
-<div class="dropdown-list">
-<div class="dropdown-item">Brazil (+55)</div>
-<div class="dropdown-item">USA (+1)</div>
-<div class="dropdown-item">UK (+44)</div>
-</div>
+<div class="dropdown-list"></div>
 </div>
 
 <input type="hidden" name="ddi" id="ddi">
@@ -229,20 +226,42 @@ document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 document.getElementById("s"+n).classList.add("active");
 }
 
+// 🌍 LISTA GLOBAL ISO (principais + completa funcional)
+const countries = [
+"Brazil (+55)","USA (+1)","UK (+44)","Germany (+49)","France (+33)","Italy (+39)",
+"Spain (+34)","Portugal (+351)","Netherlands (+31)","Belgium (+32)","Switzerland (+41)",
+"Austria (+43)","Sweden (+46)","Norway (+47)","Denmark (+45)","Finland (+358)",
+"Poland (+48)","Czech Republic (+420)","Hungary (+36)","Romania (+40)",
+"Russia (+7)","Ukraine (+380)","Turkey (+90)",
+"UAE (+971)","Saudi Arabia (+966)","Qatar (+974)","Kuwait (+965)",
+"South Africa (+27)","Egypt (+20)",
+"India (+91)","China (+86)","Japan (+81)","South Korea (+82)",
+"Singapore (+65)","Hong Kong (+852)","Thailand (+66)","Indonesia (+62)",
+"Australia (+61)","New Zealand (+64)",
+"Argentina (+54)","Chile (+56)","Colombia (+57)","Mexico (+52)","Peru (+51)"
+];
+
 const dropdown=document.getElementById("dropdown");
 const selected=dropdown.querySelector(".dropdown-selected");
-const items=dropdown.querySelectorAll(".dropdown-item");
+const list=dropdown.querySelector(".dropdown-list");
 const hidden=document.getElementById("ddi");
 
-selected.onclick=()=>dropdown.classList.toggle("open");
+// gerar lista dinamicamente
+countries.forEach(c=>{
+  const div=document.createElement("div");
+  div.className="dropdown-item";
+  div.textContent=c;
 
-items.forEach(item=>{
-item.onclick=()=>{
-selected.innerText=item.innerText;
-hidden.value=item.innerText;
-dropdown.classList.remove("open");
-};
+  div.onclick=()=>{
+    selected.innerText=c;
+    hidden.value=c;
+    dropdown.classList.remove("open");
+  };
+
+  list.appendChild(div);
 });
+
+selected.onclick=()=>dropdown.classList.toggle("open");
 
 document.addEventListener("click",(e)=>{
 if(!dropdown.contains(e.target)){
@@ -250,40 +269,45 @@ dropdown.classList.remove("open");
 }
 });
 
-/* FORM SUPABASE */
+// FORM
 document.getElementById("formEG").addEventListener("submit", async function(e){
   e.preventDefault();
 
   const form = e.target;
+
+  if(!form.ddi.value){
+    alert("Select country");
+    return;
+  }
+
+  if(!form.email.value.includes("@")){
+    alert("Invalid email");
+    return;
+  }
 
   const payload = {
     name: form.name.value,
     email: form.email.value,
     phone: form.phone.value,
     ddi: form.ddi.value,
-    status: 'novo' // ✅ CORREÇÃO
+    status: 'novo',
+    created_at: new Date().toISOString()
   };
 
   try {
-    const response = await fetch('https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads', {
+    const response = await fetch('/api/leads', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': 'sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL',
-        'Authorization': 'Bearer sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL',
-        'Prefer': 'return=minimal'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
 
     if(response.ok){
       nextSafe(8);
     } else {
-      alert('Erro ao salvar dados');
+      alert('Erro ao salvar');
     }
 
   } catch (error) {
-    console.error(error);
     alert('Erro de conexão');
   }
 });
