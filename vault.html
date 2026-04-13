@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emerald Vault</title>
+
+<style>
+body{
+margin:0;
+background:#000;
+color:#fff;
+font-family:system-ui;
+overflow:hidden;
+}
+
+/* INTRO */
+#intro{
+position:absolute;
+width:100%;
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+background:#000;
+z-index:2;
+transition:1.5s;
+}
+
+h1{
+font-size:50px;
+color:#d4af37;
+letter-spacing:3px;
+}
+
+p{
+color:#aaa;
+max-width:500px;
+line-height:1.6;
+}
+
+/* ENTER BUTTON */
+.btn{
+margin-top:30px;
+padding:15px 40px;
+border:1px solid #d4af37;
+color:#d4af37;
+background:none;
+cursor:pointer;
+letter-spacing:2px;
+}
+
+.btn:hover{
+background:#d4af37;
+color:#000;
+}
+
+/* VAULT CONTENT */
+#vault{
+opacity:0;
+pointer-events:none;
+transition:1.5s;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+flex-direction:column;
+}
+
+/* PAGES */
+.page{
+display:none;
+text-align:center;
+max-width:600px;
+}
+
+.page.active{
+display:block;
+}
+
+.nav{
+margin-top:30px;
+}
+
+.nav button{
+margin:5px;
+padding:10px 20px;
+background:none;
+border:1px solid #d4af37;
+color:#d4af37;
+cursor:pointer;
+}
+
+.nav button:hover{
+background:#d4af37;
+color:#000;
+}
+</style>
+</head>
+
+<body>
+
+<div id="intro">
+<h1>Emerald Vault</h1>
+<p>
+Access to this material is restricted.<br>
+This document contains confidential acquisition information.
+</p>
+<button class="btn" onclick="enterVault()">ENTER</button>
+</div>
+
+<div id="vault">
+
+<div class="page active">
+<h1>The Origin</h1>
+<p>
+Formed under extreme geological pressure,  
+this emerald represents a singular natural phenomenon.
+</p>
+</div>
+
+<div class="page">
+<h1>Rarity</h1>
+<p>
+No comparable specimen has been recorded  
+within conventional gemological archives.
+</p>
+</div>
+
+<div class="page">
+<h1>Acquisition</h1>
+<p>
+This piece is not publicly listed.  
+Access is granted selectively through private channels.
+</p>
+</div>
+
+<div class="nav">
+<button onclick="prev()">←</button>
+<button onclick="next()">→</button>
+</div>
+
+</div>
+
+<script type="module">
+
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+const supabase = createClient(
+  "https://mihrsfotrbigixqkpwhu.supabase.co",
+  "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
+);
+
+/* 🔐 PROTEÇÃO */
+async function checkAccess(){
+
+  const { data } = await supabase.auth.getUser();
+
+  if(!data.user){
+    location.href = "/";
+    return;
+  }
+
+  const { data: user } = await supabase
+    .from("users_access")
+    .select("status")
+    .eq("email", data.user.email)
+    .single();
+
+  if(!user || user.status !== "aprovado"){
+    alert("Access denied");
+    location.href = "/";
+  }
+}
+
+checkAccess();
+
+/* ENTER */
+window.enterVault = function(){
+  document.getElementById("intro").style.opacity=0;
+
+  setTimeout(()=>{
+    document.getElementById("intro").style.display="none";
+    const v = document.getElementById("vault");
+    v.style.opacity=1;
+    v.style.pointerEvents="auto";
+  },800);
+}
+
+/* NAV */
+let index=0;
+const pages=document.querySelectorAll(".page");
+
+window.next = function(){
+  pages[index].classList.remove("active");
+  index=(index+1)%pages.length;
+  pages[index].classList.add("active");
+}
+
+window.prev = function(){
+  pages[index].classList.remove("active");
+  index=(index-1+pages.length)%pages.length;
+  pages[index].classList.add("active");
+}
+
+</script>
+
+</body>
+</html>
