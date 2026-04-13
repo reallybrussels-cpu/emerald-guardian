@@ -32,44 +32,15 @@ opacity:1;
 pointer-events:auto;
 }
 
-h1{
-font-size:56px;
-color:#d4af37;
-letter-spacing:2px;
-}
+h1{font-size:56px;color:#d4af37;letter-spacing:2px;}
+h2{font-size:20px;font-weight:300;text-align:center;max-width:420px;color:#aaa;line-height:1.6;}
 
-h2{
-font-size:20px;
-font-weight:300;
-text-align:center;
-max-width:420px;
-color:#aaa;
-line-height:1.6;
-}
+.sub{font-size:12px;letter-spacing:3px;color:#666;margin-bottom:10px;}
 
-.sub{
-font-size:12px;
-letter-spacing:3px;
-color:#666;
-margin-bottom:10px;
-}
+.shield{width:140px;margin-bottom:30px;}
+.felino{width:340px;max-width:85%;margin-bottom:25px;}
 
-.shield{
-width:140px;
-margin-bottom:30px;
-}
-
-.felino{
-width:340px;
-max-width:85%;
-margin-bottom:25px;
-}
-
-.input-group{
-position:relative;
-width:280px;
-margin:20px 0;
-}
+.input-group{position:relative;width:280px;margin:20px 0;}
 
 .input-group input{
 width:100%;
@@ -94,12 +65,8 @@ font-size:10px;
 color:#00ff88;
 }
 
-.dropdown{
-width:280px;
-margin:20px 0;
-position:relative;
-cursor:pointer;
-}
+/* DROPDOWN */
+.dropdown{width:280px;margin:20px 0;position:relative;cursor:pointer;}
 
 .dropdown-selected{
 border:1px solid rgba(0,255,136,0.25);
@@ -120,18 +87,10 @@ transition:0.3s ease;
 z-index:10;
 }
 
-.dropdown.open .dropdown-list{
-max-height:240px;
-}
+.dropdown.open .dropdown-list{max-height:240px;}
 
-.dropdown-item{
-padding:12px;
-transition:0.2s;
-}
-
-.dropdown-item:hover{
-background:#001a10;
-}
+.dropdown-item{padding:12px;transition:0.2s;}
+.dropdown-item:hover{background:#001a10;}
 
 .btn{
 padding:14px 40px;
@@ -156,9 +115,7 @@ padding:35px;
 border:1px solid rgba(0,255,136,0.08);
 }
 
-.success{
-color:#00ff88;
-}
+.success{color:#00ff88;}
 </style>
 </head>
 
@@ -220,11 +177,6 @@ color:#00ff88;
 
 <h2>Private Acquisition Request</h2>
 
-<p style="font-size:12px;color:#777;text-align:center;margin-bottom:15px;">
-Submissions are manually reviewed.<br>
-Only selected individuals will be contacted.
-</p>
-
 <form id="formEG">
 
 <div class="input-group">
@@ -276,11 +228,6 @@ window.login = async function(){
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  if(!email || !password){
-    alert("Enter email and password");
-    return;
-  }
-
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if(error){
@@ -302,18 +249,36 @@ window.login = async function(){
   nextSafe(2);
 }
 
-/* NAVEGAÇÃO */
+/* NAV */
 window.nextSafe = function(n){
   document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
   document.getElementById("s"+n).classList.add("active");
 }
 
-/* LISTA */
+/* ISO GLOBAL COMPLETA */
 const countries = [
-"Brazil (+55)","USA (+1)","UK (+44)","Germany (+49)","France (+33)",
-"United Arab Emirates (+971)","Switzerland (+41)","Singapore (+65)"
+"United States / Canada (+1)","Russia / Kazakhstan (+7)","Egypt (+20)","South Africa (+27)",
+"Greece (+30)","Netherlands (+31)","Belgium (+32)","France (+33)","Spain (+34)",
+"Hungary (+36)","Italy (+39)","Romania (+40)","Switzerland (+41)","Austria (+43)",
+"United Kingdom (+44)","Denmark (+45)","Sweden (+46)","Norway (+47)","Poland (+48)",
+"Germany (+49)","Peru (+51)","Mexico (+52)","Cuba (+53)","Argentina (+54)",
+"Brazil (+55)","Chile (+56)","Colombia (+57)","Venezuela (+58)",
+"Malaysia (+60)","Australia (+61)","Indonesia (+62)","Philippines (+63)",
+"New Zealand (+64)","Singapore (+65)","Thailand (+66)",
+"Japan (+81)","South Korea (+82)","Vietnam (+84)","China (+86)",
+"Turkey (+90)","India (+91)","Pakistan (+92)","Afghanistan (+93)",
+"Sri Lanka (+94)","Myanmar (+95)","Iran (+98)",
+"Morocco (+212)","Algeria (+213)","Tunisia (+216)",
+"Nigeria (+234)","Angola (+244)","Mozambique (+258)",
+"Portugal (+351)","Ireland (+353)","Finland (+358)",
+"Czech Republic (+420)","Slovakia (+421)",
+"United Arab Emirates (+971)","Saudi Arabia (+966)",
+"Qatar (+974)","Israel (+972)"
 ];
 
+countries.sort();
+
+/* DROPDOWN */
 const dropdown=document.getElementById("dropdown");
 const selected=dropdown.querySelector(".dropdown-selected");
 const list=dropdown.querySelector(".dropdown-list");
@@ -341,20 +306,16 @@ dropdown.classList.remove("open");
 }
 });
 
-/* 🌍 AUTO DETECT */
+/* AUTO DETECT */
 fetch("https://ipapi.co/json/")
 .then(res=>res.json())
 .then(data=>{
-  const country = data.country_name;
-
-  const match = countries.find(c => c.includes(country));
-
+  const match = countries.find(c => c.toLowerCase().includes(data.country_name.toLowerCase()));
   if(match){
     selected.innerText = match;
     hidden.value = match;
   }
-})
-.catch(()=>{});
+});
 
 /* FORM */
 document.getElementById("formEG").addEventListener("submit", async function(e){
