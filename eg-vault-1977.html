@@ -275,7 +275,7 @@ async function updateStatus(id,status){
   load();
 }
 
-async function del(id){
+window.del = async function(id){
   if(!confirm("Excluir lead?")) return;
 
   await fetch(`https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?id=eq.${id}`,{
