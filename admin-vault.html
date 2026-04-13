@@ -2,62 +2,66 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Vault CMS</title>
+<title>Vault CMS Elite</title>
 
 <style>
 body{
   font-family:Arial;
   background:#f5f5f5;
   padding:30px;
-  color:#222;
 }
 
 .container{
-  max-width:1000px;
+  max-width:1200px;
   margin:auto;
 }
 
-h1{margin-bottom:10px;}
-h2{margin-top:30px;}
+h1{margin-bottom:20px;}
 
-input, textarea{
-  width:100%;
-  padding:12px;
-  margin:6px 0;
-  border:1px solid #ccc;
-  border-radius:6px;
+.editor{
   background:#fff;
+  padding:20px;
+  border-radius:8px;
+  margin-bottom:20px;
 }
 
-button{
-  padding:10px 15px;
-  margin:5px;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
-  font-weight:bold;
+.block{
+  border:1px dashed #ccc;
+  padding:10px;
+  margin:10px 0;
+  background:#fafafa;
 }
-
-.save{background:#27ae60;color:#fff;}
-.delete{background:#e74c3c;color:#fff;}
-.edit{background:#3498db;color:#fff;}
 
 .card{
   background:#fff;
   padding:15px;
   margin:10px 0;
   border-radius:6px;
-  box-shadow:0 2px 5px rgba(0,0,0,0.1);
+  cursor:grab;
 }
 
-.preview img{
-  max-width:100%;
-  margin-top:10px;
+button{
+  padding:10px;
+  margin:5px;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
 }
 
-.preview video{
+.save{background:#27ae60;color:#fff;}
+.delete{background:#e74c3c;color:#fff;}
+.edit{background:#3498db;color:#fff;}
+
+img{
   max-width:100%;
-  margin-top:10px;
+  cursor:zoom-in;
+}
+
+.dashboard{
+  background:#fff;
+  padding:20px;
+  margin-top:20px;
+  border-radius:8px;
 }
 </style>
 </head>
@@ -66,27 +70,34 @@ button{
 
 <div class="container">
 
-<h1>Vault CMS</h1>
+<h1>Vault CMS Elite</h1>
 
-<h2>Editor</h2>
+<div class="editor">
+
+<h3>Editor de Página</h3>
 
 <input id="title" placeholder="Título">
-<textarea id="content" placeholder="Conteúdo"></textarea>
-
-<input type="file" id="image">
-<input type="file" id="video">
-<input type="file" id="pdf">
-
 <input id="order" placeholder="Ordem">
 
-<button class="save" onclick="savePage()">Salvar Página</button>
+<div id="blocks"></div>
 
-<div class="preview" id="preview"></div>
+<button onclick="addText()">+ Texto</button>
+<button onclick="addImage()">+ Imagem</button>
+<button onclick="addVideo()">+ Vídeo</button>
 
-<hr>
+<br><br>
 
-<h2>Páginas</h2>
+<button class="save" onclick="save()">Salvar Página</button>
+
+</div>
+
+<h3>Páginas (Arraste para ordenar)</h3>
 <div id="list"></div>
+
+<div class="dashboard">
+<h3>Analytics</h3>
+<div id="stats"></div>
+</div>
 
 </div>
 
@@ -95,13 +106,12 @@ button{
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
 const supabase = createClient(
-  "https://mihrsfotrbigixqkpwhu.supabase.co",
-  "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
+"https://mihrsfotrbigixqkpwhu.supabase.co",
+"sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
 );
 
-/* 🔐 PROTEÇÃO ADMIN */
+/* 🔐 ADMIN */
 const { data } = await supabase.auth.getUser();
-
 if(!data.user) location.href="/";
 
 const { data: user } = await supabase
@@ -111,142 +121,171 @@ const { data: user } = await supabase
 .single();
 
 if(user.role !== "admin"){
-  alert("Admin only");
-  location.href="/";
+alert("Admin only");
+location.href="/";
 }
 
-/* ESTADO */
-let editingId = null;
+/* BLOCO */
+let blocks = [];
 
-/* LISTAR */
-async function load(){
-
-  const { data } = await supabase
-    .from("vault_pages")
-    .select("*")
-    .order("order_index");
-
-  const list = document.getElementById("list");
-  list.innerHTML = "";
-
-  data.forEach(p=>{
-
-    const div = document.createElement("div");
-    div.className="card";
-
-    div.innerHTML=`
-      <strong>${p.title}</strong><br>
-      Ordem: ${p.order_index}<br>
-
-      <button class="edit" onclick="edit('${p.id}')">Editar</button>
-      <button class="delete" onclick="del('${p.id}')">Excluir</button>
-    `;
-
-    list.appendChild(div);
-  });
+window.addText = function(){
+blocks.push({type:"text",content:""});
+renderBlocks();
 }
 
-/* EDITAR */
-window.edit = async function(id){
-
-  const { data } = await supabase
-    .from("vault_pages")
-    .select("*")
-    .eq("id",id)
-    .single();
-
-  editingId = id;
-
-  document.getElementById("title").value = data.title;
-  document.getElementById("content").value = data.content;
-  document.getElementById("order").value = data.order_index;
+window.addImage = function(){
+blocks.push({type:"image"});
+renderBlocks();
 }
 
-/* EXCLUIR */
-window.del = async function(id){
-
-  if(!confirm("Excluir página?")) return;
-
-  await supabase.from("vault_pages").delete().eq("id",id);
-
-  load();
+window.addVideo = function(){
+blocks.push({type:"video"});
+renderBlocks();
 }
+
+function renderBlocks(){
+const container = document.getElementById("blocks");
+container.innerHTML="";
+
+blocks.forEach((b,i)=>{
+const div=document.createElement("div");
+div.className="block";
+
+if(b.type==="text"){
+div.innerHTML=`<textarea onchange="updateText(${i},this.value)">${b.content||""}</textarea>`;
+}
+
+if(b.type==="image"){
+div.innerHTML=`<input type="file" onchange="uploadImage(${i},this)">`;
+}
+
+if(b.type==="video"){
+div.innerHTML=`<input type="file" onchange="uploadVideo(${i},this)">`;
+}
+
+container.appendChild(div);
+});
+}
+
+window.updateText = (i,val)=> blocks[i].content = val;
 
 /* UPLOAD */
 async function upload(file){
+const name = Date.now()+"_"+file.name;
 
-  if(!file) return null;
+await supabase.storage.from("vault-assets").upload(name,file);
 
-  const name = Date.now()+"_"+file.name;
+const { data } = supabase.storage.from("vault-assets").getPublicUrl(name);
+return data.publicUrl;
+}
 
-  await supabase.storage
-    .from("vault-assets")
-    .upload(name,file);
+window.uploadImage = async (i,input)=>{
+const url = await upload(input.files[0]);
+blocks[i].url = url;
+}
 
-  const { data } = supabase
-    .storage
-    .from("vault-assets")
-    .getPublicUrl(name);
-
-  return data.publicUrl;
+window.uploadVideo = async (i,input)=>{
+const url = await upload(input.files[0]);
+blocks[i].url = url;
 }
 
 /* SALVAR */
-window.savePage = async function(){
+window.save = async function(){
 
-  const title = document.getElementById("title").value;
-  const content = document.getElementById("content").value;
-  const order = parseInt(document.getElementById("order").value);
+const title = document.getElementById("title").value;
+const order = parseInt(document.getElementById("order").value);
 
-  const imageFile = document.getElementById("image").files[0];
-  const videoFile = document.getElementById("video").files[0];
-  const pdfFile = document.getElementById("pdf").files[0];
-
-  const image_url = await upload(imageFile);
-  const video_url = await upload(videoFile);
-  const pdf_url = await upload(pdfFile);
-
-  if(editingId){
-
-    await supabase.from("vault_pages").update({
-      title,
-      content,
-      image_url,
-      video_url,
-      pdf_url,
-      order_index: order
-    }).eq("id", editingId);
-
-    editingId = null;
-
-  }else{
-
-    await supabase.from("vault_pages").insert({
-      title,
-      content,
-      image_url,
-      video_url,
-      pdf_url,
-      order_index: order
-    });
-
-  }
-
-  alert("Salvo com sucesso");
-
-  load();
-}
-
-/* PREVIEW */
-document.getElementById("image").addEventListener("change", e=>{
-  const file = e.target.files[0];
-  const url = URL.createObjectURL(file);
-
-  document.getElementById("preview").innerHTML = `<img src="${url}">`;
+await supabase.from("vault_pages").insert({
+title,
+order_index:order,
+blocks
 });
 
-/* INIT */
+alert("Salvo");
 load();
+}
+
+/* LISTA + DRAG */
+let dragged;
+
+function load(){
+
+supabase.from("vault_pages").select("*").order("order_index")
+.then(res=>{
+
+const list=document.getElementById("list");
+list.innerHTML="";
+
+res.data.forEach(p=>{
+
+const div=document.createElement("div");
+div.className="card";
+div.draggable=true;
+
+div.innerHTML=`${p.title}`;
+
+div.ondragstart=()=>dragged=p;
+div.ondragover=e=>e.preventDefault();
+
+div.ondrop=async ()=>{
+
+await supabase.from("vault_pages")
+.update({order_index:dragged.order_index})
+.eq("id",p.id);
+
+await supabase.from("vault_pages")
+.update({order_index:p.order_index})
+.eq("id",dragged.id);
+
+load();
+};
+
+list.appendChild(div);
+
+});
+
+});
+}
+
+/* ANALYTICS */
+async function analytics(){
+
+const { data } = await supabase.from("vault_tracking").select("*");
+
+let total = data.length;
+let time = data.reduce((a,b)=>a+b.time_spent,0);
+
+document.getElementById("stats").innerHTML = `
+Total visitas: ${total}<br>
+Tempo total: ${time}s
+`;
+}
+
+setInterval(analytics,5000);
+
+/* ALERTA */
+let lastCheck = 0;
+
+async function checkAccess(){
+
+const { data } = await supabase
+.from("vault_logs")
+.select("*")
+.order("created_at",{ascending:false})
+.limit(1);
+
+if(data[0] && data[0].created_at !== lastCheck){
+
+lastCheck = data[0].created_at;
+
+alert("Usuário entrou no Vault");
+}
+}
+
+setInterval(checkAccess,7000);
+
+load();
+analytics();
 
 </script>
 
