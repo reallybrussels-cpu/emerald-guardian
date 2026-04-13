@@ -65,7 +65,6 @@ max-width:85%;
 margin-bottom:25px;
 }
 
-/* INPUT PREMIUM */
 .input-group{
 position:relative;
 width:280px;
@@ -95,7 +94,6 @@ font-size:10px;
 color:#00ff88;
 }
 
-/* DROPDOWN */
 .dropdown{
 width:280px;
 margin:20px 0;
@@ -135,7 +133,6 @@ transition:0.2s;
 background:#001a10;
 }
 
-/* BOTÃO */
 .btn{
 padding:14px 40px;
 margin-top:25px;
@@ -169,9 +166,7 @@ color:#00ff88;
 
 <!-- LOGIN -->
 <div class="section active" id="s1">
-
 <img src="1977.png" class="shield">
-
 <div class="sub">PRIVATE ACCESS</div>
 <h1>Emerald Guardian</h1>
 
@@ -186,7 +181,6 @@ color:#00ff88;
 </div>
 
 <button class="btn" onclick="login()">ENTER</button>
-
 </div>
 
 <!-- S2 -->
@@ -243,7 +237,6 @@ Only selected individuals will be contacted.
 <label>EMAIL</label>
 </div>
 
-<!-- DROPDOWN GLOBAL -->
 <div class="dropdown" id="dropdown">
 <div class="dropdown-selected">Select Country</div>
 <div class="dropdown-list"></div>
@@ -280,7 +273,6 @@ const supabase = createClient(
 
 /* LOGIN */
 window.login = async function(){
-
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
@@ -289,10 +281,7 @@ window.login = async function(){
     return;
   }
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  });
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if(error){
     alert("Invalid login credentials");
@@ -319,19 +308,10 @@ window.nextSafe = function(n){
   document.getElementById("s"+n).classList.add("active");
 }
 
-/* DROPDOWN GLOBAL */
+/* LISTA */
 const countries = [
-"Brazil (+55)","USA (+1)","UK (+44)","Germany (+49)","France (+33)","Italy (+39)",
-"Spain (+34)","Portugal (+351)","Netherlands (+31)","Belgium (+32)","Switzerland (+41)",
-"Austria (+43)","Sweden (+46)","Norway (+47)","Denmark (+45)","Finland (+358)",
-"Poland (+48)","Czech Republic (+420)","Hungary (+36)","Romania (+40)",
-"Russia (+7)","Ukraine (+380)","Turkey (+90)",
-"UAE (+971)","Saudi Arabia (+966)","Qatar (+974)","Kuwait (+965)",
-"South Africa (+27)","Egypt (+20)",
-"India (+91)","China (+86)","Japan (+81)","South Korea (+82)",
-"Singapore (+65)","Hong Kong (+852)","Thailand (+66)","Indonesia (+62)",
-"Australia (+61)","New Zealand (+64)",
-"Argentina (+54)","Chile (+56)","Colombia (+57)","Mexico (+52)","Peru (+51)"
+"Brazil (+55)","USA (+1)","UK (+44)","Germany (+49)","France (+33)",
+"United Arab Emirates (+971)","Switzerland (+41)","Singapore (+65)"
 ];
 
 const dropdown=document.getElementById("dropdown");
@@ -360,6 +340,21 @@ if(!dropdown.contains(e.target)){
 dropdown.classList.remove("open");
 }
 });
+
+/* 🌍 AUTO DETECT */
+fetch("https://ipapi.co/json/")
+.then(res=>res.json())
+.then(data=>{
+  const country = data.country_name;
+
+  const match = countries.find(c => c.includes(country));
+
+  if(match){
+    selected.innerText = match;
+    hidden.value = match;
+  }
+})
+.catch(()=>{});
 
 /* FORM */
 document.getElementById("formEG").addEventListener("submit", async function(e){
