@@ -12,7 +12,6 @@ font-family:serif;
 overflow:hidden;
 }
 
-/* LIVRO */
 .book{
 position:relative;
 width:100%;
@@ -37,35 +36,16 @@ backface-visibility:hidden;
 overflow:auto;
 }
 
-/* DIREITA */
-.page.right{
-left:50%;
-transform-origin:left;
-}
+.page.right{ left:50%; }
+.page.left{ left:0; transform-origin:right; }
 
-/* ESQUERDA */
-.page.left{
-left:0;
-transform-origin:right;
-}
+.page.flipped{ transform:rotateY(-180deg); }
 
-/* VIRAR */
-.page.flipped{
-transform:rotateY(-180deg);
-}
-
-/* IMAGEM */
 img{
 width:100%;
-cursor:zoom-in;
 transition:0.5s;
 }
 
-img:hover{
-transform:scale(1.3);
-}
-
-/* NAV */
 .nav{
 position:fixed;
 bottom:20px;
@@ -80,7 +60,6 @@ background:none;
 color:#d4af37;
 cursor:pointer;
 }
-
 </style>
 </head>
 
@@ -106,7 +85,7 @@ const supabase = createClient(
 const { data } = await supabase.auth.getUser();
 if(!data.user) location.href="/";
 
-/* USUÁRIO */
+/* USER */
 const { data: user } = await supabase
 .from("users_access")
 .select("*")
@@ -141,32 +120,54 @@ const { data } = await supabase
 .select("*")
 .order("order_index");
 
-pages=data||[];
+pages=data || [];
+
 render();
 }
 
-/* BUILD */
+/* BUILD SEGURO */
 function build(p){
 
 if(!p) return "";
 
-let html = `<h2>${p.title}</h2>`;
+let html = `<h2>${p.title || ""}</h2>`;
 
-if(p.blocks){
+/* NOVO FORMATO (blocks) */
+if(p.blocks && Array.isArray(p.blocks)){
+
 p.blocks.forEach(b=>{
-if(b.type==="text") html+=`<p>${b.content}</p>`;
-if(b.type==="image") html+=`<img src="${b.url}">`;
-if(b.type==="video") html+=`
+if(!b) return;
+
+if(b.type==="text") html+=`<p>${b.content || ""}</p>`;
+if(b.type==="image" && b.url) html+=`<img src="${b.url}">`;
+if(b.type==="video" && b.url){
+html+=`
 <video width="100%" controls>
 <source src="${b.url}">
 </video>`;
+}
 });
+
+}
+
+/* FORMATO ANTIGO (fallback) */
+else{
+
+if(p.content) html+=`<p>${p.content}</p>`;
+if(p.image_url) html+=`<img src="${p.image_url}">`;
+if(p.video_url){
+html+=`
+<video width="100%" controls>
+<source src="${p.video_url}">
+</video>`;
+}
+
 }
 
 return html;
 }
 
-/* RENDER LIVRO */
+/* RENDER */
 function render(){
 
 const book=document.getElementById("book");
@@ -217,6 +218,7 @@ setInterval(track,5000);
 /* PROTEÇÃO */
 document.addEventListener("contextmenu",e=>e.preventDefault());
 
+/* INIT */
 load();
 
 </script>
