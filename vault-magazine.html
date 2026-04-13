@@ -12,56 +12,54 @@ font-family:serif;
 overflow:hidden;
 }
 
+/* WATERMARK */
+#watermark{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:40px;
+color:rgba(255,255,255,0.03);
+pointer-events:none;
+z-index:999;
+}
+
 /* BOOK */
 #book{
 width:90vw;
 height:90vh;
-margin:auto;
 position:absolute;
 top:0;bottom:0;left:0;right:0;
-perspective:2000px;
+margin:auto;
+display:flex;
 }
 
+/* PAGE */
 .page{
 width:50%;
 height:100%;
-position:absolute;
-top:0;
 background:#111;
 color:#fff;
 padding:40px;
 box-sizing:border-box;
-transform-origin:left;
-transition:1s;
-backface-visibility:hidden;
-border:1px solid #222;
+transition:0.8s;
+overflow:hidden;
+position:relative;
 }
 
-/* LEFT / RIGHT */
-.left{
-left:0;
+.page img{
+width:100%;
+transition:0.5s;
+cursor:zoom-in;
 }
 
-.right{
-right:0;
-transform-origin:right;
-}
-
-/* TURN */
-.page.turn{
-transform:rotateY(-180deg);
+.page img:hover{
+transform:scale(1.4);
 }
 
 /* TEXT */
-h1{
-color:#d4af37;
-font-size:32px;
-}
-
-p{
-color:#ccc;
-line-height:1.6;
-}
+h1{color:#d4af37;}
+p{color:#ccc;}
 
 /* NAV */
 .nav{
@@ -73,55 +71,43 @@ text-align:center;
 
 button{
 padding:10px 20px;
-background:none;
 border:1px solid #d4af37;
+background:none;
 color:#d4af37;
 cursor:pointer;
+}
+
+button:hover{
+background:#d4af37;
+color:#000;
+}
+
+/* FADE */
+.fade{
+animation:fade 1s ease;
+}
+
+@keyframes fade{
+from{opacity:0}
+to{opacity:1}
 }
 </style>
 </head>
 
 <body>
 
+<div id="watermark"></div>
+
 <div id="book">
 
-<div class="page left" id="p1">
+<div class="page" id="left">
 <h1>Emerald Guardian</h1>
-<p>
-Confidential acquisition dossier.<br><br>
-This document is restricted and intended only for selected individuals.
-</p>
+<p>Confidential acquisition dossier.</p>
 </div>
 
-<div class="page right" id="p2">
+<div class="page" id="right">
 <h1>Origin</h1>
-<p>
-Formed under extreme geological conditions,  
-this emerald represents a unique natural occurrence.
-</p>
-</div>
-
-<div class="page left" id="p3">
-<h1>Certification</h1>
-<p>
-Includes laboratory verification, origin validation  
-and gemological reports.
-</p>
-</div>
-
-<div class="page right" id="p4">
-<h1>Video Presentation</h1>
-<video width="100%" controls>
-<source src="video.mp4">
-</video>
-</div>
-
-<div class="page left" id="p5">
-<h1>Private Acquisition</h1>
-<p>
-Available only through direct negotiation  
-with qualified buyers.
-</p>
+<img src="assets/images/emerald.jpg">
 </div>
 
 </div>
@@ -131,24 +117,103 @@ with qualified buyers.
 <button onclick="next()">→</button>
 </div>
 
-<script>
+<script type="module">
 
-let current=0;
-const pages=document.querySelectorAll(".page");
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-function next(){
-if(current < pages.length){
-pages[current].classList.add("turn");
-current++;
-}
+const supabase = createClient(
+  "https://mihrsfotrbigixqkpwhu.supabase.co",
+  "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
+);
+
+/* 🔐 LOGIN CHECK */
+const { data } = await supabase.auth.getUser();
+
+if(!data.user){
+  location.href = "/";
 }
 
-function prev(){
-if(current > 0){
-current--;
-pages[current].classList.remove("turn");
+document.getElementById("watermark").innerText = data.user.email;
+
+/* 🚫 PROTECTION */
+document.addEventListener("contextmenu", e => e.preventDefault());
+document.addEventListener("keydown", e=>{
+  if(e.key === "PrintScreen"){
+    alert("Protected content");
+  }
+});
+
+/* 📊 TRACKING */
+function track(page){
+  console.log("User:", data.user.email, "Page:", page);
 }
+
+/* 📖 PAGES */
+const pages = [
+{
+title:"Emerald Guardian",
+content:"Confidential acquisition dossier"
+},
+{
+title:"Certification",
+content:"Includes lab reports"
+},
+{
+title:"Video",
+video:"assets/videos/video.mp4"
 }
+];
+
+let index = 0;
+
+function render(){
+
+  const left = document.getElementById("left");
+  const right = document.getElementById("right");
+
+  left.classList.add("fade");
+  right.classList.add("fade");
+
+  left.innerHTML = `
+    <h1>${pages[index].title}</h1>
+    <p>${pages[index].content || ""}</p>
+  `;
+
+  const nextPage = pages[index+1];
+
+  if(nextPage){
+    if(nextPage.video){
+      right.innerHTML = `
+        <video width="100%" controls>
+        <source src="${nextPage.video}">
+        </video>
+      `;
+    }else{
+      right.innerHTML = `
+        <h1>${nextPage.title}</h1>
+        <p>${nextPage.content || ""}</p>
+      `;
+    }
+  }
+
+  track(index);
+}
+
+window.next = function(){
+  if(index < pages.length-1){
+    index++;
+    render();
+  }
+}
+
+window.prev = function(){
+  if(index > 0){
+    index--;
+    render();
+  }
+}
+
+render();
 
 </script>
 
