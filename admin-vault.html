@@ -1,4 +1,23 @@
-<!DOCTYPE html>
+const { data } = await supabase.auth.getUser();
+
+if(!data.user) location.href="/";
+
+const { data: user } = await supabase
+.from("users_access")
+.select("*")
+.eq("email", data.user.email)
+.single();
+
+if(user.role !== "admin"){
+  alert("Admin only");
+  location.href="/";
+}
+
+/* LOG */
+await supabase.from("vault_logs").insert({
+  email: data.user.email,
+  action: "enter_admin"
+});<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
