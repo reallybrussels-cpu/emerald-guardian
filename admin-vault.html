@@ -2,78 +2,63 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Vault Admin</title>
+<title>Vault CMS</title>
 
 <style>
-
 body{
-  font-family:Arial, sans-serif;
+  font-family:Arial;
   background:#f5f5f5;
-  color:#222;
   padding:30px;
+  color:#222;
 }
 
-/* CONTAINER */
 .container{
-  max-width:900px;
+  max-width:1000px;
   margin:auto;
 }
 
-/* TITULOS */
-h1{
-  color:#000;
-}
+h1{margin-bottom:10px;}
+h2{margin-top:30px;}
 
-h2{
-  margin-top:30px;
-}
-
-/* INPUTS */
 input, textarea{
   width:100%;
-  margin:8px 0;
   padding:12px;
+  margin:6px 0;
   border:1px solid #ccc;
   border-radius:6px;
   background:#fff;
 }
 
-/* BOTÃO */
 button{
-  padding:12px 20px;
-  margin-top:10px;
-  background:#d4af37;
+  padding:10px 15px;
+  margin:5px;
   border:none;
   border-radius:6px;
   cursor:pointer;
   font-weight:bold;
 }
 
-button:hover{
-  opacity:0.9;
-}
+.save{background:#27ae60;color:#fff;}
+.delete{background:#e74c3c;color:#fff;}
+.edit{background:#3498db;color:#fff;}
 
-/* LISTA */
 .card{
   background:#fff;
-  border:1px solid #ddd;
-  border-radius:6px;
   padding:15px;
   margin:10px 0;
-  box-shadow:0 2px 5px rgba(0,0,0,0.05);
+  border-radius:6px;
+  box-shadow:0 2px 5px rgba(0,0,0,0.1);
 }
 
-.card strong{
-  font-size:16px;
-}
-
-/* BOTÃO EXCLUIR */
-.delete{
-  background:#e74c3c;
-  color:#fff;
+.preview img{
+  max-width:100%;
   margin-top:10px;
 }
 
+.preview video{
+  max-width:100%;
+  margin-top:10px;
+}
 </style>
 </head>
 
@@ -81,16 +66,22 @@ button:hover{
 
 <div class="container">
 
-<h1>Vault Admin</h1>
+<h1>Vault CMS</h1>
 
-<h2>Nova Página</h2>
+<h2>Editor</h2>
 
 <input id="title" placeholder="Título">
 <textarea id="content" placeholder="Conteúdo"></textarea>
-<input type="file" id="image">
-<input id="order" placeholder="Ordem (ex: 1,2,3...)">
 
-<button onclick="createPage()">Criar Página</button>
+<input type="file" id="image">
+<input type="file" id="video">
+<input type="file" id="pdf">
+
+<input id="order" placeholder="Ordem">
+
+<button class="save" onclick="savePage()">Salvar Página</button>
+
+<div class="preview" id="preview"></div>
 
 <hr>
 
@@ -124,6 +115,9 @@ if(user.role !== "admin"){
   location.href="/";
 }
 
+/* ESTADO */
+let editingId = null;
+
 /* LISTAR */
 async function load(){
 
@@ -132,17 +126,19 @@ async function load(){
     .select("*")
     .order("order_index");
 
-  const list=document.getElementById("list");
-  list.innerHTML="";
+  const list = document.getElementById("list");
+  list.innerHTML = "";
 
   data.forEach(p=>{
 
-    const div=document.createElement("div");
+    const div = document.createElement("div");
     div.className="card";
 
     div.innerHTML=`
       <strong>${p.title}</strong><br>
       Ordem: ${p.order_index}<br>
+
+      <button class="edit" onclick="edit('${p.id}')">Editar</button>
       <button class="delete" onclick="del('${p.id}')">Excluir</button>
     `;
 
@@ -150,6 +146,23 @@ async function load(){
   });
 }
 
+/* EDITAR */
+window.edit = async function(id){
+
+  const { data } = await supabase
+    .from("vault_pages")
+    .select("*")
+    .eq("id",id)
+    .single();
+
+  editingId = id;
+
+  document.getElementById("title").value = data.title;
+  document.getElementById("content").value = data.content;
+  document.getElementById("order").value = data.order_index;
+}
+
+/* EXCLUIR */
 window.del = async function(id){
 
   if(!confirm("Excluir página?")) return;
@@ -178,27 +191,59 @@ async function upload(file){
   return data.publicUrl;
 }
 
-/* CRIAR */
-window.createPage = async function(){
+/* SALVAR */
+window.savePage = async function(){
 
-  const title=document.getElementById("title").value;
-  const content=document.getElementById("content").value;
-  const order=parseInt(document.getElementById("order").value);
+  const title = document.getElementById("title").value;
+  const content = document.getElementById("content").value;
+  const order = parseInt(document.getElementById("order").value);
 
-  const file=document.getElementById("image").files[0];
-  const image_url = await upload(file);
+  const imageFile = document.getElementById("image").files[0];
+  const videoFile = document.getElementById("video").files[0];
+  const pdfFile = document.getElementById("pdf").files[0];
 
-  await supabase.from("vault_pages").insert({
-    title,
-    content,
-    image_url,
-    order_index: order
-  });
+  const image_url = await upload(imageFile);
+  const video_url = await upload(videoFile);
+  const pdf_url = await upload(pdfFile);
 
-  alert("Página criada");
+  if(editingId){
+
+    await supabase.from("vault_pages").update({
+      title,
+      content,
+      image_url,
+      video_url,
+      pdf_url,
+      order_index: order
+    }).eq("id", editingId);
+
+    editingId = null;
+
+  }else{
+
+    await supabase.from("vault_pages").insert({
+      title,
+      content,
+      image_url,
+      video_url,
+      pdf_url,
+      order_index: order
+    });
+
+  }
+
+  alert("Salvo com sucesso");
 
   load();
 }
+
+/* PREVIEW */
+document.getElementById("image").addEventListener("change", e=>{
+  const file = e.target.files[0];
+  const url = URL.createObjectURL(file);
+
+  document.getElementById("preview").innerHTML = `<img src="${url}">`;
+});
 
 /* INIT */
 load();
