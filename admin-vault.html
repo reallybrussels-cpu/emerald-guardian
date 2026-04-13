@@ -2,63 +2,52 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Vault Admin</title>
+<title>Vault</title>
 
 <style>
 body{
-  font-family:Arial;
-  background:#f5f5f5;
-  padding:30px;
-  color:#222;
+margin:0;
+background:#000;
+color:#fff;
+font-family:Arial;
 }
 
-.container{
-  max-width:900px;
-  margin:auto;
+.page{
+width:50%;
+float:left;
+padding:40px;
+box-sizing:border-box;
 }
 
-input, textarea{
-  width:100%;
-  padding:12px;
-  margin:6px 0;
-  border:1px solid #ccc;
-  border-radius:6px;
+img{
+width:100%;
+}
+
+.nav{
+position:fixed;
+bottom:20px;
+width:100%;
+text-align:center;
 }
 
 button{
-  padding:10px;
-  margin-top:10px;
-  background:#d4af37;
-  border:none;
-  cursor:pointer;
-}
-
-.card{
-  background:#fff;
-  padding:15px;
-  margin:10px 0;
-  border-radius:6px;
+padding:10px;
+border:1px solid gold;
+background:none;
+color:gold;
+cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div id="left" class="page"></div>
+<div id="right" class="page"></div>
 
-<h1>Vault Admin</h1>
-
-<input id="title" placeholder="Título">
-<textarea id="content" placeholder="Conteúdo"></textarea>
-<input type="file" id="image">
-<input id="order" placeholder="Ordem">
-
-<button onclick="createPage()">Criar Página</button>
-
-<hr>
-
-<div id="list"></div>
-
+<div class="nav">
+<button onclick="prev()">←</button>
+<button onclick="next()">→</button>
 </div>
 
 <script type="module">
@@ -66,84 +55,67 @@ button{
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
 const supabase = createClient(
-  "https://mihrsfotrbigixqkpwhu.supabase.co",
-  "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
+"https://mihrsfotrbigixqkpwhu.supabase.co",
+"sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
 );
 
-/* PROTEÇÃO ADMIN */
+/* LOGIN */
 const { data } = await supabase.auth.getUser();
-if(!data.user) location.href="/";
+if(!data.user){
+alert("Faça login");
+location.href="/";
+}
 
-const { data: user } = await supabase
-.from("users_access")
+/* BUSCAR DADOS */
+const { data: pages } = await supabase
+.from("vault_pages")
 .select("*")
-.eq("email", data.user.email)
-.single();
+.order("order_index");
 
-if(user.role !== "admin"){
-  alert("Admin only");
-  location.href="/";
+/* VALIDAÇÃO */
+if(!pages || pages.length === 0){
+document.body.innerHTML="<h2 style='color:white;padding:20px'>Nenhuma página criada ainda</h2>";
+throw "sem dados";
 }
 
-/* LISTAR */
-async function load(){
-  const { data } = await supabase.from("vault_pages").select("*").order("order_index");
+/* ESTADO */
+let index=0;
 
-  const list=document.getElementById("list");
-  list.innerHTML="";
+/* BUILD */
+function build(p){
 
-  data.forEach(p=>{
-    const div=document.createElement("div");
-    div.className="card";
+return `
+<h2>${p.title || ""}</h2>
+<p>${p.content || ""}</p>
+${p.image_url ? `<img src="${p.image_url}">` : ""}
+`;
 
-    div.innerHTML=`
-      <strong>${p.title}</strong><br>
-      <button onclick="del('${p.id}')">Excluir</button>
-    `;
-
-    list.appendChild(div);
-  });
 }
 
-window.del = async function(id){
-  if(!confirm("Excluir página?")) return;
-  await supabase.from("vault_pages").delete().eq("id",id);
-  load();
+/* RENDER */
+function render(){
+
+document.getElementById("left").innerHTML = build(pages[index]);
+document.getElementById("right").innerHTML = build(pages[index+1] || {});
+
 }
 
-/* UPLOAD */
-async function upload(file){
-  if(!file) return null;
-
-  const name = Date.now()+"_"+file.name;
-
-  await supabase.storage.from("vault-assets").upload(name,file);
-
-  const { data } = supabase.storage.from("vault-assets").getPublicUrl(name);
-
-  return data.publicUrl;
+/* NAV */
+window.next = ()=>{
+if(index < pages.length-1){
+index++;
+render();
+}
 }
 
-/* CRIAR */
-window.createPage = async function(){
-
-  const title=document.getElementById("title").value;
-  const content=document.getElementById("content").value;
-  const order=parseInt(document.getElementById("order").value);
-
-  const file=document.getElementById("image").files[0];
-  const image_url = await upload(file);
-
-  await supabase.from("vault_pages").insert({
-    title,content,image_url,order_index:order
-  });
-
-  alert("Página criada");
-
-  load();
+window.prev = ()=>{
+if(index > 0){
+index--;
+render();
+}
 }
 
-load();
+render();
 
 </script>
 
