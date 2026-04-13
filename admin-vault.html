@@ -5,27 +5,99 @@
 <title>Vault Admin</title>
 
 <style>
-body{font-family:Arial;background:#000;color:#fff;padding:20px;}
-input,textarea{width:100%;margin:5px 0;padding:10px;background:#111;color:#fff;border:1px solid #444;}
-button{padding:10px;margin:5px 0;background:#d4af37;border:none;cursor:pointer;}
-.card{border:1px solid #333;padding:10px;margin:10px 0;}
+
+body{
+  font-family:Arial, sans-serif;
+  background:#f5f5f5;
+  color:#222;
+  padding:30px;
+}
+
+/* CONTAINER */
+.container{
+  max-width:900px;
+  margin:auto;
+}
+
+/* TITULOS */
+h1{
+  color:#000;
+}
+
+h2{
+  margin-top:30px;
+}
+
+/* INPUTS */
+input, textarea{
+  width:100%;
+  margin:8px 0;
+  padding:12px;
+  border:1px solid #ccc;
+  border-radius:6px;
+  background:#fff;
+}
+
+/* BOTÃO */
+button{
+  padding:12px 20px;
+  margin-top:10px;
+  background:#d4af37;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+button:hover{
+  opacity:0.9;
+}
+
+/* LISTA */
+.card{
+  background:#fff;
+  border:1px solid #ddd;
+  border-radius:6px;
+  padding:15px;
+  margin:10px 0;
+  box-shadow:0 2px 5px rgba(0,0,0,0.05);
+}
+
+.card strong{
+  font-size:16px;
+}
+
+/* BOTÃO EXCLUIR */
+.delete{
+  background:#e74c3c;
+  color:#fff;
+  margin-top:10px;
+}
+
 </style>
 </head>
 
 <body>
 
+<div class="container">
+
 <h1>Vault Admin</h1>
+
+<h2>Nova Página</h2>
 
 <input id="title" placeholder="Título">
 <textarea id="content" placeholder="Conteúdo"></textarea>
 <input type="file" id="image">
-<input id="order" placeholder="Ordem">
+<input id="order" placeholder="Ordem (ex: 1,2,3...)">
 
 <button onclick="createPage()">Criar Página</button>
 
 <hr>
 
+<h2>Páginas</h2>
 <div id="list"></div>
+
+</div>
 
 <script type="module">
 
@@ -36,7 +108,7 @@ const supabase = createClient(
   "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
 );
 
-/* PROTEÇÃO ADMIN */
+/* 🔐 PROTEÇÃO ADMIN */
 const { data } = await supabase.auth.getUser();
 
 if(!data.user) location.href="/";
@@ -54,35 +126,54 @@ if(user.role !== "admin"){
 
 /* LISTAR */
 async function load(){
-  const { data } = await supabase.from("vault_pages").select("*").order("order_index");
+
+  const { data } = await supabase
+    .from("vault_pages")
+    .select("*")
+    .order("order_index");
+
   const list=document.getElementById("list");
   list.innerHTML="";
 
   data.forEach(p=>{
+
     const div=document.createElement("div");
     div.className="card";
+
     div.innerHTML=`
       <strong>${p.title}</strong><br>
-      <button onclick="del('${p.id}')">Excluir</button>
+      Ordem: ${p.order_index}<br>
+      <button class="delete" onclick="del('${p.id}')">Excluir</button>
     `;
+
     list.appendChild(div);
   });
 }
 
 window.del = async function(id){
+
+  if(!confirm("Excluir página?")) return;
+
   await supabase.from("vault_pages").delete().eq("id",id);
+
   load();
 }
 
 /* UPLOAD */
 async function upload(file){
+
   if(!file) return null;
 
   const name = Date.now()+"_"+file.name;
 
-  await supabase.storage.from("vault-assets").upload(name,file);
+  await supabase.storage
+    .from("vault-assets")
+    .upload(name,file);
 
-  const { data } = supabase.storage.from("vault-assets").getPublicUrl(name);
+  const { data } = supabase
+    .storage
+    .from("vault-assets")
+    .getPublicUrl(name);
 
   return data.publicUrl;
 }
@@ -98,12 +189,18 @@ window.createPage = async function(){
   const image_url = await upload(file);
 
   await supabase.from("vault_pages").insert({
-    title,content,image_url,order_index:order
+    title,
+    content,
+    image_url,
+    order_index: order
   });
+
+  alert("Página criada");
 
   load();
 }
 
+/* INIT */
 load();
 
 </script>
