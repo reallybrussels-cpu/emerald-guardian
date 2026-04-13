@@ -106,7 +106,6 @@ padding:5px 10px;border:1px solid #b8962e;background:#fff;color:#b8962e;font-siz
 
 </div>
 
-<!-- 🔥 SUPABASE CORRIGIDO -->
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
@@ -124,10 +123,7 @@ window.login = async function(){
     return;
   }
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  });
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if(error){
     alert(error.message);
@@ -155,19 +151,14 @@ function showApp(){
   load();
 }
 
-// ===== RESTO DO SEU CRM (INALTERADO) =====
-
 let leads=[];
 
 async function load(){
   const res = await fetch('https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?select=*',{
-    headers:{
-      'apikey':'sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL'
-    }
+    headers:{ 'apikey':'sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL' }
   });
 
   leads = await res.json();
-
   leads.sort((a,b)=> new Date(b.created_at) - new Date(a.created_at));
 
   loadCountries();
@@ -262,6 +253,20 @@ function render(){
   stats();
 }
 
+/* 🔥 DELETE CORRIGIDO */
+window.del = async function(id){
+
+  if(!confirm("Excluir lead?")) return;
+
+  await fetch('/api/delete-lead',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({id})
+  });
+
+  load();
+}
+
 async function updateStatus(id,status){
   await fetch(`https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?id=eq.${id}`,{
     method:"PATCH",
@@ -270,19 +275,6 @@ async function updateStatus(id,status){
       'apikey':'sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL'
     },
     body:JSON.stringify({status})
-  });
-
-  load();
-}
-
-window.del = async function(id){
-  if(!confirm("Excluir lead?")) return;
-
-  await fetch(`https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?id=eq.${id}`,{
-    method:"DELETE",
-    headers:{
-      'apikey':'sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL'
-    }
   });
 
   load();
