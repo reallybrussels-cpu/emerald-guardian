@@ -2,103 +2,95 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Vault CMS Elite</title>
+<title>Emerald Vault</title>
 
 <style>
 body{
-  font-family:Arial;
-  background:#f5f5f5;
-  padding:30px;
+margin:0;
+background:#000;
+font-family:serif;
+overflow:hidden;
 }
 
-.container{
-  max-width:1200px;
-  margin:auto;
+/* LIVRO */
+.book{
+position:relative;
+width:100%;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+perspective:2000px;
 }
 
-h1{margin-bottom:20px;}
-
-.editor{
-  background:#fff;
-  padding:20px;
-  border-radius:8px;
-  margin-bottom:20px;
+.page{
+width:50%;
+height:80%;
+position:absolute;
+top:10%;
+background:#111;
+color:#fff;
+padding:40px;
+transform-origin:left;
+transition:transform 1s;
+backface-visibility:hidden;
+overflow:auto;
 }
 
-.block{
-  border:1px dashed #ccc;
-  padding:10px;
-  margin:10px 0;
-  background:#fafafa;
+/* DIREITA */
+.page.right{
+left:50%;
+transform-origin:left;
 }
 
-.card{
-  background:#fff;
-  padding:15px;
-  margin:10px 0;
-  border-radius:6px;
-  cursor:grab;
+/* ESQUERDA */
+.page.left{
+left:0;
+transform-origin:right;
+}
+
+/* VIRAR */
+.page.flipped{
+transform:rotateY(-180deg);
+}
+
+/* IMAGEM */
+img{
+width:100%;
+cursor:zoom-in;
+transition:0.5s;
+}
+
+img:hover{
+transform:scale(1.3);
+}
+
+/* NAV */
+.nav{
+position:fixed;
+bottom:20px;
+width:100%;
+text-align:center;
 }
 
 button{
-  padding:10px;
-  margin:5px;
-  border:none;
-  border-radius:5px;
-  cursor:pointer;
+padding:10px 20px;
+border:1px solid #d4af37;
+background:none;
+color:#d4af37;
+cursor:pointer;
 }
 
-.save{background:#27ae60;color:#fff;}
-.delete{background:#e74c3c;color:#fff;}
-.edit{background:#3498db;color:#fff;}
-
-img{
-  max-width:100%;
-  cursor:zoom-in;
-}
-
-.dashboard{
-  background:#fff;
-  padding:20px;
-  margin-top:20px;
-  border-radius:8px;
-}
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="book" id="book"></div>
 
-<h1>Vault CMS Elite</h1>
-
-<div class="editor">
-
-<h3>Editor de Página</h3>
-
-<input id="title" placeholder="Título">
-<input id="order" placeholder="Ordem">
-
-<div id="blocks"></div>
-
-<button onclick="addText()">+ Texto</button>
-<button onclick="addImage()">+ Imagem</button>
-<button onclick="addVideo()">+ Vídeo</button>
-
-<br><br>
-
-<button class="save" onclick="save()">Salvar Página</button>
-
-</div>
-
-<h3>Páginas (Arraste para ordenar)</h3>
-<div id="list"></div>
-
-<div class="dashboard">
-<h3>Analytics</h3>
-<div id="stats"></div>
-</div>
-
+<div class="nav">
+<button onclick="prev()">←</button>
+<button onclick="next()">→</button>
 </div>
 
 <script type="module">
@@ -110,182 +102,122 @@ const supabase = createClient(
 "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
 );
 
-/* 🔐 ADMIN */
+/* LOGIN */
 const { data } = await supabase.auth.getUser();
 if(!data.user) location.href="/";
 
+/* USUÁRIO */
 const { data: user } = await supabase
 .from("users_access")
 .select("*")
 .eq("email", data.user.email)
 .single();
 
-if(user.role !== "admin"){
-alert("Admin only");
+if(!user || user.status !== "aprovado"){
+alert("Access denied");
 location.href="/";
 }
 
-/* BLOCO */
-let blocks = [];
-
-window.addText = function(){
-blocks.push({type:"text",content:""});
-renderBlocks();
+/* EXPIRAÇÃO */
+if(user.expires_at && new Date(user.expires_at) < new Date()){
+alert("Access expired");
+location.href="/";
 }
 
-window.addImage = function(){
-blocks.push({type:"image"});
-renderBlocks();
-}
-
-window.addVideo = function(){
-blocks.push({type:"video"});
-renderBlocks();
-}
-
-function renderBlocks(){
-const container = document.getElementById("blocks");
-container.innerHTML="";
-
-blocks.forEach((b,i)=>{
-const div=document.createElement("div");
-div.className="block";
-
-if(b.type==="text"){
-div.innerHTML=`<textarea onchange="updateText(${i},this.value)">${b.content||""}</textarea>`;
-}
-
-if(b.type==="image"){
-div.innerHTML=`<input type="file" onchange="uploadImage(${i},this)">`;
-}
-
-if(b.type==="video"){
-div.innerHTML=`<input type="file" onchange="uploadVideo(${i},this)">`;
-}
-
-container.appendChild(div);
-});
-}
-
-window.updateText = (i,val)=> blocks[i].content = val;
-
-/* UPLOAD */
-async function upload(file){
-const name = Date.now()+"_"+file.name;
-
-await supabase.storage.from("vault-assets").upload(name,file);
-
-const { data } = supabase.storage.from("vault-assets").getPublicUrl(name);
-return data.publicUrl;
-}
-
-window.uploadImage = async (i,input)=>{
-const url = await upload(input.files[0]);
-blocks[i].url = url;
-}
-
-window.uploadVideo = async (i,input)=>{
-const url = await upload(input.files[0]);
-blocks[i].url = url;
-}
-
-/* SALVAR */
-window.save = async function(){
-
-const title = document.getElementById("title").value;
-const order = parseInt(document.getElementById("order").value);
-
-await supabase.from("vault_pages").insert({
-title,
-order_index:order,
-blocks
+/* LOG */
+await supabase.from("vault_logs").insert({
+email:data.user.email,
+action:"enter_vault"
 });
 
-alert("Salvo");
-load();
-}
+/* DADOS */
+let pages=[];
+let current=0;
 
-/* LISTA + DRAG */
-let dragged;
-
-function load(){
-
-supabase.from("vault_pages").select("*").order("order_index")
-.then(res=>{
-
-const list=document.getElementById("list");
-list.innerHTML="";
-
-res.data.forEach(p=>{
-
-const div=document.createElement("div");
-div.className="card";
-div.draggable=true;
-
-div.innerHTML=`${p.title}`;
-
-div.ondragstart=()=>dragged=p;
-div.ondragover=e=>e.preventDefault();
-
-div.ondrop=async ()=>{
-
-await supabase.from("vault_pages")
-.update({order_index:dragged.order_index})
-.eq("id",p.id);
-
-await supabase.from("vault_pages")
-.update({order_index:p.order_index})
-.eq("id",dragged.id);
-
-load();
-};
-
-list.appendChild(div);
-
-});
-
-});
-}
-
-/* ANALYTICS */
-async function analytics(){
-
-const { data } = await supabase.from("vault_tracking").select("*");
-
-let total = data.length;
-let time = data.reduce((a,b)=>a+b.time_spent,0);
-
-document.getElementById("stats").innerHTML = `
-Total visitas: ${total}<br>
-Tempo total: ${time}s
-`;
-}
-
-setInterval(analytics,5000);
-
-/* ALERTA */
-let lastCheck = 0;
-
-async function checkAccess(){
+async function load(){
 
 const { data } = await supabase
-.from("vault_logs")
+.from("vault_pages")
 .select("*")
-.order("created_at",{ascending:false})
-.limit(1);
+.order("order_index");
 
-if(data[0] && data[0].created_at !== lastCheck){
+pages=data||[];
+render();
+}
 
-lastCheck = data[0].created_at;
+/* BUILD */
+function build(p){
 
-alert("Usuário entrou no Vault");
+if(!p) return "";
+
+let html = `<h2>${p.title}</h2>`;
+
+if(p.blocks){
+p.blocks.forEach(b=>{
+if(b.type==="text") html+=`<p>${b.content}</p>`;
+if(b.type==="image") html+=`<img src="${b.url}">`;
+if(b.type==="video") html+=`
+<video width="100%" controls>
+<source src="${b.url}">
+</video>`;
+});
+}
+
+return html;
+}
+
+/* RENDER LIVRO */
+function render(){
+
+const book=document.getElementById("book");
+book.innerHTML="";
+
+pages.forEach((p,i)=>{
+
+const div=document.createElement("div");
+div.className="page " + (i%2===0?"left":"right");
+
+if(i<current) div.classList.add("flipped");
+
+div.innerHTML=build(p);
+
+book.appendChild(div);
+});
+
+}
+
+/* NAV */
+window.next = function(){
+if(current < pages.length){
+current++;
+render();
 }
 }
 
-setInterval(checkAccess,7000);
+window.prev = function(){
+if(current > 0){
+current--;
+render();
+}
+}
+
+/* TRACKING */
+let start=Date.now();
+
+async function track(){
+await supabase.from("vault_tracking").insert({
+email:data.user.email,
+page_index:current,
+time_spent:Math.floor((Date.now()-start)/1000)
+});
+}
+
+setInterval(track,5000);
+
+/* PROTEÇÃO */
+document.addEventListener("contextmenu",e=>e.preventDefault());
 
 load();
-analytics();
 
 </script>
 
