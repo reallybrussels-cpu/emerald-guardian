@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Emerald Vault</title>
+
+<style>
+body{
+margin:0;
+background:#000;
+font-family:serif;
+overflow:hidden;
+}
+
+/* BOOK */
+#book{
+width:90vw;
+height:90vh;
+margin:auto;
+position:absolute;
+top:0;bottom:0;left:0;right:0;
+perspective:2000px;
+}
+
+.page{
+width:50%;
+height:100%;
+position:absolute;
+top:0;
+background:#111;
+color:#fff;
+padding:40px;
+box-sizing:border-box;
+transform-origin:left;
+transition:1s;
+backface-visibility:hidden;
+border:1px solid #222;
+}
+
+/* LEFT / RIGHT */
+.left{
+left:0;
+}
+
+.right{
+right:0;
+transform-origin:right;
+}
+
+/* TURN */
+.page.turn{
+transform:rotateY(-180deg);
+}
+
+/* TEXT */
+h1{
+color:#d4af37;
+font-size:32px;
+}
+
+p{
+color:#ccc;
+line-height:1.6;
+}
+
+/* NAV */
+.nav{
+position:fixed;
+bottom:20px;
+width:100%;
+text-align:center;
+}
+
+button{
+padding:10px 20px;
+background:none;
+border:1px solid #d4af37;
+color:#d4af37;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div id="book">
+
+<div class="page left" id="p1">
+<h1>Emerald Guardian</h1>
+<p>
+Confidential acquisition dossier.<br><br>
+This document is restricted and intended only for selected individuals.
+</p>
+</div>
+
+<div class="page right" id="p2">
+<h1>Origin</h1>
+<p>
+Formed under extreme geological conditions,  
+this emerald represents a unique natural occurrence.
+</p>
+</div>
+
+<div class="page left" id="p3">
+<h1>Certification</h1>
+<p>
+Includes laboratory verification, origin validation  
+and gemological reports.
+</p>
+</div>
+
+<div class="page right" id="p4">
+<h1>Video Presentation</h1>
+<video width="100%" controls>
+<source src="video.mp4">
+</video>
+</div>
+
+<div class="page left" id="p5">
+<h1>Private Acquisition</h1>
+<p>
+Available only through direct negotiation  
+with qualified buyers.
+</p>
+</div>
+
+</div>
+
+<div class="nav">
+<button onclick="prev()">←</button>
+<button onclick="next()">→</button>
+</div>
+
+<script>
+
+let current=0;
+const pages=document.querySelectorAll(".page");
+
+function next(){
+if(current < pages.length){
+pages[current].classList.add("turn");
+current++;
+}
+}
+
+function prev(){
+if(current > 0){
+current--;
+pages[current].classList.remove("turn");
+}
+}
+
+</script>
+
+</body>
+</html>
