@@ -1,0 +1,25 @@
+export default async function handler(req, res){
+
+  if(req.method !== 'POST'){
+    return res.status(405).json({error:'Method not allowed'});
+  }
+
+  const { id } = req.body;
+
+  try{
+
+    await fetch(`https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?id=eq.${id}`,{
+      method:'DELETE',
+      headers:{
+        'Content-Type':'application/json',
+        'apikey':process.env.SUPABASE_SERVICE_KEY,
+        'Authorization':`Bearer ${process.env.SUPABASE_SERVICE_KEY}`
+      }
+    });
+
+    res.status(200).json({success:true});
+
+  }catch(e){
+    res.status(500).json({error:'delete error'});
+  }
+}
