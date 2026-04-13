@@ -12,39 +12,51 @@ font-family:serif;
 overflow:hidden;
 }
 
+/* INTRO */
+#intro{
+position:fixed;
+width:100%;
+height:100vh;
+background:#000;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+z-index:10;
+transition:1.5s;
+}
+
+#intro h1{
+color:#d4af37;
+letter-spacing:3px;
+}
+
 /* WATERMARK */
 #watermark{
 position:fixed;
 top:50%;
 left:50%;
 transform:translate(-50%,-50%);
-font-size:40px;
+font-size:50px;
 color:rgba(255,255,255,0.03);
 pointer-events:none;
-z-index:999;
+z-index:9;
 }
 
 /* BOOK */
 #book{
-width:90vw;
-height:90vh;
-position:absolute;
-top:0;bottom:0;left:0;right:0;
-margin:auto;
 display:flex;
+width:100%;
+height:100vh;
 }
 
-/* PAGE */
 .page{
 width:50%;
-height:100%;
+padding:50px;
 background:#111;
 color:#fff;
-padding:40px;
-box-sizing:border-box;
 transition:0.8s;
 overflow:hidden;
-position:relative;
 }
 
 .page img{
@@ -54,12 +66,8 @@ cursor:zoom-in;
 }
 
 .page img:hover{
-transform:scale(1.4);
+transform:scale(1.5);
 }
-
-/* TEXT */
-h1{color:#d4af37;}
-p{color:#ccc;}
 
 /* NAV */
 .nav{
@@ -81,34 +89,24 @@ button:hover{
 background:#d4af37;
 color:#000;
 }
-
-/* FADE */
-.fade{
-animation:fade 1s ease;
-}
-
-@keyframes fade{
-from{opacity:0}
-to{opacity:1}
-}
 </style>
 </head>
 
 <body>
 
+<!-- INTRO -->
+<div id="intro">
+<h1>Emerald Guardian</h1>
+<p style="color:#777">Confidential Access</p>
+<button onclick="enter()">ENTER</button>
+</div>
+
 <div id="watermark"></div>
 
 <div id="book">
 
-<div class="page" id="left">
-<h1>Emerald Guardian</h1>
-<p>Confidential acquisition dossier.</p>
-</div>
-
-<div class="page" id="right">
-<h1>Origin</h1>
-<img src="assets/images/emerald.jpg">
-</div>
+<div class="page" id="left"></div>
+<div class="page" id="right"></div>
 
 </div>
 
@@ -116,6 +114,9 @@ to{opacity:1}
 <button onclick="prev()">←</button>
 <button onclick="next()">→</button>
 </div>
+
+<!-- AUDIO -->
+<audio id="audio" src="assets/audio.mp3" loop></audio>
 
 <script type="module">
 
@@ -126,7 +127,7 @@ const supabase = createClient(
   "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
 );
 
-/* 🔐 LOGIN CHECK */
+/* LOGIN */
 const { data } = await supabase.auth.getUser();
 
 if(!data.user){
@@ -135,33 +136,62 @@ if(!data.user){
 
 document.getElementById("watermark").innerText = data.user.email;
 
-/* 🚫 PROTECTION */
+/* INTRO */
+window.enter = function(){
+  document.getElementById("intro").style.opacity = 0;
+
+  setTimeout(()=>{
+    document.getElementById("intro").style.display="none";
+    document.getElementById("audio").play();
+  },800);
+}
+
+/* PROTEÇÃO */
 document.addEventListener("contextmenu", e => e.preventDefault());
+
 document.addEventListener("keydown", e=>{
   if(e.key === "PrintScreen"){
     alert("Protected content");
   }
 });
 
-/* 📊 TRACKING */
+/* TRACKING */
+let startTime = Date.now();
+
 function track(page){
-  console.log("User:", data.user.email, "Page:", page);
+  const timeSpent = Math.floor((Date.now()-startTime)/1000);
+
+  console.log({
+    user: data.user.email,
+    page,
+    timeSpent
+  });
 }
 
-/* 📖 PAGES */
+/* PAGES */
 const pages = [
+
 {
 title:"Emerald Guardian",
 content:"Confidential acquisition dossier"
 },
+
 {
 title:"Certification",
-content:"Includes lab reports"
+content:"Official gemstone certification",
+image:"assets/cert.jpg"
 },
+
 {
 title:"Video",
-video:"assets/videos/video.mp4"
+video:"assets/video.mp4"
+},
+
+{
+title:"Acquisition",
+content:"Available only via private negotiation"
 }
+
 ];
 
 let index = 0;
@@ -171,32 +201,35 @@ function render(){
   const left = document.getElementById("left");
   const right = document.getElementById("right");
 
-  left.classList.add("fade");
-  right.classList.add("fade");
+  const p1 = pages[index];
+  const p2 = pages[index+1];
 
-  left.innerHTML = `
-    <h1>${pages[index].title}</h1>
-    <p>${pages[index].content || ""}</p>
-  `;
+  left.innerHTML = build(p1);
 
-  const nextPage = pages[index+1];
-
-  if(nextPage){
-    if(nextPage.video){
-      right.innerHTML = `
-        <video width="100%" controls>
-        <source src="${nextPage.video}">
-        </video>
-      `;
-    }else{
-      right.innerHTML = `
-        <h1>${nextPage.title}</h1>
-        <p>${nextPage.content || ""}</p>
-      `;
-    }
+  if(p2){
+    right.innerHTML = build(p2);
   }
 
   track(index);
+}
+
+function build(p){
+
+  if(!p) return "";
+
+  if(p.video){
+    return `
+    <video width="100%" controls>
+      <source src="${p.video}">
+    </video>
+    `;
+  }
+
+  return `
+  <h1 style="color:#d4af37">${p.title}</h1>
+  <p>${p.content || ""}</p>
+  ${p.image ? `<img src="${p.image}">` : ""}
+  `;
 }
 
 window.next = function(){
