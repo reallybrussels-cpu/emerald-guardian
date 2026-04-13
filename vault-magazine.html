@@ -56,7 +56,7 @@ padding:50px;
 background:#111;
 color:#fff;
 transition:0.8s;
-overflow:hidden;
+overflow:auto;
 }
 
 .page img{
@@ -66,7 +66,7 @@ cursor:zoom-in;
 }
 
 .page img:hover{
-transform:scale(1.5);
+transform:scale(1.4);
 }
 
 /* NAV */
@@ -101,13 +101,13 @@ color:#000;
 <button onclick="enter()">ENTER</button>
 </div>
 
+<!-- WATERMARK -->
 <div id="watermark"></div>
 
+<!-- BOOK -->
 <div id="book">
-
 <div class="page" id="left"></div>
 <div class="page" id="right"></div>
-
 </div>
 
 <div class="nav">
@@ -127,13 +127,26 @@ const supabase = createClient(
   "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
 );
 
-/* LOGIN */
+/* 🔐 LOGIN CHECK */
 const { data } = await supabase.auth.getUser();
 
 if(!data.user){
   location.href = "/";
 }
 
+/* 🔐 STATUS CHECK */
+const { data: userData } = await supabase
+  .from("users_access")
+  .select("status")
+  .eq("email", data.user.email)
+  .single();
+
+if(!userData || userData.status !== "aprovado"){
+  alert("Access denied");
+  location.href = "/";
+}
+
+/* WATERMARK */
 document.getElementById("watermark").innerText = data.user.email;
 
 /* INTRO */
@@ -168,34 +181,46 @@ function track(page){
   });
 }
 
-/* PAGES */
-const pages = [
-
-{
-title:"Emerald Guardian",
-content:"Confidential acquisition dossier"
-},
-
-{
-title:"Certification",
-content:"Official gemstone certification",
-image:"assets/cert.jpg"
-},
-
-{
-title:"Video",
-video:"assets/video.mp4"
-},
-
-{
-title:"Acquisition",
-content:"Available only via private negotiation"
-}
-
-];
-
+/* 📡 CARREGAR PÁGINAS DO BANCO */
+let pages = [];
 let index = 0;
 
+async function loadPages(){
+
+  const { data } = await supabase
+    .from("vault_pages")
+    .select("*")
+    .order("order_index");
+
+  pages = data || [];
+
+  render();
+}
+
+/* 🧱 BUILD */
+function build(p){
+
+  if(!p) return "";
+
+  if(p.video_url){
+    return `
+    <video width="100%" controls>
+      <source src="${p.video_url}">
+    </video>
+    `;
+  }
+
+  return `
+    <h1 style="color:#d4af37">${p.title}</h1>
+    <p>${p.content || ""}</p>
+
+    ${p.image_url ? `<img src="${p.image_url}">` : ""}
+
+    ${p.pdf_url ? `<br><a href="${p.pdf_url}" target="_blank">View Document</a>` : ""}
+  `;
+}
+
+/* 🎬 RENDER */
 function render(){
 
   const left = document.getElementById("left");
@@ -208,30 +233,14 @@ function render(){
 
   if(p2){
     right.innerHTML = build(p2);
+  }else{
+    right.innerHTML = "";
   }
 
   track(index);
 }
 
-function build(p){
-
-  if(!p) return "";
-
-  if(p.video){
-    return `
-    <video width="100%" controls>
-      <source src="${p.video}">
-    </video>
-    `;
-  }
-
-  return `
-  <h1 style="color:#d4af37">${p.title}</h1>
-  <p>${p.content || ""}</p>
-  ${p.image ? `<img src="${p.image}">` : ""}
-  `;
-}
-
+/* NAV */
 window.next = function(){
   if(index < pages.length-1){
     index++;
@@ -246,7 +255,8 @@ window.prev = function(){
   }
 }
 
-render();
+/* INIT */
+loadPages();
 
 </script>
 
