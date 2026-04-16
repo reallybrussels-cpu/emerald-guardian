@@ -128,10 +128,12 @@ try{
 
 const user = (await supabase.auth.getUser()).data.user;
 
+/* 🔑 caminho organizado por usuário */
 const name = user.id + "/" + Date.now() + "_" + file.name;
 
+/* ✅ BUCKET CORRETO */
 const { error: uploadError } = await supabase.storage
-.from("VAULT-ASSETS") // ✅ CORRIGIDO
+.from("vault-assets")
 .upload(name,file);
 
 if(uploadError){
@@ -139,8 +141,9 @@ console.log(uploadError);
 return null;
 }
 
+/* ✅ URL pública */
 const { data } = supabase.storage
-.from("VAULT-ASSETS") // ✅ CORRIGIDO
+.from("vault-assets")
 .getPublicUrl(name);
 
 return data.publicUrl;
