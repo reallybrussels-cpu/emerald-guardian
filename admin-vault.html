@@ -58,13 +58,26 @@ const supabase = createClient(
 "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
 );
 
+/* 🔐 PROTEÇÃO LOGIN */
+const { data: userData } = await supabase.auth.getUser();
+
+if(!userData.user){
+  alert("Acesso negado. Faça login.");
+  location.href="/";
+}
+
 /* LOAD */
 async function load(){
 
-const { data } = await supabase
+const { data, error } = await supabase
 .from("vault_pages")
 .select("*")
 .order("order_index");
+
+if(error){
+console.log(error);
+return;
+}
 
 const list=document.getElementById("list");
 list.innerHTML="";
@@ -88,8 +101,21 @@ list.appendChild(div);
 
 }
 
+/* DELETE */
 window.del = async function(id){
-await supabase.from("vault_pages").delete().eq("id",id);
+
+if(!confirm("Deseja realmente excluir?")) return;
+
+const { error } = await supabase
+.from("vault_pages")
+.delete()
+.eq("id",id);
+
+if(error){
+alert("Erro ao deletar");
+console.log(error);
+}
+
 load();
 }
 
@@ -100,14 +126,21 @@ if(!file) return null;
 
 try{
 
-const name = Date.now()+"_"+file.name;
+const user = (await supabase.auth.getUser()).data.user;
 
-await supabase.storage
-.from("vault-assets")
+const name = user.id + "/" + Date.now() + "_" + file.name;
+
+const { error: uploadError } = await supabase.storage
+.from("VAULT-ASSETS") // ✅ CORRIGIDO
 .upload(name,file);
 
+if(uploadError){
+console.log(uploadError);
+return null;
+}
+
 const { data } = supabase.storage
-.from("vault-assets")
+.from("VAULT-ASSETS") // ✅ CORRIGIDO
 .getPublicUrl(name);
 
 return data.publicUrl;
