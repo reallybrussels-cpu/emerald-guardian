@@ -11,14 +11,23 @@ background:black;
 color:white;
 font-family:Arial;
 text-align:center;
+overflow:hidden;
+}
+
+#container{
+width:100%;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
 }
 
 canvas{
-display:block;
-margin:auto;
 max-width:100%;
+max-height:100vh;
 }
 
+/* CONTROLES */
 .controls{
 position:fixed;
 bottom:20px;
@@ -39,7 +48,9 @@ cursor:pointer;
 
 <body>
 
-<canvas id="pdf"></canvas>
+<div id="container">
+  <canvas id="pdf"></canvas>
+</div>
 
 <div class="controls">
 <button onclick="prev()">←</button>
@@ -55,39 +66,53 @@ let pdfDoc = null;
 let pageNum = 1;
 
 pdfjsLib.getDocument(url).promise.then(pdf=>{
-pdfDoc = pdf;
-renderPage(pageNum);
+  pdfDoc = pdf;
+  renderPage(pageNum);
 });
 
 function renderPage(num){
-pdfDoc.getPage(num).then(page=>{
-const canvas = document.getElementById('pdf');
-const ctx = canvas.getContext('2d');
+  pdfDoc.getPage(num).then(page=>{
+    const canvas = document.getElementById('pdf');
+    const ctx = canvas.getContext('2d');
 
-const viewport = page.getViewport({scale:1.5});
-canvas.height = viewport.height;
-canvas.width = viewport.width;
+    const viewport = page.getViewport({ scale: 1 });
 
-page.render({
-canvasContext:ctx,
-viewport:viewport
-});
-});
+    // 🔥 AJUSTE AUTOMÁTICO
+    const scale = Math.min(
+      window.innerWidth / viewport.width,
+      window.innerHeight / viewport.height
+    );
+
+    const scaledViewport = page.getViewport({ scale });
+
+    canvas.width = scaledViewport.width;
+    canvas.height = scaledViewport.height;
+
+    page.render({
+      canvasContext: ctx,
+      viewport: scaledViewport
+    });
+  });
 }
 
 function next(){
-if(pageNum < pdfDoc.numPages){
-pageNum++;
-renderPage(pageNum);
-}
+  if(pageNum < pdfDoc.numPages){
+    pageNum++;
+    renderPage(pageNum);
+  }
 }
 
 function prev(){
-if(pageNum > 1){
-pageNum--;
-renderPage(pageNum);
+  if(pageNum > 1){
+    pageNum--;
+    renderPage(pageNum);
+  }
 }
-}
+
+/* 🔁 REAJUSTA AO REDIMENSIONAR */
+window.addEventListener("resize",()=>{
+  renderPage(pageNum);
+});
 </script>
 
 </body>
