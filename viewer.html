@@ -2,18 +2,18 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Private Document</title>
+<title>Private Vault</title>
 
 <style>
 body{
 margin:0;
 background:black;
-color:white;
-font-family:Arial;
-text-align:center;
 overflow:hidden;
+font-family:Arial;
+color:white;
 }
 
+/* CONTAINER */
 #container{
 width:100%;
 height:100vh;
@@ -22,25 +22,40 @@ justify-content:center;
 align-items:center;
 }
 
+/* CANVAS */
 canvas{
 max-width:100%;
 max-height:100vh;
+transition: transform 0.3s ease;
 }
 
-/* CONTROLES */
-.controls{
+/* 🔥 ÁREAS LATERAIS (CLICK ZONE) */
+.zone{
 position:fixed;
-bottom:20px;
-width:100%;
-text-align:center;
+top:0;
+width:20%;
+height:100vh;
+z-index:10;
+cursor:pointer;
+}
+
+#leftZone{ left:0; }
+#rightZone{ right:0; }
+
+/* ZOOM */
+.zoom-controls{
+position:fixed;
+top:20px;
+right:20px;
+z-index:20;
 }
 
 button{
-padding:10px 20px;
-margin:5px;
 background:none;
 border:1px solid gold;
 color:gold;
+padding:8px;
+margin:3px;
 cursor:pointer;
 }
 </style>
@@ -52,9 +67,14 @@ cursor:pointer;
   <canvas id="pdf"></canvas>
 </div>
 
-<div class="controls">
-<button onclick="prev()">←</button>
-<button onclick="next()">→</button>
+<!-- 🔥 ZONAS DE CLIQUE -->
+<div id="leftZone" class="zone"></div>
+<div id="rightZone" class="zone"></div>
+
+<!-- 🔍 ZOOM -->
+<div class="zoom-controls">
+<button onclick="zoomIn()">+</button>
+<button onclick="zoomOut()">−</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -64,12 +84,16 @@ const url = 'guardiao.pdf';
 
 let pdfDoc = null;
 let pageNum = 1;
+let scale = 1;
+let baseScale = 1;
 
+/* LOAD PDF */
 pdfjsLib.getDocument(url).promise.then(pdf=>{
   pdfDoc = pdf;
   renderPage(pageNum);
 });
 
+/* RENDER */
 function renderPage(num){
   pdfDoc.getPage(num).then(page=>{
     const canvas = document.getElementById('pdf');
@@ -77,13 +101,13 @@ function renderPage(num){
 
     const viewport = page.getViewport({ scale: 1 });
 
-    // 🔥 AJUSTE AUTOMÁTICO
-    const scale = Math.min(
+    baseScale = Math.min(
       window.innerWidth / viewport.width,
       window.innerHeight / viewport.height
     );
 
-    const scaledViewport = page.getViewport({ scale });
+    const finalScale = baseScale * scale;
+    const scaledViewport = page.getViewport({ scale: finalScale });
 
     canvas.width = scaledViewport.width;
     canvas.height = scaledViewport.height;
@@ -92,26 +116,74 @@ function renderPage(num){
       canvasContext: ctx,
       viewport: scaledViewport
     });
+
+    track();
   });
 }
 
+/* NAV */
 function next(){
   if(pageNum < pdfDoc.numPages){
     pageNum++;
-    renderPage(pageNum);
+    flipEffect();
   }
 }
 
 function prev(){
   if(pageNum > 1){
     pageNum--;
-    renderPage(pageNum);
+    flipEffect();
   }
 }
 
-/* 🔁 REAJUSTA AO REDIMENSIONAR */
+/* 🔥 EFEITO FLIP */
+function flipEffect(){
+  const canvas = document.getElementById('pdf');
+  canvas.style.transform = "rotateY(90deg)";
+  setTimeout(()=>{
+    renderPage(pageNum);
+    canvas.style.transform = "rotateY(0deg)";
+  },150);
+}
+
+/* ZOOM */
+function zoomIn(){
+  scale += 0.2;
+  renderPage(pageNum);
+}
+
+function zoomOut(){
+  scale = Math.max(1, scale - 0.2);
+  renderPage(pageNum);
+}
+
+/* CLICK ZONES */
+document.getElementById("leftZone").onclick = prev;
+document.getElementById("rightZone").onclick = next;
+
+/* 🔁 RESIZE */
 window.addEventListener("resize",()=>{
   renderPage(pageNum);
+});
+
+/* 🔥 PRELOAD (SIMPLES) */
+function preload(){
+  if(pageNum < pdfDoc.numPages){
+    pdfDoc.getPage(pageNum + 1);
+  }
+}
+
+/* 📊 TRACKING */
+function track(){
+  console.log("Page:", pageNum);
+  preload();
+}
+
+/* 🔒 BLOQUEIOS */
+document.addEventListener("contextmenu",e=>e.preventDefault());
+
+document.addEventListener("keydown",e=>{
+if(e.ctrlKey && ["s","u","c"].includes(e.key)) e.preventDefault();
 });
 </script>
 
