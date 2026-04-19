@@ -13,41 +13,43 @@ font-family:Arial;
 color:white;
 }
 
-/* CONTAINER */
+/* CONTAINER CENTRAL */
 #container{
 width:100%;
 height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
+gap:10px;
 }
 
 /* CANVAS */
 canvas{
-max-width:100%;
-max-height:100vh;
-transition: transform 0.3s ease;
+max-height:90vh;
+box-shadow:0 0 30px rgba(255,255,255,0.1);
 }
 
-/* 🔥 ÁREAS LATERAIS (CLICK ZONE) */
-.zone{
+/* SETAS */
+.arrow{
 position:fixed;
-top:0;
-width:20%;
-height:100vh;
-z-index:10;
+top:50%;
+transform:translateY(-50%);
+font-size:40px;
+color:gold;
 cursor:pointer;
+z-index:20;
+user-select:none;
 }
 
-#leftZone{ left:0; }
-#rightZone{ right:0; }
+#leftArrow{ left:20px; }
+#rightArrow{ right:20px; }
 
 /* ZOOM */
-.zoom-controls{
+.zoom{
 position:fixed;
 top:20px;
 right:20px;
-z-index:20;
+z-index:30;
 }
 
 button{
@@ -64,15 +66,16 @@ cursor:pointer;
 <body>
 
 <div id="container">
-  <canvas id="pdf"></canvas>
+  <canvas id="leftPage"></canvas>
+  <canvas id="rightPage"></canvas>
 </div>
 
-<!-- 🔥 ZONAS DE CLIQUE -->
-<div id="leftZone" class="zone"></div>
-<div id="rightZone" class="zone"></div>
+<!-- SETAS VISÍVEIS -->
+<div id="leftArrow" class="arrow">❮</div>
+<div id="rightArrow" class="arrow">❯</div>
 
-<!-- 🔍 ZOOM -->
-<div class="zoom-controls">
+<!-- ZOOM -->
+<div class="zoom">
 <button onclick="zoomIn()">+</button>
 <button onclick="zoomOut()">−</button>
 </div>
@@ -80,6 +83,7 @@ cursor:pointer;
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
 <script>
+
 const url = 'guardiao.pdf';
 
 let pdfDoc = null;
@@ -87,104 +91,113 @@ let pageNum = 1;
 let scale = 1;
 let baseScale = 1;
 
-/* LOAD PDF */
+/* LOAD */
 pdfjsLib.getDocument(url).promise.then(pdf=>{
   pdfDoc = pdf;
-  renderPage(pageNum);
+  renderSpread();
 });
 
-/* RENDER */
-function renderPage(num){
-  pdfDoc.getPage(num).then(page=>{
-    const canvas = document.getElementById('pdf');
-    const ctx = canvas.getContext('2d');
+/* RENDER DUPLA */
+function renderSpread(){
 
-    const viewport = page.getViewport({ scale: 1 });
+renderPage(pageNum, "leftPage");
+renderPage(pageNum + 1, "rightPage");
 
-    baseScale = Math.min(
-      window.innerWidth / viewport.width,
-      window.innerHeight / viewport.height
-    );
-
-    const finalScale = baseScale * scale;
-    const scaledViewport = page.getViewport({ scale: finalScale });
-
-    canvas.width = scaledViewport.width;
-    canvas.height = scaledViewport.height;
-
-    page.render({
-      canvasContext: ctx,
-      viewport: scaledViewport
-    });
-
-    track();
-  });
+preload();
 }
 
-/* NAV */
+/* RENDER PAGE */
+function renderPage(num, canvasId){
+
+if(num > pdfDoc.numPages){
+document.getElementById(canvasId).style.display = "none";
+return;
+}
+
+const canvas = document.getElementById(canvasId);
+canvas.style.display = "block";
+
+pdfDoc.getPage(num).then(page=>{
+const ctx = canvas.getContext('2d');
+
+const viewport = page.getViewport({ scale: 1 });
+
+baseScale = Math.min(
+window.innerWidth / (viewport.width * 2),
+window.innerHeight / viewport.height
+);
+
+const finalScale = baseScale * scale;
+const scaledViewport = page.getViewport({ scale: finalScale });
+
+canvas.width = scaledViewport.width;
+canvas.height = scaledViewport.height;
+
+page.render({
+canvasContext: ctx,
+viewport: scaledViewport
+});
+});
+}
+
+/* NAVEGAÇÃO */
 function next(){
-  if(pageNum < pdfDoc.numPages){
-    pageNum++;
-    flipEffect();
-  }
+if(pageNum + 2 <= pdfDoc.numPages){
+pageNum += 2;
+flip();
+}
 }
 
 function prev(){
-  if(pageNum > 1){
-    pageNum--;
-    flipEffect();
-  }
+if(pageNum - 2 >= 1){
+pageNum -= 2;
+flip();
+}
 }
 
-/* 🔥 EFEITO FLIP */
-function flipEffect(){
-  const canvas = document.getElementById('pdf');
-  canvas.style.transform = "rotateY(90deg)";
-  setTimeout(()=>{
-    renderPage(pageNum);
-    canvas.style.transform = "rotateY(0deg)";
-  },150);
+/* FLIP SIMPLES */
+function flip(){
+const container = document.getElementById("container");
+container.style.transform = "scaleX(0.95)";
+setTimeout(()=>{
+renderSpread();
+container.style.transform = "scaleX(1)";
+},150);
 }
 
 /* ZOOM */
 function zoomIn(){
-  scale += 0.2;
-  renderPage(pageNum);
+scale += 0.2;
+renderSpread();
 }
 
 function zoomOut(){
-  scale = Math.max(1, scale - 0.2);
-  renderPage(pageNum);
+scale = Math.max(1, scale - 0.2);
+renderSpread();
 }
 
-/* CLICK ZONES */
-document.getElementById("leftZone").onclick = prev;
-document.getElementById("rightZone").onclick = next;
+/* SETAS */
+document.getElementById("leftArrow").onclick = prev;
+document.getElementById("rightArrow").onclick = next;
 
-/* 🔁 RESIZE */
+/* PRELOAD */
+function preload(){
+if(pageNum + 2 <= pdfDoc.numPages){
+pdfDoc.getPage(pageNum + 2);
+}
+}
+
+/* RESIZE */
 window.addEventListener("resize",()=>{
-  renderPage(pageNum);
+renderSpread();
 });
 
-/* 🔥 PRELOAD (SIMPLES) */
-function preload(){
-  if(pageNum < pdfDoc.numPages){
-    pdfDoc.getPage(pageNum + 1);
-  }
-}
-
-/* 📊 TRACKING */
-function track(){
-  console.log("Page:", pageNum);
-  preload();
-}
-
-/* 🔒 BLOQUEIOS */
+/* BLOQUEIO */
 document.addEventListener("contextmenu",e=>e.preventDefault());
-
 document.addEventListener("keydown",e=>{
 if(e.ctrlKey && ["s","u","c"].includes(e.key)) e.preventDefault();
 });
+
 </script>
 
 </body>
