@@ -2,88 +2,29 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Emerald Vault</title>
+<title>Vault</title>
 
 <style>
-body{
-margin:0;
-background:#000;
-font-family:serif;
-overflow:hidden;
-}
-
-/* LIVRO */
-.book{
-width:100%;
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-perspective:2000px;
-position:relative;
-}
-
-/* PÁGINA */
-.page{
-width:50%;
-height:80%;
-position:absolute;
-top:10%;
-background:#111;
-color:#fff;
-padding:40px;
-box-sizing:border-box;
-overflow:auto;
-transition:transform 0.8s;
-backface-visibility:hidden;
-}
-
-/* LADOS */
-.left{ left:0; transform-origin:right; }
-.right{ left:50%; transform-origin:left; }
-
-/* VIRADA */
-.flipped.left{ transform:rotateY(180deg); }
-.flipped.right{ transform:rotateY(-180deg); }
-
-/* IMG */
-img{
-width:100%;
-margin-top:10px;
-border-radius:6px;
-}
-
-/* NAV */
-.nav{
+body{margin:0;background:#000;color:#fff;font-family:serif;}
+#watermark{
 position:fixed;
-bottom:20px;
-width:100%;
-text-align:center;
-z-index:10;
+top:50%;left:50%;
+transform:translate(-50%,-50%);
+opacity:0.05;
+font-size:40px;
 }
-
-button{
-padding:10px 20px;
-border:1px solid #d4af37;
-background:none;
-color:#d4af37;
-cursor:pointer;
-}
-
-/* MOBILE */
-@media(max-width:768px){
-.page{
-width:100%;
-left:0 !important;
-}
-.right{ display:none; }
-}
+.page{width:50%;float:left;padding:40px;}
+.nav{position:fixed;bottom:20px;width:100%;text-align:center;}
+button{padding:10px;border:1px solid gold;background:none;color:gold;}
 </style>
 </head>
 
 <body>
 
-<div class="book" id="book"></div>
+<div id="watermark"></div>
+
+<div id="left" class="page"></div>
+<div id="right" class="page"></div>
 
 <div class="nav">
 <button onclick="prev()">←</button>
@@ -95,99 +36,191 @@ left:0 !important;
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
 const supabase = createClient(
-"https://mihrsfotrbigixqkpwhu.supabase.co",
-"sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
+  "https://mihrsfotrbigixqkpwhu.supabase.co",
+  "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
 );
 
 /* LOGIN */
 const { data } = await supabase.auth.getUser();
-if(!data.user){
-alert("Faça login");
-location.href="/";
+
+if(!data.user) location.href="/";
+
+/* BUSCAR USUÁRIO */
+const { data: user } = await supabase
+.from("users_access")
+.select("*")
+.eq("email", data.user.email)
+.single();
+
+/* 🔐 VALIDAÇÕES */
+if(!user || user.status !== "aprovado"){
+  alert("Access denied");
+  location.href="/";
+}
+
+/* ⏳ EXPIRAÇÃO */
+if(user.expires_at && new Date(user.expires_at) < new Date()){
+  alert("Access expired");
+  location.href="/";
+}
+
+/* WATERMARK */
+document.getElementById("watermark").innerText = data.user.email;
+
+/* LOG */
+await supabase.from("vault_logs").insert({
+  email: data.user.email,
+  action: "enter_vault"
+});
+
+/* TRACK */
+let start = Date.now();
+
+async function track(page){
+  await supabase.from("vault_tracking").insert({
+    email:data.user.email,
+    page_index:page,
+    time_spent: Math.floor((Date.now()-start)/1000)
+  });
 }
 
 /* DADOS */
-const { data: pages } = await supabase
-.from("vault_pages")
-.select("*")
-.order("order_index");
+let pages=[];
+let index=0;
 
-if(!pages || pages.length===0){
-document.body.innerHTML="<h2 style='color:white;padding:20px'>Sem conteúdo</h2>";
-throw "sem dados";
+async function load(){
+  const { data } = await supabase
+    .from("vault_pages")
+    .select("*")
+    .order("order_index");
+
+  pages=data||[];
+  render();
 }
-
-/* ESTADO */
-let current=0;
 
 /* BUILD */
 function build(p){
 
 if(!p) return "";
 
+/* 🔥 FLIPBOOK DETECT */
+if(p.title && p.title.toLowerCase().includes("flip")){
+
 return `
-<h2>${p.title || ""}</h2>
-<p>${p.content || ""}</p>
-${p.image_url ? `<img src="${p.image_url}">` : ""}
+<div style="width:100%; height:100vh; background:black;">
+  <iframe 
+    src="https://heyzine.com/flip-book/615bab6331.html"
+    width="100%" 
+    height="100%" 
+    style="border:none;"
+    allowfullscreen>
+  </iframe>
+</div>
+📍 ONDE SALVAR
+
+👉 Mesmo local que te falei:
+
+✔ Arquivo:
+vault.html
+✔ Local:
+GitHub OU
+Vercel (se estiver editando direto)
+🚀 DEPOIS DISSO
+Salva
+Publica (deploy automático)
+Abre seu site
+Faz login
+Vai até página "Flipbook"
+🏁 RESULTADO ESPERADO
+
+👉 A revista vai abrir DENTRO do seu site
+👉 Sem sair
+👉 Com login
+👉 Com controle
+
+👊 PRÓXIMO PASSO
+
+Depois que fizer isso, me diga:
+
+👉 “funcionou”
+
+E eu te passo o PASSO 2 (criar página no admin corretamente) — também com código completo.
+
+Se quiser depois, a gente ainda pode:
+
+🔥 remover marca Heyzine
+🔥 bloquear print
+🔥 rastrear leitura
+
+Mas primeiro vamos validar isso funcionando.
 `;
 
+}
+
+/* NORMAL */
+
+if(p.video_url){
+return `<video width="100%" controls controlsList="nodownload">
+<source src="${p.video_url}">
+</video>`;
+}
+
+if(p.image_url){
+return `<canvas id="c-${p.id}" style="width:100%"></canvas>`;
+}
+
+return `<h2>${p.title}</h2><p>${p.content||""}</p>`;
+}
+
+/* WATERMARK REAL */
+function apply(){
+
+pages.forEach(p=>{
+if(!p.image_url) return;
+
+const c=document.getElementById(`c-${p.id}`);
+if(!c) return;
+
+const ctx=c.getContext("2d");
+const img=new Image();
+img.crossOrigin="anonymous";
+img.src=p.image_url;
+
+img.onload=()=>{
+c.width=img.width;
+c.height=img.height;
+ctx.drawImage(img,0,0);
+ctx.fillStyle="rgba(255,255,255,0.1)";
+ctx.font="40px Arial";
+ctx.fillText(data.user.email,50,img.height/2);
+}
+});
 }
 
 /* RENDER */
 function render(){
 
-const book=document.getElementById("book");
-book.innerHTML="";
+const l=document.getElementById("left");
+const r=document.getElementById("right");
 
-pages.forEach((p,i)=>{
+l.innerHTML=build(pages[index]);
+r.innerHTML=build(pages[index+1]);
 
-const div=document.createElement("div");
-
-div.className="page " + (i%2===0?"left":"right");
-
-if(i<current){
-div.classList.add("flipped");
-}
-
-div.innerHTML=build(p);
-
-book.appendChild(div);
-
-});
-
+track(index);
+setTimeout(apply,200);
 }
 
 /* NAV */
-window.next = ()=>{
-if(current < pages.length){
-current++;
-render();
-}
-}
+window.next=()=>{ if(index<pages.length-1){index++;render();}}
+window.prev=()=>{ if(index>0){index--;render();}}
 
-window.prev = ()=>{
-if(current > 0){
-current--;
-render();
-}
-}
+load();
 
-/* SWIPE MOBILE */
-let startX=0;
-
-document.addEventListener("touchstart",e=>{
-startX=e.touches[0].clientX;
+/* BLOQUEIOS */
+document.addEventListener("contextmenu",e=>e.preventDefault());
+document.addEventListener("keydown",e=>{
+if(e.ctrlKey && ["s","u"].includes(e.key)) e.preventDefault();
 });
-
-document.addEventListener("touchend",e=>{
-let endX=e.changedTouches[0].clientX;
-
-if(startX - endX > 50) next();
-if(endX - startX > 50) prev();
-});
-
-/* INIT */
-render();
 
 </script>
 
