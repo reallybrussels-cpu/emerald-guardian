@@ -29,20 +29,6 @@ body {
     text-align: center;
 }
 
-.login-box input {
-    padding: 10px;
-    margin-top: 10px;
-    width: 200px;
-}
-
-.login-box button {
-    margin-top: 15px;
-    padding: 10px 20px;
-    background: gold;
-    border: none;
-    cursor: pointer;
-}
-
 /* CAPA */
 #capa {
     display: none;
@@ -67,7 +53,12 @@ body {
     height: 650px;
 }
 
-/* IMAGENS */
+/* PAGINAS */
+#flipbook div {
+    width: 100%;
+    height: 100%;
+}
+
 #flipbook img {
     width: 100%;
     height: 100%;
@@ -75,23 +66,21 @@ body {
     cursor: zoom-in;
 }
 
-/* LIGHTBOX */
+/* ZOOM */
 #zoomOverlay {
     display: none;
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
     background: rgba(0,0,0,0.95);
-    z-index: 9999;
-    justify-content: center;
-    align-items: center;
+    z-index:9999;
+    justify-content:center;
+    align-items:center;
 }
 
 #zoomImg {
-    max-width: none;
-    max-height: none;
     cursor: grab;
     transform-origin: center;
 }
@@ -121,12 +110,33 @@ body {
 
         <div></div>
 
-        <!-- PAGINAS -->
-        <script>
-        for(let i=2;i<=28;i++){
-            document.write(`<div><img src="guardiao_page-${String(i).padStart(4,'0')}.jpg" onclick="zoom(this)"></div>`);
-        }
-        </script>
+        <div><img src="guardiao_page-0002.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0003.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0004.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0005.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0006.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0007.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0008.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0009.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0010.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0011.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0012.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0013.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0014.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0015.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0016.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0017.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0018.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0019.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0020.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0021.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0022.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0023.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0024.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0025.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0026.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0027.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0028.jpg" onclick="zoom(this)"></div>
 
     </div>
 </div>
@@ -142,7 +152,6 @@ body {
 <script>
 function entrar() {
     var senha = document.getElementById("senha").value.trim().toUpperCase();
-
     if(senha === "GV2026") {
         document.getElementById("login").style.display = "none";
         document.getElementById("capa").style.display = "flex";
@@ -165,13 +174,10 @@ function abrirFlip() {
     $('#flipbook').turn('page', 2);
 }
 
-/* CLICK PARA VIRAR */
+/* CLICK VIRAR */
 document.addEventListener("click", function(e) {
-    if (document.getElementById("flip-container").style.display === "flex" &&
-        e.target.tagName !== "IMG") {
-
-        let largura = window.innerWidth;
-        if (e.clientX > largura/2) {
+    if (e.target.tagName !== "IMG" && document.getElementById("flip-container").style.display === "flex") {
+        if (e.clientX > window.innerWidth/2) {
             $('#flipbook').turn('next');
         } else {
             $('#flipbook').turn('previous');
@@ -180,61 +186,49 @@ document.addEventListener("click", function(e) {
 });
 
 /* ZOOM */
-let escala = 1;
-let posX = 0;
-let posY = 0;
+let escala=1, posX=0, posY=0;
 
-function zoom(img) {
-    let overlay = document.getElementById("zoomOverlay");
-    let zoomImg = document.getElementById("zoomImg");
+function zoom(img){
+    let z=document.getElementById("zoomOverlay");
+    let zi=document.getElementById("zoomImg");
 
-    zoomImg.src = img.src;
-    overlay.style.display = "flex";
+    zi.src=img.src;
+    z.style.display="flex";
 
-    escala = 1;
-    posX = 0;
-    posY = 0;
-
-    aplicarTransform();
+    escala=1; posX=0; posY=0;
+    aplicar();
 }
 
-function fecharZoom() {
-    document.getElementById("zoomOverlay").style.display = "none";
+function fecharZoom(){
+    document.getElementById("zoomOverlay").style.display="none";
 }
 
-/* ZOOM SCROLL */
-document.addEventListener("wheel", function(e) {
-    if (document.getElementById("zoomOverlay").style.display === "flex") {
+document.addEventListener("wheel",function(e){
+    if(document.getElementById("zoomOverlay").style.display==="flex"){
         e.preventDefault();
-        escala += e.deltaY * -0.001;
-        escala = Math.min(Math.max(1, escala), 5);
-        aplicarTransform();
+        escala+=e.deltaY*-0.001;
+        escala=Math.min(Math.max(1,escala),5);
+        aplicar();
     }
-}, { passive: false });
+},{passive:false});
 
-/* DRAG */
-let arrastando = false;
+let drag=false;
 
-document.addEventListener("mousedown", () => arrastando = true);
-document.addEventListener("mouseup", () => arrastando = false);
+document.addEventListener("mousedown",()=>drag=true);
+document.addEventListener("mouseup",()=>drag=false);
 
-document.addEventListener("mousemove", function(e) {
-    if (arrastando && document.getElementById("zoomOverlay").style.display === "flex") {
-        posX += e.movementX;
-        posY += e.movementY;
-        aplicarTransform();
+document.addEventListener("mousemove",function(e){
+    if(drag && document.getElementById("zoomOverlay").style.display==="flex"){
+        posX+=e.movementX;
+        posY+=e.movementY;
+        aplicar();
     }
 });
 
-function aplicarTransform() {
-    let zoomImg = document.getElementById("zoomImg");
-    zoomImg.style.transform = `translate(${posX}px, ${posY}px) scale(${escala})`;
+function aplicar(){
+    document.getElementById("zoomImg").style.transform =
+        `translate(${posX}px,${posY}px) scale(${escala})`;
 }
-
-/* ESC */
-document.addEventListener("keydown", function(e) {
-    if (e.key === "Escape") fecharZoom();
-});
 </script>
 
 </body>
