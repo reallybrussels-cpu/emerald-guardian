@@ -8,11 +8,11 @@
 body{
 margin:0;
 background:black;
-font-family:Arial, sans-serif;
+font-family:Arial;
 overflow:hidden;
+color:white;
 }
 
-/* HEADER DISCRETO */
 .header{
 position:fixed;
 top:0;
@@ -25,7 +25,6 @@ letter-spacing:2px;
 z-index:10;
 }
 
-/* IFRAME FULL */
 iframe{
 position:absolute;
 top:0;
@@ -43,7 +42,61 @@ border:none;
 PRIVATE DOCUMENT — RESTRICTED ACCESS
 </div>
 
-<iframe src="https://heyzine.com/flip-book/615bab6331.html"></iframe>
+<iframe id="flip" style="display:none;"
+src="https://heyzine.com/flip-book/615bab6331.html">
+</iframe>
+
+<script type="module">
+
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+const supabase = createClient(
+  "https://mihrsfotrbigixqkpwhu.supabase.co",
+  "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
+);
+
+/* LOGIN */
+const { data } = await supabase.auth.getUser();
+
+if(!data.user){
+  alert("Login required");
+  location.href="/";
+}
+
+/* USER ACCESS */
+const { data: user } = await supabase
+.from("users_access")
+.select("*")
+.eq("email", data.user.email)
+.single();
+
+/* BLOQUEIOS */
+if(!user || user.status !== "aprovado"){
+  alert("Access denied");
+  location.href="/";
+}
+
+/* EXPIRAÇÃO */
+if(user.expires_at && new Date(user.expires_at) < new Date()){
+  alert("Access expired");
+  location.href="/";
+}
+
+/* WATERMARK */
+const wm = document.createElement("div");
+wm.innerText = data.user.email;
+wm.style.position = "fixed";
+wm.style.top = "50%";
+wm.style.left = "50%";
+wm.style.transform = "translate(-50%, -50%)";
+wm.style.opacity = "0.05";
+wm.style.fontSize = "40px";
+document.body.appendChild(wm);
+
+/* LIBERA O FLIP */
+document.getElementById("flip").style.display = "block";
+
+</script>
 
 </body>
 </html>
