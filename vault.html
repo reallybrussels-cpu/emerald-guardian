@@ -42,23 +42,21 @@ const supabase = createClient(
 
 /* LOGIN */
 const { data } = await supabase.auth.getUser();
-
 if(!data.user) location.href="/";
 
-/* BUSCAR USUÁRIO */
+/* USUÁRIO */
 const { data: user } = await supabase
 .from("users_access")
 .select("*")
 .eq("email", data.user.email)
 .single();
 
-/* 🔐 VALIDAÇÕES */
 if(!user || user.status !== "aprovado"){
   alert("Access denied");
   location.href="/";
 }
 
-/* ⏳ EXPIRAÇÃO */
+/* EXPIRAÇÃO */
 if(user.expires_at && new Date(user.expires_at) < new Date()){
   alert("Access expired");
   location.href="/";
@@ -103,9 +101,8 @@ function build(p){
 
 if(!p) return "";
 
-/* 🔥 FLIPBOOK DETECT */
+/* 🔥 FLIPBOOK */
 if(p.title && p.title.toLowerCase().includes("flip")){
-
 return `
 <div style="width:100%; height:100vh; background:black;">
   <iframe 
@@ -116,49 +113,10 @@ return `
     allowfullscreen>
   </iframe>
 </div>
-📍 ONDE SALVAR
-
-👉 Mesmo local que te falei:
-
-✔ Arquivo:
-vault.html
-✔ Local:
-GitHub OU
-Vercel (se estiver editando direto)
-🚀 DEPOIS DISSO
-Salva
-Publica (deploy automático)
-Abre seu site
-Faz login
-Vai até página "Flipbook"
-🏁 RESULTADO ESPERADO
-
-👉 A revista vai abrir DENTRO do seu site
-👉 Sem sair
-👉 Com login
-👉 Com controle
-
-👊 PRÓXIMO PASSO
-
-Depois que fizer isso, me diga:
-
-👉 “funcionou”
-
-E eu te passo o PASSO 2 (criar página no admin corretamente) — também com código completo.
-
-Se quiser depois, a gente ainda pode:
-
-🔥 remover marca Heyzine
-🔥 bloquear print
-🔥 rastrear leitura
-
-Mas primeiro vamos validar isso funcionando.
 `;
-
 }
 
 /* NORMAL */
-
 if(p.video_url){
 return `<video width="100%" controls controlsList="nodownload">
 <source src="${p.video_url}">
@@ -172,9 +130,8 @@ return `<canvas id="c-${p.id}" style="width:100%"></canvas>`;
 return `<h2>${p.title}</h2><p>${p.content||""}</p>`;
 }
 
-/* WATERMARK REAL */
+/* WATERMARK */
 function apply(){
-
 pages.forEach(p=>{
 if(!p.image_url) return;
 
@@ -199,7 +156,6 @@ ctx.fillText(data.user.email,50,img.height/2);
 
 /* RENDER */
 function render(){
-
 const l=document.getElementById("left");
 const r=document.getElementById("right");
 
