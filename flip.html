@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Flipbook</title>
+<title>Flipbook Premium</title>
 
 <style>
 body{
@@ -12,18 +12,40 @@ display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
+overflow:hidden;
+font-family:Arial;
 }
 
+/* CONTAINER */
 #flipbook{
 width:1000px;
 height:700px;
 }
 
-/* DEBUG */
+/* LOADER */
 #loading{
 position:absolute;
 color:white;
-font-size:20px;
+font-size:18px;
+}
+
+/* SETAS */
+.arrow{
+position:fixed;
+top:50%;
+transform:translateY(-50%);
+font-size:50px;
+color:gold;
+cursor:pointer;
+z-index:20;
+user-select:none;
+}
+
+#leftArrow{ left:20px; }
+#rightArrow{ right:20px; }
+
+.arrow:hover{
+opacity:0.7;
 }
 </style>
 
@@ -32,16 +54,18 @@ font-size:20px;
 <body>
 
 <div id="loading">Carregando...</div>
+
 <div id="flipbook"></div>
 
-<!-- LIB LOCAL MAIS ESTÁVEL -->
+<!-- SETAS -->
+<div id="leftArrow" class="arrow">❮</div>
+<div id="rightArrow" class="arrow">❯</div>
+
 <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"></script>
 
 <script>
 
 window.addEventListener("load", () => {
-
-try{
 
 const flipbook = new St.PageFlip(
 document.getElementById("flipbook"),
@@ -55,25 +79,25 @@ flippingTime: 800
 }
 );
 
-/* 🔥 IMAGENS DIRETAS */
-flipbook.loadFromImages([
-"guardiao_page-0001.jpg",
-"guardiao_page-0002.jpg",
-"guardiao_page-0003.jpg",
-"guardiao_page-0004.jpg",
-"guardiao_page-0005.jpg",
-"guardiao_page-0006.jpg"
-]);
+/* 🔥 GERA AUTOMATICAMENTE 28 PÁGINAS */
+const pages = [];
 
+for(let i=1; i<=28; i++){
+
+let num = String(i).padStart(4,'0');
+
+pages.push(`guardiao_page-${num}.jpg`);
+}
+
+/* 🔥 CARREGA */
+flipbook.loadFromImages(pages);
+
+/* REMOVE LOADING */
 document.getElementById("loading").style.display = "none";
 
-}catch(e){
-
-document.getElementById("loading").innerText = "Erro: " + e;
-
-console.error(e);
-
-}
+/* 🔥 CONTROLE DAS SETAS */
+document.getElementById("leftArrow").onclick = () => flipbook.flipPrev();
+document.getElementById("rightArrow").onclick = () => flipbook.flipNext();
 
 });
 
