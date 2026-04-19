@@ -70,7 +70,7 @@ const { data: user } = await supabase
 .eq("email", data.user.email)
 .single();
 
-/* BLOQUEIOS */
+/* BLOQUEIOS DE ACESSO */
 if(!user || user.status !== "aprovado"){
   alert("Access denied");
   location.href="/";
@@ -82,7 +82,7 @@ if(user.expires_at && new Date(user.expires_at) < new Date()){
   location.href="/";
 }
 
-/* WATERMARK */
+/* WATERMARK COM EMAIL */
 const wm = document.createElement("div");
 wm.innerText = data.user.email;
 wm.style.position = "fixed";
@@ -93,8 +93,29 @@ wm.style.opacity = "0.05";
 wm.style.fontSize = "40px";
 document.body.appendChild(wm);
 
-/* LIBERA O FLIP */
+/* LIBERA O FLIPBOOK */
 document.getElementById("flip").style.display = "block";
+
+/* 🔒 BLOQUEIOS AVANÇADOS */
+document.addEventListener("contextmenu",e=>e.preventDefault());
+
+document.addEventListener("keydown",e=>{
+if(e.ctrlKey && ["s","u","c"].includes(e.key)) e.preventDefault();
+});
+
+/* 🔐 BLOQUEIO DE MULTI-ACESSO */
+const sessionKey = "vault_session";
+
+if(localStorage.getItem(sessionKey)){
+  alert("Session already active");
+  location.href="/";
+}
+
+localStorage.setItem(sessionKey, Date.now());
+
+window.addEventListener("beforeunload",()=>{
+  localStorage.removeItem(sessionKey);
+});
 
 </script>
 
