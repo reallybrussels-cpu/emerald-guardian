@@ -2,24 +2,65 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Flipbook Premium</title>
+<title>Private Vault</title>
 
 <style>
 body{
 margin:0;
 background:black;
+color:white;
+font-family:Arial;
 display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
 overflow:hidden;
-font-family:Arial;
 }
 
-/* CONTAINER */
+/* LOGIN */
+#login{
+text-align:center;
+}
+
+input{
+padding:10px;
+margin:10px;
+background:black;
+border:1px solid gold;
+color:gold;
+}
+
+button{
+padding:10px 20px;
+background:none;
+border:1px solid gold;
+color:gold;
+cursor:pointer;
+}
+
+/* CAPA CENTRAL */
+#cover{
+display:none;
+text-align:center;
+cursor:pointer;
+}
+
+#cover img{
+max-height:80vh;
+}
+
+/* APP */
+#app{
+display:none;
+width:100%;
+height:100vh;
+}
+
+/* FLIP */
 #flipbook{
 width:1000px;
 height:700px;
+margin:auto;
 }
 
 /* SETAS */
@@ -31,32 +72,97 @@ font-size:50px;
 color:gold;
 cursor:pointer;
 z-index:20;
-user-select:none;
 }
 
 #leftArrow{ left:20px; }
 #rightArrow{ right:20px; }
 
-.arrow:hover{
-opacity:0.7;
-}
 </style>
 
 </head>
 
 <body>
 
+<!-- LOGIN -->
+<div id="login">
+<h2>Private Access</h2>
+<input type="text" id="email" placeholder="Email"><br>
+<input type="password" id="password" placeholder="Password"><br>
+<button onclick="login()">Enter</button>
+</div>
+
+<!-- CAPA -->
+<div id="cover" onclick="startFlip()">
+<img src="guardiao_page-0001.jpg">
+<p style="color:gold;">Click to open</p>
+</div>
+
+<!-- FLIP -->
+<div id="app">
 <div id="flipbook"></div>
 
-<!-- SETAS -->
 <div id="leftArrow" class="arrow">❮</div>
 <div id="rightArrow" class="arrow">❯</div>
+</div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"></script>
 
 <script>
 
-window.addEventListener("load", () => {
+/* 🔐 SUPABASE */
+const supabase = supabase.createClient(
+  "https://mihrsfotrbigixqkpwhu.supabase.co",
+  "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
+);
+
+/* LOGIN */
+async function login(){
+
+const email = document.getElementById("email").value;
+const password = document.getElementById("password").value;
+
+const { data } = await supabase
+.from("users_access")
+.select("*")
+.eq("email", email)
+.eq("password", password)
+.single();
+
+if(!data){
+alert("Access denied");
+return;
+}
+
+if(data.status !== "aprovado"){
+alert("Not authorized");
+return;
+}
+
+if(data.expires_at && new Date(data.expires_at) < new Date()){
+alert("Access expired");
+return;
+}
+
+localStorage.setItem("vault_user", email);
+
+/* MOSTRA CAPA CENTRAL */
+document.getElementById("login").style.display = "none";
+document.getElementById("cover").style.display = "block";
+
+}
+
+/* AUTO LOGIN */
+if(localStorage.getItem("vault_user")){
+document.getElementById("login").style.display = "none";
+document.getElementById("cover").style.display = "block";
+}
+
+/* INICIA FLIP */
+function startFlip(){
+
+document.getElementById("cover").style.display = "none";
+document.getElementById("app").style.display = "block";
 
 const flipbook = new St.PageFlip(
 document.getElementById("flipbook"),
@@ -65,13 +171,11 @@ width: 500,
 height: 700,
 size: "stretch",
 showCover: true,
-usePortrait: true, // 🔥 CENTRALIZA CAPA
 drawShadow: true,
 flippingTime: 800
 }
 );
 
-/* 🔥 PÁGINAS */
 const pages = [];
 
 for(let i=1; i<=28; i++){
@@ -79,21 +183,13 @@ let num = String(i).padStart(4,'0');
 pages.push(`guardiao_page-${num}.jpg`);
 }
 
-/* 🔥 LOAD */
 flipbook.loadFromImages(pages);
 
-/* 🔥 AJUSTE DA CAPA */
-flipbook.on("init", () => {
-  if (flipbook.getCurrentPageIndex() === 0) {
-    flipbook.updateState(St.PageFlipState.READ);
-  }
-});
-
-/* 🔥 SETAS */
+/* SETAS */
 document.getElementById("leftArrow").onclick = () => flipbook.flipPrev();
 document.getElementById("rightArrow").onclick = () => flipbook.flipNext();
 
-});
+}
 
 </script>
 
