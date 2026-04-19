@@ -10,15 +10,16 @@ margin:0;
 background:black;
 color:white;
 font-family:Arial;
-display:flex;
-justify-content:center;
-align-items:center;
 height:100vh;
 overflow:hidden;
 }
 
 /* LOGIN */
 #login{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
 text-align:center;
 }
 
@@ -38,9 +39,11 @@ color:gold;
 cursor:pointer;
 }
 
-/* CAPA CENTRAL */
+/* CAPA CENTRAL PERFEITA */
 #cover{
-display:none;
+position:absolute;
+top:0;
+left:0;
 width:100%;
 height:100vh;
 display:flex;
@@ -50,13 +53,14 @@ align-items:center;
 text-align:center;
 }
 
+/* IMAGEM CONTROLADA */
 #cover img{
 max-height:70vh;
 max-width:80vw;
 object-fit:contain;
 }
 
-/* APP */
+/* FLIP */
 #app{
 display:none;
 width:100%;
@@ -66,7 +70,6 @@ justify-content:center;
 align-items:center;
 }
 
-/* FLIP */
 #flipbook{
 width:1000px;
 height:700px;
@@ -100,7 +103,7 @@ z-index:20;
 </div>
 
 <!-- CAPA -->
-<div id="cover">
+<div id="cover" style="display:none;">
 <img src="guardiao_page-0001.jpg">
 <br><br>
 <button onclick="startFlip()">OPEN DOCUMENT</button>
@@ -121,6 +124,7 @@ z-index:20;
 /* SENHA */
 const ACCESS_PASSWORD = "GV2026";
 
+/* LOGIN */
 function check(){
 
 const input = document.getElementById("password").value;
@@ -130,7 +134,7 @@ if(input === ACCESS_PASSWORD){
 localStorage.setItem("vault_access", "ok");
 
 document.getElementById("login").style.display = "none";
-document.getElementById("cover").style.display = "block";
+document.getElementById("cover").style.display = "flex";
 
 }else{
 alert("Senha incorreta");
@@ -138,9 +142,10 @@ alert("Senha incorreta");
 
 }
 
+/* AUTO LOGIN */
 if(localStorage.getItem("vault_access") === "ok"){
 document.getElementById("login").style.display = "none";
-document.getElementById("cover").style.display = "block";
+document.getElementById("cover").style.display = "flex";
 }
 
 /* START FLIP */
@@ -161,6 +166,7 @@ flippingTime: 800
 }
 );
 
+/* PÁGINAS */
 const pages = [];
 
 for(let i=1; i<=28; i++){
@@ -168,9 +174,10 @@ let num = String(i).padStart(4,'0');
 pages.push(`guardiao_page-${num}.jpg`);
 }
 
+/* LOAD */
 flipbook.loadFromImages(pages);
 
-/* 🔥 COMEÇA NA PÁGINA 2 (PULA CAPA DO FLIP) */
+/* PULA CAPA INTERNA */
 setTimeout(() => {
 flipbook.flip(1);
 }, 300);
