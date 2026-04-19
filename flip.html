@@ -38,7 +38,7 @@ color:gold;
 cursor:pointer;
 }
 
-/* CAPA CENTRAL */
+/* CAPA */
 #cover{
 display:none;
 text-align:center;
@@ -83,21 +83,20 @@ z-index:20;
 
 <body>
 
-<!-- LOGIN -->
+<!-- 🔐 LOGIN -->
 <div id="login">
 <h2>Private Access</h2>
-<input type="text" id="email" placeholder="Email"><br>
-<input type="password" id="password" placeholder="Password"><br>
-<button onclick="login()">Enter</button>
+<input type="password" id="password" placeholder="Enter password"><br>
+<button onclick="check()">Enter</button>
 </div>
 
-<!-- CAPA -->
+<!-- 🖼 CAPA -->
 <div id="cover" onclick="startFlip()">
 <img src="guardiao_page-0001.jpg">
 <p style="color:gold;">Click to open</p>
 </div>
 
-<!-- FLIP -->
+<!-- 📖 FLIP -->
 <div id="app">
 <div id="flipbook"></div>
 
@@ -105,60 +104,38 @@ z-index:20;
 <div id="rightArrow" class="arrow">❯</div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"></script>
 
 <script>
 
-/* 🔐 SUPABASE */
-const supabase = supabase.createClient(
-  "https://mihrsfotrbigixqkpwhu.supabase.co",
-  "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
-);
+/* 🔐 SENHA (EDITE AQUI) */
+const ACCESS_PASSWORD = "GV2026";
 
-/* LOGIN */
-async function login(){
+/* 🔐 VERIFICA */
+function check(){
 
-const email = document.getElementById("email").value;
-const password = document.getElementById("password").value;
+const input = document.getElementById("password").value;
 
-const { data } = await supabase
-.from("users_access")
-.select("*")
-.eq("email", email)
-.eq("password", password)
-.single();
+if(input === ACCESS_PASSWORD){
 
-if(!data){
-alert("Access denied");
-return;
-}
+localStorage.setItem("vault_access", "ok");
 
-if(data.status !== "aprovado"){
-alert("Not authorized");
-return;
-}
-
-if(data.expires_at && new Date(data.expires_at) < new Date()){
-alert("Access expired");
-return;
-}
-
-localStorage.setItem("vault_user", email);
-
-/* MOSTRA CAPA CENTRAL */
 document.getElementById("login").style.display = "none";
 document.getElementById("cover").style.display = "block";
 
+}else{
+alert("Senha incorreta");
 }
 
-/* AUTO LOGIN */
-if(localStorage.getItem("vault_user")){
+}
+
+/* 🔐 AUTO LOGIN */
+if(localStorage.getItem("vault_access") === "ok"){
 document.getElementById("login").style.display = "none";
 document.getElementById("cover").style.display = "block";
 }
 
-/* INICIA FLIP */
+/* 🚀 INICIA FLIP */
 function startFlip(){
 
 document.getElementById("cover").style.display = "none";
