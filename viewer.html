@@ -1,1 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Private Document</title>
 
+<style>
+body{
+margin:0;
+background:black;
+color:white;
+font-family:Arial;
+text-align:center;
+}
+
+canvas{
+display:block;
+margin:auto;
+max-width:100%;
+}
+
+.controls{
+position:fixed;
+bottom:20px;
+width:100%;
+text-align:center;
+}
+
+button{
+padding:10px 20px;
+margin:5px;
+background:none;
+border:1px solid gold;
+color:gold;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="pdf"></canvas>
+
+<div class="controls">
+<button onclick="prev()">←</button>
+<button onclick="next()">→</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+<script>
+const url = 'guardiao.pdf';
+
+let pdfDoc = null;
+let pageNum = 1;
+
+pdfjsLib.getDocument(url).promise.then(pdf=>{
+pdfDoc = pdf;
+renderPage(pageNum);
+});
+
+function renderPage(num){
+pdfDoc.getPage(num).then(page=>{
+const canvas = document.getElementById('pdf');
+const ctx = canvas.getContext('2d');
+
+const viewport = page.getViewport({scale:1.5});
+canvas.height = viewport.height;
+canvas.width = viewport.width;
+
+page.render({
+canvasContext:ctx,
+viewport:viewport
+});
+});
+}
+
+function next(){
+if(pageNum < pdfDoc.numPages){
+pageNum++;
+renderPage(pageNum);
+}
+}
+
+function prev(){
+if(pageNum > 1){
+pageNum--;
+renderPage(pageNum);
+}
+}
+</script>
+
+</body>
+</html>
