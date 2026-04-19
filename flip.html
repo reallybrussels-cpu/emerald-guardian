@@ -84,6 +84,27 @@ body {
     cursor: grab;
     transform-origin: center;
 }
+
+/* SETAS PREMIUM */
+#nav-left, #nav-right {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 40px;
+    color: rgba(255,255,255,0.15);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+    z-index: 10;
+    display: none;
+}
+
+#nav-left { left: 20px; }
+#nav-right { right: 20px; }
+
+#nav-left:hover, #nav-right:hover {
+    color: rgba(255,255,255,0.6);
+}
 </style>
 </head>
 
@@ -141,6 +162,10 @@ body {
     </div>
 </div>
 
+<!-- SETAS -->
+<div id="nav-left">‹</div>
+<div id="nav-right">›</div>
+
 <!-- ZOOM -->
 <div id="zoomOverlay" onclick="fecharZoom()">
     <img id="zoomImg">
@@ -164,6 +189,9 @@ function abrirFlip() {
     document.getElementById("capa").style.display = "none";
     document.getElementById("flip-container").style.display = "flex";
 
+    document.getElementById("nav-left").style.display = "block";
+    document.getElementById("nav-right").style.display = "block";
+
     $('#flipbook').turn({
         width: 1000,
         height: 650,
@@ -174,7 +202,16 @@ function abrirFlip() {
     $('#flipbook').turn('page', 2);
 }
 
-/* CLICK VIRAR */
+/* SETAS CLICK */
+document.getElementById("nav-left").onclick = function() {
+    $('#flipbook').turn('previous');
+};
+
+document.getElementById("nav-right").onclick = function() {
+    $('#flipbook').turn('next');
+};
+
+/* CLICK TELA */
 document.addEventListener("click", function(e) {
     if (e.target.tagName !== "IMG" && document.getElementById("flip-container").style.display === "flex") {
         if (e.clientX > window.innerWidth/2) {
