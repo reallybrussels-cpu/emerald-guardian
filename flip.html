@@ -38,15 +38,16 @@ color:gold;
 cursor:pointer;
 }
 
-/* CAPA */
+/* CAPA CENTRAL */
 #cover{
 display:none;
 text-align:center;
-cursor:pointer;
 }
 
 #cover img{
 max-height:80vh;
+max-width:90vw;
+object-fit:contain;
 }
 
 /* APP */
@@ -61,7 +62,8 @@ align-items:center;
 
 /* FLIP */
 #flipbook{
-margin:auto;
+width:1000px;
+height:700px;
 }
 
 /* SETAS */
@@ -92,9 +94,10 @@ z-index:20;
 </div>
 
 <!-- CAPA -->
-<div id="cover" onclick="startFlip()">
+<div id="cover">
 <img src="guardiao_page-0001.jpg">
-<p style="color:gold;">Click to open</p>
+<br><br>
+<button onclick="startFlip()">OPEN DOCUMENT</button>
 </div>
 
 <!-- FLIP -->
@@ -109,7 +112,7 @@ z-index:20;
 
 <script>
 
-/* 🔐 SENHA */
+/* SENHA */
 const ACCESS_PASSWORD = "GV2026";
 
 function check(){
@@ -134,7 +137,7 @@ document.getElementById("login").style.display = "none";
 document.getElementById("cover").style.display = "block";
 }
 
-/* 🚀 START FLIP */
+/* START FLIP */
 function startFlip(){
 
 document.getElementById("cover").style.display = "none";
@@ -147,10 +150,6 @@ width: 500,
 height: 700,
 size: "stretch",
 showCover: true,
-
-/* 🔥 AQUI ESTÁ A CORREÇÃO REAL */
-usePortrait: true,   // força capa central
-
 drawShadow: true,
 flippingTime: 800
 }
@@ -164,6 +163,11 @@ pages.push(`guardiao_page-${num}.jpg`);
 }
 
 flipbook.loadFromImages(pages);
+
+/* 🔥 COMEÇA NA PÁGINA 2 (PULA CAPA DO FLIP) */
+setTimeout(() => {
+flipbook.flip(1);
+}, 300);
 
 /* SETAS */
 document.getElementById("leftArrow").onclick = () => flipbook.flipPrev();
