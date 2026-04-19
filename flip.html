@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Flipbook Premium</title>
+<title>Private Vault</title>
 
 <style>
 body{
@@ -44,8 +44,19 @@ user-select:none;
 #leftArrow{ left:20px; }
 #rightArrow{ right:20px; }
 
-.arrow:hover{
-opacity:0.7;
+/* WATERMARK */
+#watermark{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%, -50%);
+opacity:0.06;
+font-size:40px;
+color:white;
+pointer-events:none;
+z-index:15;
+text-align:center;
+line-height:1.5;
 }
 </style>
 
@@ -53,20 +64,72 @@ opacity:0.7;
 
 <body>
 
-<div id="loading">Carregando...</div>
+<div id="loading">Verificando acesso...</div>
+<div id="watermark"></div>
 
 <div id="flipbook"></div>
 
-<!-- SETAS -->
 <div id="leftArrow" class="arrow">❮</div>
 <div id="rightArrow" class="arrow">❯</div>
 
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- FLIP -->
 <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"></script>
 
 <script>
 
-window.addEventListener("load", () => {
+(async () => {
 
+/* 🔐 CONFIGURE AQUI (SEU SUPABASE) */
+const supabase = supabase.createClient(
+  "https://mihrsfotrbigixqkpwhu.supabase.co",
+  "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
+);
+
+/* 🔐 VERIFICA LOGIN */
+const { data: userData } = await supabase.auth.getUser();
+
+if(!userData.user){
+  alert("Acesso restrito");
+  location.href = "/";
+  return;
+}
+
+/* 🔐 VERIFICA PERMISSÃO */
+const { data: access } = await supabase
+.from("users_access")
+.select("*")
+.eq("email", userData.user.email)
+.single();
+
+if(!access || access.status !== "aprovado"){
+  alert("Acesso não autorizado");
+  location.href = "/";
+  return;
+}
+
+/* 🔐 EXPIRAÇÃO */
+if(access.expires_at && new Date(access.expires_at) < new Date()){
+  alert("Acesso expirado");
+  location.href = "/";
+  return;
+}
+
+/* 👁 WATERMARK */
+document.getElementById("watermark").innerText =
+userData.user.email + "\nCONFIDENTIAL";
+
+/* 📊 TRACKING */
+async function track(page){
+  await supabase.from("vault_logs").insert({
+    email: userData.user.email,
+    page: page
+  });
+}
+
+/* 🚀 INICIA FLIP */
 const flipbook = new St.PageFlip(
 document.getElementById("flipbook"),
 {
@@ -79,27 +142,35 @@ flippingTime: 800
 }
 );
 
-/* 🔥 GERA AUTOMATICAMENTE 28 PÁGINAS */
+/* 📄 PÁGINAS */
 const pages = [];
-
 for(let i=1; i<=28; i++){
-
 let num = String(i).padStart(4,'0');
-
 pages.push(`guardiao_page-${num}.jpg`);
 }
 
-/* 🔥 CARREGA */
 flipbook.loadFromImages(pages);
 
-/* REMOVE LOADING */
-document.getElementById("loading").style.display = "none";
+/* 📊 EVENTO DE TROCA */
+flipbook.on("flip", (e)=>{
+  track(e.data);
+});
 
-/* 🔥 CONTROLE DAS SETAS */
+/* 🔘 SETAS */
 document.getElementById("leftArrow").onclick = () => flipbook.flipPrev();
 document.getElementById("rightArrow").onclick = () => flipbook.flipNext();
 
+/* 🔒 BLOQUEIOS */
+document.addEventListener("contextmenu",e=>e.preventDefault());
+
+document.addEventListener("keydown",e=>{
+if(e.ctrlKey && ["s","u","c"].includes(e.key)) e.preventDefault();
 });
+
+/* FINALIZA */
+document.getElementById("loading").style.display = "none";
+
+})();
 
 </script>
 
