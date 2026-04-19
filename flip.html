@@ -12,7 +12,6 @@ body {
     font-family: Arial;
 }
 
-/* CENTRALIZAÇÃO */
 .center {
     display: flex;
     justify-content: center;
@@ -45,7 +44,7 @@ body {
 /* CAPA */
 #capa {
     display: none;
-    text-align: center;
+    position: relative;
 }
 
 #capa img {
@@ -53,15 +52,16 @@ body {
     max-height: 90vh;
 }
 
-/* BOTÃO AVANÇAR */
+/* SETA */
 #entrarFlip {
     position: absolute;
-    right: 20px;
+    right: 30px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 40px;
+    font-size: 50px;
     color: white;
     cursor: pointer;
+    user-select: none;
 }
 
 /* FLIP */
@@ -75,6 +75,17 @@ body {
 #flipbook {
     width: 900px;
     height: 600px;
+}
+
+#flipbook div {
+    width: 100%;
+    height: 100%;
+}
+
+#flipbook img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 </style>
 </head>
@@ -101,22 +112,23 @@ body {
 <div id="flip-container">
     <div id="flipbook">
 
-        <div><img src="guardiao_page-0002.jpg" style="width:100%"></div>
-        <div><img src="guardiao_page-0003.jpg" style="width:100%"></div>
-        <div><img src="guardiao_page-0004.jpg" style="width:100%"></div>
-        <div><img src="guardiao_page-0005.jpg" style="width:100%"></div>
-        <div><img src="guardiao_page-0006.jpg" style="width:100%"></div>
-        <div><img src="guardiao_page-0007.jpg" style="width:100%"></div>
-        <div><img src="guardiao_page-0008.jpg" style="width:100%"></div>
-        <div><img src="guardiao_page-0009.jpg" style="width:100%"></div>
-        <div><img src="guardiao_page-0010.jpg" style="width:100%"></div>
-        <div><img src="guardiao_page-0011.jpg" style="width:100%"></div>
+        <div><img src="guardiao_page-0002.jpg"></div>
+        <div><img src="guardiao_page-0003.jpg"></div>
+        <div><img src="guardiao_page-0004.jpg"></div>
+        <div><img src="guardiao_page-0005.jpg"></div>
+        <div><img src="guardiao_page-0006.jpg"></div>
+        <div><img src="guardiao_page-0007.jpg"></div>
+        <div><img src="guardiao_page-0008.jpg"></div>
+        <div><img src="guardiao_page-0009.jpg"></div>
+        <div><img src="guardiao_page-0010.jpg"></div>
+        <div><img src="guardiao_page-0011.jpg"></div>
 
     </div>
 </div>
 
+<!-- SCRIPTS CORRETOS -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/blasten/turn.js@master/turn.min.js"></script>
 
 <script>
 function entrar() {
@@ -134,13 +146,45 @@ function abrirFlip() {
     document.getElementById("capa").style.display = "none";
     document.getElementById("flip-container").style.display = "flex";
 
-    setTimeout(() => {
-        $('#flipbook').turn({
-            width: 900,
-            height: 600,
-            autoCenter: true
-        });
-    }, 300);
+    carregarFlip();
+}
+
+function carregarFlip() {
+    let imagens = document.querySelectorAll("#flipbook img");
+    let carregadas = 0;
+
+    imagens.forEach(img => {
+        if (img.complete) {
+            carregadas++;
+        } else {
+            img.onload = () => {
+                carregadas++;
+                if (carregadas === imagens.length) iniciarFlip();
+            };
+        }
+    });
+
+    if (carregadas === imagens.length) {
+        iniciarFlip();
+    }
+}
+
+function iniciarFlip() {
+
+    if (typeof $.fn.turn !== "function") {
+        alert("Erro: turn.js não carregou");
+        return;
+    }
+
+    $('#flipbook').turn({
+        width: 900,
+        height: 600,
+        autoCenter: true,
+        elevation: 50,
+        gradients: true
+    });
+
+    console.log("Flip funcionando");
 }
 </script>
 
