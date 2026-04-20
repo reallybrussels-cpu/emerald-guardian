@@ -53,12 +53,7 @@ body {
     height: 650px;
 }
 
-/* PAGINAS */
-#flipbook div {
-    width: 100%;
-    height: 100%;
-}
-
+/* IMAGENS */
 #flipbook img {
     width: 100%;
     height: 100%;
@@ -85,7 +80,7 @@ body {
     transform-origin: center;
 }
 
-/* SETAS PREMIUM */
+/* SETAS */
 #nav-left, #nav-right {
     position: fixed;
     top: 50%;
@@ -129,35 +124,33 @@ body {
 <div id="flip-container">
     <div id="flipbook">
 
-        <div></div>
-
-        <div><img src="guardiao_page-0002.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0003.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0004.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0005.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0006.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0007.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0008.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0009.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0010.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0011.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0012.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0013.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0014.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0015.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0016.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0017.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0018.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0019.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0020.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0021.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0022.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0023.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0024.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0025.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0026.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0027.jpg" onclick="zoom(this)"></div>
-        <div><img src="guardiao_page-0028.jpg" onclick="zoom(this)"></div>
+        <div><img src="guardiao_page-0002.jpg"></div>
+        <div><img src="guardiao_page-0003.jpg"></div>
+        <div><img src="guardiao_page-0004.jpg"></div>
+        <div><img src="guardiao_page-0005.jpg"></div>
+        <div><img src="guardiao_page-0006.jpg"></div>
+        <div><img src="guardiao_page-0007.jpg"></div>
+        <div><img src="guardiao_page-0008.jpg"></div>
+        <div><img src="guardiao_page-0009.jpg"></div>
+        <div><img src="guardiao_page-0010.jpg"></div>
+        <div><img src="guardiao_page-0011.jpg"></div>
+        <div><img src="guardiao_page-0012.jpg"></div>
+        <div><img src="guardiao_page-0013.jpg"></div>
+        <div><img src="guardiao_page-0014.jpg"></div>
+        <div><img src="guardiao_page-0015.jpg"></div>
+        <div><img src="guardiao_page-0016.jpg"></div>
+        <div><img src="guardiao_page-0017.jpg"></div>
+        <div><img src="guardiao_page-0018.jpg"></div>
+        <div><img src="guardiao_page-0019.jpg"></div>
+        <div><img src="guardiao_page-0020.jpg"></div>
+        <div><img src="guardiao_page-0021.jpg"></div>
+        <div><img src="guardiao_page-0022.jpg"></div>
+        <div><img src="guardiao_page-0023.jpg"></div>
+        <div><img src="guardiao_page-0024.jpg"></div>
+        <div><img src="guardiao_page-0025.jpg"></div>
+        <div><img src="guardiao_page-0026.jpg"></div>
+        <div><img src="guardiao_page-0027.jpg"></div>
+        <div><img src="guardiao_page-0028.jpg"></div>
 
     </div>
 </div>
@@ -198,13 +191,23 @@ function abrirFlip() {
         autoCenter: true,
         display: 'double'
     });
-
-    $('#flipbook').turn('page', 2);
 }
 
-/* SETAS CLICK */
+/* SETAS */
 document.getElementById("nav-left").onclick = function() {
-    $('#flipbook').turn('previous');
+
+    let pagina = $('#flipbook').turn('page');
+
+    if(pagina <= 2){
+        // volta pra capa
+        $('#flipbook').turn('destroy');
+        document.getElementById("flip-container").style.display = "none";
+        document.getElementById("capa").style.display = "flex";
+        document.getElementById("nav-left").style.display = "none";
+        document.getElementById("nav-right").style.display = "none";
+    } else {
+        $('#flipbook').turn('previous');
+    }
 };
 
 document.getElementById("nav-right").onclick = function() {
@@ -222,7 +225,14 @@ document.addEventListener("click", function(e) {
     }
 });
 
-/* ZOOM */
+/* ZOOM GLOBAL */
+document.querySelectorAll("#flipbook img").forEach(img => {
+    img.addEventListener("click", function(e){
+        e.stopPropagation();
+        zoom(this);
+    });
+});
+
 let escala=1, posX=0, posY=0;
 
 function zoom(img){
