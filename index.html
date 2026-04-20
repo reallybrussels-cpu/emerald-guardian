@@ -238,7 +238,7 @@ window.login = async function(){
   const { data } = await supabase
     .from("users_access")
     .select("status")
-    .eq("email", email)
+   .eq("email", email.trim().toLowerCase())
     .single();
 
   if(!data || data.status !== "aprovado"){
