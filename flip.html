@@ -30,10 +30,7 @@ body {
 }
 
 /* CAPA */
-#capa {
-    display: none;
-}
-
+#capa { display:none; }
 #capa img {
     max-width: 90%;
     max-height: 90vh;
@@ -42,72 +39,64 @@ body {
 
 /* FLIP */
 #flip-container {
-    display: none;
-    height: 100vh;
-    justify-content: center;
-    align-items: center;
-    position: relative;
+    display:none;
+    height:100vh;
+    justify-content:center;
+    align-items:center;
+    position:relative;
 }
 
 #flipbook {
-    width: 1000px;
-    height: 650px;
+    width:1000px;
+    height:650px;
 }
 
 /* IMAGENS */
 #flipbook img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    width:100%;
+    height:100%;
+    object-fit:cover;
     cursor: zoom-in;
 }
 
 /* ZOOM */
 #zoomOverlay {
-    display: none;
-    position: fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background: rgba(0,0,0,0.95);
+    display:none;
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background:rgba(0,0,0,0.95);
     z-index:9999;
     justify-content:center;
     align-items:center;
 }
 
 #zoomImg {
-    cursor: grab;
-    transform-origin: center;
+    cursor:grab;
+    transform-origin:center;
 }
 
-/* SETAS CORRETAS */
+/* SETAS MAIS VISÍVEIS (+30%) */
 #nav-left, #nav-right {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 50px;
-    color: rgba(255,255,255,0.35);
-    cursor: pointer;
-    transition: all 0.25s ease;
-    user-select: none;
-    z-index: 20;
-    display: none;
-    padding: 20px;
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    font-size:55px;
+    color:rgba(255,255,255,0.6);
+    cursor:pointer;
+    transition:all 0.25s ease;
+    user-select:none;
+    z-index:20;
+    display:none;
+    padding:20px;
 }
 
-/* COLADAS NO LIVRO */
-#nav-left {
-    left: calc(50% - 550px);
-}
-
-#nav-right {
-    right: calc(50% - 550px);
-}
+#nav-left { left:calc(50% - 550px); }
+#nav-right { right:calc(50% - 550px); }
 
 #nav-left:hover, #nav-right:hover {
-    color: rgba(255,255,255,0.9);
-    transform: translateY(-50%) scale(1.15);
+    color:#fff;
+    transform:translateY(-50%) scale(1.15);
 }
 </style>
 </head>
@@ -133,32 +122,49 @@ body {
 <div id="flip-container">
     <div id="flipbook">
 
+        <!-- PÁGINA FANTASMA -->
+        <div></div>
+
+        <!-- PARES CORRETOS -->
         <div><img src="guardiao_page-0002.jpg"></div>
         <div><img src="guardiao_page-0003.jpg"></div>
+
         <div><img src="guardiao_page-0004.jpg"></div>
         <div><img src="guardiao_page-0005.jpg"></div>
+
         <div><img src="guardiao_page-0006.jpg"></div>
         <div><img src="guardiao_page-0007.jpg"></div>
+
         <div><img src="guardiao_page-0008.jpg"></div>
         <div><img src="guardiao_page-0009.jpg"></div>
+
         <div><img src="guardiao_page-0010.jpg"></div>
         <div><img src="guardiao_page-0011.jpg"></div>
+
         <div><img src="guardiao_page-0012.jpg"></div>
         <div><img src="guardiao_page-0013.jpg"></div>
+
         <div><img src="guardiao_page-0014.jpg"></div>
         <div><img src="guardiao_page-0015.jpg"></div>
+
         <div><img src="guardiao_page-0016.jpg"></div>
         <div><img src="guardiao_page-0017.jpg"></div>
+
         <div><img src="guardiao_page-0018.jpg"></div>
         <div><img src="guardiao_page-0019.jpg"></div>
+
         <div><img src="guardiao_page-0020.jpg"></div>
         <div><img src="guardiao_page-0021.jpg"></div>
+
         <div><img src="guardiao_page-0022.jpg"></div>
         <div><img src="guardiao_page-0023.jpg"></div>
+
         <div><img src="guardiao_page-0024.jpg"></div>
         <div><img src="guardiao_page-0025.jpg"></div>
+
         <div><img src="guardiao_page-0026.jpg"></div>
         <div><img src="guardiao_page-0027.jpg"></div>
+
         <div><img src="guardiao_page-0028.jpg"></div>
 
     </div>
@@ -177,83 +183,78 @@ body {
 <script src="https://cdn.jsdelivr.net/gh/blasten/turn.js@master/turn.min.js"></script>
 
 <script>
-let flipInicializado = false;
+let iniciado=false;
 
-function entrar() {
-    var senha = document.getElementById("senha").value.trim().toUpperCase();
-    if(senha === "GV2026") {
-        document.getElementById("login").style.display = "none";
-        document.getElementById("capa").style.display = "flex";
-    } else {
-        alert("Senha incorreta");
-    }
+function entrar(){
+    let s=document.getElementById("senha").value.trim().toUpperCase();
+    if(s==="GV2026"){
+        login.style.display="none";
+        capa.style.display="flex";
+    } else alert("Senha incorreta");
 }
 
-function abrirFlip() {
-    document.getElementById("capa").style.display = "none";
-    document.getElementById("flip-container").style.display = "flex";
+function abrirFlip(){
+    capa.style.display="none";
+    flip-container.style.display="flex";
 
-    document.getElementById("nav-left").style.display = "block";
-    document.getElementById("nav-right").style.display = "block";
+    nav-left.style.display="block";
+    nav-right.style.display="block";
 
-    if(!flipInicializado){
+    if(!iniciado){
         $('#flipbook').turn({
-            width: 1000,
-            height: 650,
-            autoCenter: true,
-            display: 'double'
+            width:1000,
+            height:650,
+            autoCenter:true,
+            display:'double'
         });
-        flipInicializado = true;
+
+        $('#flipbook').turn('page',2);
+
+        iniciado=true;
     }
 }
 
 /* SETAS */
-document.getElementById("nav-left").onclick = function() {
+nav-left.onclick=function(){
+    let p=$('#flipbook').turn('page');
 
-    let pagina = $('#flipbook').turn('page');
-
-    if(pagina <= 2){
-        $('#flipbook').turn('page', 1);
-        document.getElementById("flip-container").style.display = "none";
-        document.getElementById("capa").style.display = "flex";
-        document.getElementById("nav-left").style.display = "none";
-        document.getElementById("nav-right").style.display = "none";
-    } else {
+    if(p<=2){
+        flip-container.style.display="none";
+        capa.style.display="flex";
+        nav-left.style.display="none";
+        nav-right.style.display="none";
+    }else{
         $('#flipbook').turn('previous');
     }
 };
 
-document.getElementById("nav-right").onclick = function() {
+nav-right.onclick=function(){
     $('#flipbook').turn('next');
 };
 
 /* ZOOM GLOBAL */
-document.querySelectorAll("#flipbook img").forEach(img => {
-    img.addEventListener("click", function(e){
+document.querySelectorAll("#flipbook img").forEach(img=>{
+    img.addEventListener("click",function(e){
         e.stopPropagation();
         zoom(this);
     });
 });
 
-let escala=1, posX=0, posY=0;
+let escala=1,posX=0,posY=0;
 
 function zoom(img){
-    let z=document.getElementById("zoomOverlay");
-    let zi=document.getElementById("zoomImg");
-
-    zi.src=img.src;
-    z.style.display="flex";
-
+    zoomImg.src=img.src;
+    zoomOverlay.style.display="flex";
     escala=1; posX=0; posY=0;
     aplicar();
 }
 
 function fecharZoom(){
-    document.getElementById("zoomOverlay").style.display="none";
+    zoomOverlay.style.display="none";
 }
 
 document.addEventListener("wheel",function(e){
-    if(document.getElementById("zoomOverlay").style.display==="flex"){
+    if(zoomOverlay.style.display==="flex"){
         e.preventDefault();
         escala+=e.deltaY*-0.001;
         escala=Math.min(Math.max(1,escala),5);
@@ -267,7 +268,7 @@ document.addEventListener("mousedown",()=>drag=true);
 document.addEventListener("mouseup",()=>drag=false);
 
 document.addEventListener("mousemove",function(e){
-    if(drag && document.getElementById("zoomOverlay").style.display==="flex"){
+    if(drag && zoomOverlay.style.display==="flex"){
         posX+=e.movementX;
         posY+=e.movementY;
         aplicar();
@@ -275,8 +276,7 @@ document.addEventListener("mousemove",function(e){
 });
 
 function aplicar(){
-    document.getElementById("zoomImg").style.transform =
-        `translate(${posX}px,${posY}px) scale(${escala})`;
+    zoomImg.style.transform=`translate(${posX}px,${posY}px) scale(${escala})`;
 }
 </script>
 
