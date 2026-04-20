@@ -225,7 +225,8 @@ const supabase = createClient(
 
 /* LOGIN */
 window.login = async function(){
-  const email = document.getElementById("email").value;
+
+  const email = document.getElementById("email").value.trim().toLowerCase();
   const password = document.getElementById("password").value;
 
   const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -235,13 +236,18 @@ window.login = async function(){
     return;
   }
 
-  const { data } = await supabase
+  const { data, error: dbError } = await supabase
     .from("users_access")
     .select("status")
-   .eq("email", email.trim().toLowerCase())
-    .single();
+    .ilike("email", email)
+    .limit(1);
 
-  if(!data || data.status !== "aprovado"){
+  if(dbError || !data || data.length === 0){
+    alert("User not found in access list");
+    return;
+  }
+
+  if(data[0].status !== "aprovado"){
     alert("Access not approved");
     return;
   }
