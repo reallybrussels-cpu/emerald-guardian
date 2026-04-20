@@ -51,7 +51,6 @@ body {
     width:100%;
     height:100%;
     object-fit:cover;
-    cursor:zoom-in;
 }
 
 /* SETAS */
@@ -59,8 +58,8 @@ body {
     position:absolute;
     top:50%;
     transform:translateY(-50%);
-    font-size:55px;
-    color:rgba(255,255,255,0.65);
+    font-size:60px;
+    color:rgba(255,255,255,0.75);
     cursor:pointer;
     z-index:20;
     display:none;
@@ -72,23 +71,6 @@ body {
 
 #nav-left:hover, #nav-right:hover {
     color:#fff;
-    transform:translateY(-50%) scale(1.15);
-}
-
-/* ZOOM */
-#zoomOverlay {
-    display:none;
-    position:fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    background:rgba(0,0,0,0.95);
-    z-index:9999;
-    justify-content:center;
-    align-items:center;
-}
-
-#zoomImg {
-    cursor:grab;
 }
 </style>
 </head>
@@ -159,32 +141,24 @@ body {
 <div id="nav-left">‹</div>
 <div id="nav-right">›</div>
 
-<div id="zoomOverlay" onclick="fecharZoom()">
-    <img id="zoomImg">
-</div>
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/blasten/turn.js@master/turn.min.js"></script>
 
 <script>
 
 function entrar(){
-    let senha = document.getElementById("senha").value.trim().toUpperCase();
-
-    if(senha === "GV2026" || senha === "1234"){
-        document.getElementById("login").style.display="none";
-        document.getElementById("capa").style.display="flex";
-    } else {
-        alert("Senha incorreta");
-    }
+    let s=document.getElementById("senha").value.trim().toUpperCase();
+    if(s==="GV2026"||s==="1234"){
+        login.style.display="none";
+        capa.style.display="flex";
+    } else alert("Senha incorreta");
 }
 
 function abrirFlip(){
-    document.getElementById("capa").style.display="none";
-    document.getElementById("flip-container").style.display="flex";
-
-    document.getElementById("nav-left").style.display="block";
-    document.getElementById("nav-right").style.display="block";
+    capa.style.display="none";
+    flip-container.style.display="flex";
+    nav-left.style.display="block";
+    nav-right.style.display="block";
 
     $('#flipbook').turn({
         width:1000,
@@ -192,36 +166,28 @@ function abrirFlip(){
         autoCenter:true,
         display:'double'
     });
+
+    $('#flipbook').turn('page',1);
 }
 
-document.getElementById("nav-left").onclick=function(){
+/* AVANÇO EM DUPLAS */
+nav-right.onclick=function(){
+    let p=$('#flipbook').turn('page');
+    $('#flipbook').turn('page', p+2);
+};
+
+nav-left.onclick=function(){
     let p=$('#flipbook').turn('page');
 
     if(p<=2){
-        document.getElementById("flip-container").style.display="none";
-        document.getElementById("capa").style.display="flex";
-        document.getElementById("nav-left").style.display="none";
-        document.getElementById("nav-right").style.display="none";
+        flip-container.style.display="none";
+        capa.style.display="flex";
+        nav-left.style.display="none";
+        nav-right.style.display="none";
     } else {
-        $('#flipbook').turn('previous');
+        $('#flipbook').turn('page', p-2);
     }
 };
-
-document.getElementById("nav-right").onclick=function(){
-    $('#flipbook').turn('next');
-};
-
-document.querySelectorAll("#flipbook img").forEach(img=>{
-    img.onclick=function(e){
-        e.stopPropagation();
-        document.getElementById("zoomImg").src=this.src;
-        document.getElementById("zoomOverlay").style.display="flex";
-    }
-});
-
-function fecharZoom(){
-    document.getElementById("zoomOverlay").style.display="none";
-}
 
 </script>
 
