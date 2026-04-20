@@ -167,6 +167,7 @@ body {
 <script src="https://cdn.jsdelivr.net/gh/blasten/turn.js@master/turn.min.js"></script>
 
 <script>
+
 function entrar(){
     let senha = document.getElementById("senha").value.trim().toUpperCase();
 
@@ -177,14 +178,13 @@ function entrar(){
         alert("Senha incorreta");
     }
 }
-</script>
-}
 
 function abrirFlip(){
-    capa.style.display="none";
-    flip-container.style.display="flex";
-    nav-left.style.display="block";
-    nav-right.style.display="block";
+    document.getElementById("capa").style.display="none";
+    document.getElementById("flip-container").style.display="flex";
+
+    document.getElementById("nav-left").style.display="block";
+    document.getElementById("nav-right").style.display="block";
 
     $('#flipbook').turn({
         width:1000,
@@ -194,36 +194,35 @@ function abrirFlip(){
     });
 }
 
-/* SETAS */
-nav-left.onclick=function(){
+document.getElementById("nav-left").onclick=function(){
     let p=$('#flipbook').turn('page');
 
     if(p<=2){
-        flip-container.style.display="none";
-        capa.style.display="flex";
-        nav-left.style.display="none";
-        nav-right.style.display="none";
+        document.getElementById("flip-container").style.display="none";
+        document.getElementById("capa").style.display="flex";
+        document.getElementById("nav-left").style.display="none";
+        document.getElementById("nav-right").style.display="none";
     } else {
         $('#flipbook').turn('previous');
     }
 };
 
-nav-right.onclick=function(){
+document.getElementById("nav-right").onclick=function(){
     $('#flipbook').turn('next');
 };
 
-/* ZOOM */
 document.querySelectorAll("#flipbook img").forEach(img=>{
     img.onclick=function(e){
         e.stopPropagation();
-        zoomImg.src=this.src;
-        zoomOverlay.style.display="flex";
+        document.getElementById("zoomImg").src=this.src;
+        document.getElementById("zoomOverlay").style.display="flex";
     }
 });
 
 function fecharZoom(){
-    zoomOverlay.style.display="none";
+    document.getElementById("zoomOverlay").style.display="none";
 }
+
 </script>
 
 </body>
