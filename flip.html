@@ -46,6 +46,7 @@ body {
     height: 100vh;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 
 #flipbook {
@@ -80,25 +81,33 @@ body {
     transform-origin: center;
 }
 
-/* SETAS */
+/* SETAS CORRETAS */
 #nav-left, #nav-right {
-    position: fixed;
+    position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 40px;
-    color: rgba(255,255,255,0.15);
+    font-size: 50px;
+    color: rgba(255,255,255,0.35);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
     user-select: none;
-    z-index: 10;
+    z-index: 20;
     display: none;
+    padding: 20px;
 }
 
-#nav-left { left: 20px; }
-#nav-right { right: 20px; }
+/* COLADAS NO LIVRO */
+#nav-left {
+    left: calc(50% - 550px);
+}
+
+#nav-right {
+    right: calc(50% - 550px);
+}
 
 #nav-left:hover, #nav-right:hover {
-    color: rgba(255,255,255,0.6);
+    color: rgba(255,255,255,0.9);
+    transform: translateY(-50%) scale(1.15);
 }
 </style>
 </head>
@@ -168,6 +177,8 @@ body {
 <script src="https://cdn.jsdelivr.net/gh/blasten/turn.js@master/turn.min.js"></script>
 
 <script>
+let flipInicializado = false;
+
 function entrar() {
     var senha = document.getElementById("senha").value.trim().toUpperCase();
     if(senha === "GV2026") {
@@ -185,12 +196,15 @@ function abrirFlip() {
     document.getElementById("nav-left").style.display = "block";
     document.getElementById("nav-right").style.display = "block";
 
-    $('#flipbook').turn({
-        width: 1000,
-        height: 650,
-        autoCenter: true,
-        display: 'double'
-    });
+    if(!flipInicializado){
+        $('#flipbook').turn({
+            width: 1000,
+            height: 650,
+            autoCenter: true,
+            display: 'double'
+        });
+        flipInicializado = true;
+    }
 }
 
 /* SETAS */
@@ -199,8 +213,7 @@ document.getElementById("nav-left").onclick = function() {
     let pagina = $('#flipbook').turn('page');
 
     if(pagina <= 2){
-        // volta pra capa
-        $('#flipbook').turn('destroy');
+        $('#flipbook').turn('page', 1);
         document.getElementById("flip-container").style.display = "none";
         document.getElementById("capa").style.display = "flex";
         document.getElementById("nav-left").style.display = "none";
@@ -213,17 +226,6 @@ document.getElementById("nav-left").onclick = function() {
 document.getElementById("nav-right").onclick = function() {
     $('#flipbook').turn('next');
 };
-
-/* CLICK TELA */
-document.addEventListener("click", function(e) {
-    if (e.target.tagName !== "IMG" && document.getElementById("flip-container").style.display === "flex") {
-        if (e.clientX > window.innerWidth/2) {
-            $('#flipbook').turn('next');
-        } else {
-            $('#flipbook').turn('previous');
-        }
-    }
-});
 
 /* ZOOM GLOBAL */
 document.querySelectorAll("#flipbook img").forEach(img => {
