@@ -168,10 +168,16 @@ body {
 
 <script>
 function entrar(){
-    if(document.getElementById("senha").value==="GV2026"){
-        login.style.display="none";
-        capa.style.display="flex";
-    } else alert("Senha incorreta");
+    let senha = document.getElementById("senha").value.trim().toUpperCase();
+
+    if(senha === "GV2026" || senha === "1234"){
+        document.getElementById("login").style.display="none";
+        document.getElementById("capa").style.display="flex";
+    } else {
+        alert("Senha incorreta");
+    }
+}
+</script>
 }
 
 function abrirFlip(){
