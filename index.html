@@ -65,33 +65,6 @@ font-size:10px;
 color:#00ff88;
 }
 
-/* DROPDOWN */
-.dropdown{width:280px;margin:20px 0;position:relative;cursor:pointer;}
-
-.dropdown-selected{
-border:1px solid rgba(0,255,136,0.25);
-padding:12px;
-color:#aaa;
-}
-
-.dropdown-list{
-position:absolute;
-top:100%;
-left:0;
-width:100%;
-background:#000;
-border:1px solid rgba(0,255,136,0.3);
-max-height:0;
-overflow:auto;
-transition:0.3s ease;
-z-index:10;
-}
-
-.dropdown.open .dropdown-list{max-height:240px;}
-
-.dropdown-item{padding:12px;transition:0.2s;}
-.dropdown-item:hover{background:#001a10;}
-
 .btn{
 padding:14px 40px;
 margin-top:25px;
@@ -108,22 +81,12 @@ background:#d4af37;
 color:#000;
 box-shadow:0 0 25px rgba(212,175,55,0.4);
 }
-
-.form-container{
-width:320px;
-padding:35px;
-border:1px solid rgba(0,255,136,0.08);
-}
-
-.success{color:#00ff88;}
 </style>
 </head>
 
 <body>
 
 <div class="section active" id="s1">
-<img src="1977.png" class="shield">
-<div class="sub">PRIVATE ACCESS</div>
 <h1>Emerald Guardian</h1>
 
 <div class="input-group">
@@ -140,126 +103,102 @@ border:1px solid rgba(0,255,136,0.08);
 </div>
 
 <div class="section" id="s2">
-<h2>Access is restricted to a limited number of qualified individuals.</h2>
-<button class="btn" onclick="nextSafe(3)">CONTINUE</button>
+<h2>Access Granted</h2>
 </div>
 
-<!-- restante das seções iguais -->
-
 <script type="module">
 
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
 const supabase = createClient(
-  "https://mihrsfotrbigixqkpwhu.supabase.co",
-  "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
+"https://mihrsfotrbigixqkpwhu.supabase.co",
+"sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
 );
 
-/* QR COM CONTROLE */
-<script type="module">
-
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
-
-const supabase = createClient(
-  "https://mihrsfotrbigixqkpwhu.supabase.co",
-  "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
-);
-
-/* 🔥 QR COM LOG (VERSÃO CORRETA) */
+/* QR + LOG + CONTADOR */
 async function checkQRAccess(){
 
-  const token = new URLSearchParams(window.location.search).get("access");
-  if(!token) return;
+const token = new URLSearchParams(window.location.search).get("access");
+if(!token) return;
 
-  const { data } = await supabase
-    .from("access_tokens")
-    .select("*")
-    .eq("token", token)
-    .eq("status", "ativo")
-    .single();
+const { data } = await supabase
+.from("access_tokens")
+.select("*")
+.eq("token", token)
+.eq("status", "ativo")
+.single();
 
-  if(!data) return;
+if(!data) return;
 
-  /* 🔥 LOG ADICIONADO */
-  try{
+/* LOG */
+try{
+let geo = {};
+try{
+const res = await fetch("https://ipapi.co/json/");
+geo = await res.json();
+}catch(e){}
 
-    let geo = {};
+await supabase.from("access_logs").insert({
+token: data.token,
+nome: data.nome,
+tipo: data.tipo,
+ip: geo.ip || "unknown",
+cidade: geo.city || "unknown",
+pais: geo.country_name || "unknown",
+user_agent: navigator.userAgent
+});
+}catch(e){}
 
-    try{
-      const res = await fetch("https://ipapi.co/json/");
-      geo = await res.json();
-    }catch(e){}
+/* CONTADOR */
+await supabase
+.from("access_tokens")
+.update({ uses: (data.uses || 0) + 1 })
+.eq("id", data.id);
 
-    await supabase.from("access_logs").insert({
-      token: data.token,
-      nome: data.nome,
-      tipo: data.tipo,
-      ip: geo.ip || "unknown",
-      cidade: geo.city || "unknown",
-      pais: geo.country_name || "unknown",
-      user_agent: navigator.userAgent
-    });
-
-  }catch(e){
-    console.log("log error", e);
-  }
-
-  nextSafe(2);
-}
-
-/* RESTO DO SEU CÓDIGO CONTINUA EXATAMENTE IGUAL */
-
-</script>
-
-  await supabase
-    .from("access_tokens")
-    .update({ uses: (data.uses || 0) + 1 })
-    .eq("id", data.id);
-
-  nextSafe(2);
+nextSafe(2);
 }
 
 /* LOGIN */
 window.login = async function(){
 
-  const email = document.getElementById("email").value.trim().toLowerCase();
-  const password = document.getElementById("password").value;
+const email = document.getElementById("email").value.trim().toLowerCase();
+const password = document.getElementById("password").value;
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+const { error } = await supabase.auth.signInWithPassword({ email, password });
 
-  if(error){
-    alert("Invalid login credentials");
-    return;
-  }
+if(error){
+alert("Invalid login credentials");
+return;
+}
 
-  const { data } = await supabase
-    .from("users_access")
-    .select("status")
-    .ilike("email", email)
-    .limit(1);
+const { data } = await supabase
+.from("users_access")
+.select("status")
+.ilike("email", email)
+.limit(1);
 
-  if(!data || data.length === 0){
-    alert("User not found in access list");
-    return;
-  }
+if(!data || data.length === 0){
+alert("User not found in access list");
+return;
+}
 
-  if(data[0].status !== "aprovado"){
-    alert("Access not approved");
-    return;
-  }
+if(data[0].status !== "aprovado"){
+alert("Access not approved");
+return;
+}
 
-  nextSafe(2);
+nextSafe(2);
 }
 
 /* NAV */
 window.nextSafe = function(n){
-  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-  document.getElementById("s"+n).classList.add("active");
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+document.getElementById("s"+n).classList.add("active");
 }
 
 /* INIT */
 window.addEventListener("DOMContentLoaded", () => {
-  checkQRAccess();
+checkQRAccess();
 });
 
 </script>
