@@ -5,22 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Emerald Guardian</title>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 body{margin:0;background:#000;color:#fff;font-family:system-ui;overflow:hidden;}
 .section{position:absolute;width:100%;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;opacity:0;pointer-events:none;transition:1.2s ease;}
 .section.active{opacity:1;pointer-events:auto;}
 h1{font-size:56px;color:#d4af37;}
-h2{font-size:20px;text-align:center;color:#aaa;}
 .input-group{width:280px;margin:15px 0;}
 input{width:100%;padding:12px;background:#111;border:1px solid #333;color:#fff;}
 .btn{padding:12px 30px;border:1px solid #d4af37;background:transparent;color:#d4af37;cursor:pointer;}
-.btn:hover{background:#d4af37;color:#000;}
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
 <div class="section active" id="s1">
 <h1>Emerald Guardian</h1>
 
@@ -35,25 +34,18 @@ input{width:100%;padding:12px;background:#111;border:1px solid #333;color:#fff;}
 <button class="btn" onclick="login()">ENTER</button>
 </div>
 
-<!-- CONTEÚDO -->
 <div class="section" id="s2">
 <h2>Access Granted</h2>
-<button class="btn" onclick="nextSafe(1)">Voltar</button>
 </div>
 
-<script type="module">
+<script>
 
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
-
-const supabase = createClient(
+const supabase = window.supabase.createClient(
   "https://mihrsfotrbigixqkpwhu.supabase.co",
   "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
 );
 
-/* =========================
-   🔐 LOGIN NORMAL
-========================= */
-window.login = async function(){
+async function login(){
 
   const email = document.getElementById("email").value.trim().toLowerCase();
   const password = document.getElementById("password").value;
@@ -61,7 +53,7 @@ window.login = async function(){
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if(error){
-    alert("Invalid login credentials");
+    alert("Invalid login");
     return;
   }
 
@@ -72,25 +64,23 @@ window.login = async function(){
     .limit(1);
 
   if(!data || data.length === 0){
-    alert("User not found in access list");
+    alert("User not found");
     return;
   }
 
   if(data[0].status !== "aprovado"){
-    alert("Access not approved");
+    alert("Not approved");
     return;
   }
 
-  nextSafe(2);
+  next(2);
 }
 
-/* =========================
-   🚀 QR + RASTREAMENTO (CORRIGIDO)
-========================= */
-async function checkQRAccess(){
+async function checkQR(){
 
-  const params = new URLSearchParams(window.location.search);
-  const token = params.get("access");
+  const token = new URLSearchParams(window.location.search).get("access");
+
+  console.log("TOKEN:", token);
 
   if(!token) return;
 
@@ -98,48 +88,24 @@ async function checkQRAccess(){
     .from("access_tokens")
     .select("*")
     .eq("token", token)
-    .eq("status", "ativo")
-    .limit(1);
+    .eq("status", "ativo");
 
-  if(error){
-    console.log("Erro token:", error);
-    return;
-  }
+  console.log("DATA:", data);
+  console.log("ERROR:", error);
 
   if(data && data.length > 0){
-
-    let geo = {};
-    try{
-      const res = await fetch("https://ipapi.co/json/");
-      geo = await res.json();
-    }catch(e){}
-
-    await supabase.from("access_logs").insert({
-      token: token,
-      ip: geo.ip || "unknown",
-      user_agent: navigator.userAgent,
-      country: geo.country_name || "unknown",
-      city: geo.city || "unknown"
-    });
-
-    nextSafe(2);
+    next(2);
   }
 }
 
-/* =========================
-   NAVEGAÇÃO
-========================= */
-window.nextSafe = function(n){
+function next(n){
   document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
   document.getElementById("s"+n).classList.add("active");
 }
 
-/* =========================
-   INIT (CORREÇÃO PRINCIPAL)
-========================= */
-window.addEventListener("DOMContentLoaded", async () => {
-  await checkQRAccess();
-});
+window.onload = function(){
+  checkQR();
+};
 
 </script>
 
