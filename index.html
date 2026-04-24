@@ -6,116 +6,15 @@
 <title>Emerald Guardian</title>
 
 <style>
-body{
-margin:0;
-background:#000;
-color:#fff;
-font-family:system-ui,-apple-system,Segoe UI,Roboto;
-overflow:hidden;
-}
-
-.section{
-position:absolute;
-width:100%;
-height:100vh;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-opacity:0;
-pointer-events:none;
-transition:1.2s ease;
-}
-
-.section.active{
-opacity:1;
-pointer-events:auto;
-}
-
-h1{font-size:56px;color:#d4af37;letter-spacing:2px;}
-h2{font-size:20px;font-weight:300;text-align:center;max-width:420px;color:#aaa;line-height:1.6;}
-
-.sub{font-size:12px;letter-spacing:3px;color:#666;margin-bottom:10px;}
-
-.shield{width:140px;margin-bottom:30px;}
-.felino{width:340px;max-width:85%;margin-bottom:25px;}
-
-.input-group{position:relative;width:280px;margin:20px 0;}
-
-.input-group input{
-width:100%;
-background:rgba(0,255,136,0.03);
-border:1px solid rgba(0,255,136,0.25);
-color:white;
-padding:12px 14px;
-outline:none;
-transition:0.3s;
-}
-
-.input-group input:focus{
-border:1px solid #00ff88;
-box-shadow:0 0 10px rgba(0,255,136,0.25);
-}
-
-.input-group label{
-position:absolute;
-top:-10px;
-left:0;
-font-size:10px;
-color:#00ff88;
-}
-
-/* DROPDOWN */
-.dropdown{width:280px;margin:20px 0;position:relative;cursor:pointer;}
-
-.dropdown-selected{
-border:1px solid rgba(0,255,136,0.25);
-padding:12px;
-color:#aaa;
-}
-
-.dropdown-list{
-position:absolute;
-top:100%;
-left:0;
-width:100%;
-background:#000;
-border:1px solid rgba(0,255,136,0.3);
-max-height:0;
-overflow:auto;
-transition:0.3s ease;
-z-index:10;
-}
-
-.dropdown.open .dropdown-list{max-height:240px;}
-
-.dropdown-item{padding:12px;transition:0.2s;}
-.dropdown-item:hover{background:#001a10;}
-
-.btn{
-padding:14px 40px;
-margin-top:25px;
-background:transparent;
-border:1px solid #d4af37;
-color:#d4af37;
-cursor:pointer;
-transition:0.4s;
-letter-spacing:2px;
-}
-
-.btn:hover{
-background:#d4af37;
-color:#000;
-box-shadow:0 0 25px rgba(212,175,55,0.4);
-}
-
-.form-container{
-width:320px;
-padding:35px;
-border:1px solid rgba(0,255,136,0.08);
-}
-
-.success{color:#00ff88;}
+body{margin:0;background:#000;color:#fff;font-family:system-ui;overflow:hidden;}
+.section{position:absolute;width:100%;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;opacity:0;pointer-events:none;transition:1.2s ease;}
+.section.active{opacity:1;pointer-events:auto;}
+h1{font-size:56px;color:#d4af37;}
+h2{font-size:20px;text-align:center;color:#aaa;}
+.input-group{width:280px;margin:15px 0;}
+input{width:100%;padding:12px;background:#111;border:1px solid #333;color:#fff;}
+.btn{padding:12px 30px;border:1px solid #d4af37;background:transparent;color:#d4af37;cursor:pointer;}
+.btn:hover{background:#d4af37;color:#000;}
 </style>
 </head>
 
@@ -123,95 +22,23 @@ border:1px solid rgba(0,255,136,0.08);
 
 <!-- LOGIN -->
 <div class="section active" id="s1">
-<img src="1977.png" class="shield">
-<div class="sub">PRIVATE ACCESS</div>
 <h1>Emerald Guardian</h1>
 
 <div class="input-group">
-<input id="email" placeholder=" ">
-<label>EMAIL</label>
+<input id="email" placeholder="Email">
 </div>
 
 <div class="input-group">
-<input id="password" type="password" placeholder=" ">
-<label>PASSWORD</label>
+<input id="password" type="password" placeholder="Senha">
 </div>
 
 <button class="btn" onclick="login()">ENTER</button>
 </div>
 
-<!-- S2 -->
+<!-- CONTEÚDO -->
 <div class="section" id="s2">
-<h2>Access is restricted to a limited number of qualified individuals.</h2>
-<button class="btn" onclick="nextSafe(3)">CONTINUE</button>
-</div>
-
-<!-- S3 -->
-<div class="section" id="s3">
-<h2>Forged beneath extreme geological pressure,<br>over millions of years,<br>to exist only once.</h2>
-<button class="btn" onclick="nextSafe(4)">CONTINUE</button>
-</div>
-
-<!-- S4 -->
-<div class="section" id="s4">
-<img src="1979.png" class="felino">
-<h2>A singular specimen,<br>beyond conventional classification.</h2>
-<button class="btn" onclick="nextSafe(5)">CONTINUE</button>
-</div>
-
-<!-- S5 -->
-<div class="section" id="s5">
-<h2>Its rarity transcends market availability.</h2>
-<button class="btn" onclick="nextSafe(6)">CONTINUE</button>
-</div>
-
-<!-- S6 -->
-<div class="section" id="s6">
-<h2>Acquisition is private,<br>selective,<br>and discreet.</h2>
-<button class="btn" onclick="nextSafe(7)">CONTINUE</button>
-</div>
-
-<!-- FORM -->
-<div class="section" id="s7">
-<div class="form-container">
-
-<h2>Private Acquisition Request</h2>
-
-<form id="formEG">
-
-<div class="input-group">
-<input name="name" placeholder=" " required>
-<label>FULL NAME</label>
-</div>
-
-<div class="input-group">
-<input name="email" placeholder=" " required>
-<label>EMAIL</label>
-</div>
-
-<div class="dropdown" id="dropdown">
-<div class="dropdown-selected">Select Country</div>
-<div class="dropdown-list"></div>
-</div>
-
-<input type="hidden" name="ddi" id="ddi">
-
-<div class="input-group">
-<input name="phone" placeholder=" " required>
-<label>PHONE</label>
-</div>
-
-<button class="btn">SUBMIT</button>
-
-</form>
-
-</div>
-</div>
-
-<!-- SUCCESS -->
-<div class="section" id="s8">
-<h2 class="success">Request sent successfully</h2>
-<button class="btn" onclick="nextSafe(1)">RETURN</button>
+<h2>Access Granted</h2>
+<button class="btn" onclick="nextSafe(1)">Voltar</button>
 </div>
 
 <script type="module">
@@ -223,7 +50,9 @@ const supabase = createClient(
   "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
 );
 
-/* LOGIN */
+/* =========================
+   🔐 LOGIN NORMAL
+========================= */
 window.login = async function(){
 
   const email = document.getElementById("email").value.trim().toLowerCase();
@@ -236,13 +65,13 @@ window.login = async function(){
     return;
   }
 
-  const { data, error: dbError } = await supabase
+  const { data } = await supabase
     .from("users_access")
     .select("status")
     .ilike("email", email)
     .limit(1);
 
-  if(dbError || !data || data.length === 0){
+  if(!data || data.length === 0){
     alert("User not found in access list");
     return;
   }
@@ -255,101 +84,53 @@ window.login = async function(){
   nextSafe(2);
 }
 
-/* NAV */
+/* =========================
+   🚀 QR + RASTREAMENTO
+========================= */
+async function checkQRAccess(){
+
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get("access");
+
+  if(!token) return;
+
+  const { data } = await supabase
+    .from("access_tokens")
+    .select("*")
+    .eq("token", token)
+    .eq("status", "ativo")
+    .limit(1);
+
+  if(data && data.length > 0){
+
+    let geo = {};
+    try{
+      const res = await fetch("https://ipapi.co/json/");
+      geo = await res.json();
+    }catch(e){}
+
+    await supabase.from("access_logs").insert({
+      token: token,
+      ip: geo.ip || "unknown",
+      user_agent: navigator.userAgent,
+      country: geo.country_name || "unknown",
+      city: geo.city || "unknown"
+    });
+
+    nextSafe(2);
+  }
+}
+
+/* =========================
+   NAVEGAÇÃO
+========================= */
 window.nextSafe = function(n){
   document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
   document.getElementById("s"+n).classList.add("active");
 }
 
-/* ISO GLOBAL COMPLETA */
-const countries = [
-"United States / Canada (+1)","Russia / Kazakhstan (+7)","Egypt (+20)","South Africa (+27)",
-"Greece (+30)","Netherlands (+31)","Belgium (+32)","France (+33)","Spain (+34)",
-"Hungary (+36)","Italy (+39)","Romania (+40)","Switzerland (+41)","Austria (+43)",
-"United Kingdom (+44)","Denmark (+45)","Sweden (+46)","Norway (+47)","Poland (+48)",
-"Germany (+49)","Peru (+51)","Mexico (+52)","Cuba (+53)","Argentina (+54)",
-"Brazil (+55)","Chile (+56)","Colombia (+57)","Venezuela (+58)",
-"Malaysia (+60)","Australia (+61)","Indonesia (+62)","Philippines (+63)",
-"New Zealand (+64)","Singapore (+65)","Thailand (+66)",
-"Japan (+81)","South Korea (+82)","Vietnam (+84)","China (+86)",
-"Turkey (+90)","India (+91)","Pakistan (+92)","Afghanistan (+93)",
-"Sri Lanka (+94)","Myanmar (+95)","Iran (+98)",
-"Morocco (+212)","Algeria (+213)","Tunisia (+216)",
-"Nigeria (+234)","Angola (+244)","Mozambique (+258)",
-"Portugal (+351)","Ireland (+353)","Finland (+358)",
-"Czech Republic (+420)","Slovakia (+421)",
-"United Arab Emirates (+971)","Saudi Arabia (+966)",
-"Qatar (+974)","Israel (+972)"
-];
-
-countries.sort();
-
-/* DROPDOWN */
-const dropdown=document.getElementById("dropdown");
-const selected=dropdown.querySelector(".dropdown-selected");
-const list=dropdown.querySelector(".dropdown-list");
-const hidden=document.getElementById("ddi");
-
-countries.forEach(c=>{
-  const div=document.createElement("div");
-  div.className="dropdown-item";
-  div.textContent=c;
-
-  div.onclick=()=>{
-    selected.innerText=c;
-    hidden.value=c;
-    dropdown.classList.remove("open");
-  };
-
-  list.appendChild(div);
-});
-
-selected.onclick=()=>dropdown.classList.toggle("open");
-
-document.addEventListener("click",(e)=>{
-if(!dropdown.contains(e.target)){
-dropdown.classList.remove("open");
-}
-});
-
-/* AUTO DETECT */
-fetch("https://ipapi.co/json/")
-.then(res=>res.json())
-.then(data=>{
-  const match = countries.find(c => c.toLowerCase().includes(data.country_name.toLowerCase()));
-  if(match){
-    selected.innerText = match;
-    hidden.value = match;
-  }
-});
-
-/* FORM */
-document.getElementById("formEG").addEventListener("submit", async function(e){
-  e.preventDefault();
-
-  const form = e.target;
-
-  if(!form.ddi.value){
-    alert("Select country");
-    return;
-  }
-
-  const payload = {
-    name: form.name.value,
-    email: form.email.value,
-    phone: form.phone.value,
-    ddi: form.ddi.value,
-    status: 'novo'
-  };
-
-  await fetch('/api/leads',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(payload)
-  });
-
-  nextSafe(8);
-});
+/* INIT */
+checkQRAccess();
 
 </script>
 
