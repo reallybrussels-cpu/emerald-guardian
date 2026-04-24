@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Emerald Guardian</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
 body{
 margin:0;
@@ -216,46 +214,16 @@ border:1px solid rgba(0,255,136,0.08);
 <button class="btn" onclick="nextSafe(1)">RETURN</button>
 </div>
 
-<script>
+<script type="module">
 
-const supabase = window.supabase.createClient(
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+const supabase = createClient(
   "https://mihrsfotrbigixqkpwhu.supabase.co",
   "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
 );
 
-/* LOGIN */
-window.login = async function(){
-
-  const email = document.getElementById("email").value.trim().toLowerCase();
-  const password = document.getElementById("password").value;
-
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
-
-  if(error){
-    alert("Invalid login credentials");
-    return;
-  }
-
-  const { data } = await supabase
-    .from("users_access")
-    .select("status")
-    .ilike("email", email)
-    .limit(1);
-
-  if(!data || data.length === 0){
-    alert("User not found in access list");
-    return;
-  }
-
-  if(data[0].status !== "aprovado"){
-    alert("Access not approved");
-    return;
-  }
-
-  nextSafe(2);
-}
-
-/* QR ACCESS */
+/* 🔥 QR (ADICIONADO SEM QUEBRAR NADA) */
 async function checkQRAccess(){
   const token = new URLSearchParams(window.location.search).get("access");
   if(!token) return;
@@ -271,9 +239,50 @@ async function checkQRAccess(){
   }
 }
 
-window.onload = function(){
-  checkQRAccess();
+/* LOGIN */
+window.login = async function(){
+
+  const email = document.getElementById("email").value.trim().toLowerCase();
+  const password = document.getElementById("password").value;
+
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+  if(error){
+    alert("Invalid login credentials");
+    return;
+  }
+
+  const { data, error: dbError } = await supabase
+    .from("users_access")
+    .select("status")
+    .ilike("email", email)
+    .limit(1);
+
+  if(dbError || !data || data.length === 0){
+    alert("User not found in access list");
+    return;
+  }
+
+  if(data[0].status !== "aprovado"){
+    alert("Access not approved");
+    return;
+  }
+
+  nextSafe(2);
 }
+
+/* NAV */
+window.nextSafe = function(n){
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.getElementById("s"+n).classList.add("active");
+}
+
+/* 🔥 INICIALIZA QR */
+window.addEventListener("DOMContentLoaded", () => {
+  checkQRAccess();
+});
+
+/* RESTO DO SEU SCRIPT ORIGINAL (dropdown, form, etc) CONTINUA IGUAL */
 
 </script>
 
