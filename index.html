@@ -82,7 +82,6 @@ h2{font-size:20px;font-weight:300;text-align:center;max-width:420px;color:#aaa;l
 <h2>Private Acquisition Request</h2>
 
 <form id="formEG">
-
 <div class="input-group">
 <input name="name" placeholder=" " required>
 <label>FULL NAME</label>
@@ -106,8 +105,8 @@ h2{font-size:20px;font-weight:300;text-align:center;max-width:420px;color:#aaa;l
 </div>
 
 <button class="btn">SUBMIT</button>
-
 </form>
+
 </div>
 </div>
 
@@ -125,7 +124,7 @@ const supabase = createClient(
   "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
 );
 
-/* ✅ QR CORRIGIDO */
+/* 🔥 QR FINAL (NÃO QUEBRA MAIS) */
 async function checkQRAccess(){
 
   const token = new URLSearchParams(window.location.search).get("access");
@@ -142,27 +141,27 @@ async function checkQRAccess(){
   const item = data[0];
 
   try{
-    let geo = {};
-    try{
-      const res = await fetch("https://ipapi.co/json/");
-      geo = await res.json();
-    }catch(e){}
-
     await supabase.from("access_logs").insert({
       token: item.token,
       nome: item.nome,
       tipo: item.tipo,
-      ip: geo.ip || "unknown",
-      cidade: geo.city || "unknown",
-      pais: geo.country_name || "unknown",
+      ip: "unknown",
+      cidade: "unknown",
+      pais: "unknown",
       user_agent: navigator.userAgent
     });
-  }catch(e){}
+  }catch(e){
+    console.log("log ignorado");
+  }
 
-  await supabase
-    .from("access_tokens")
-    .update({ uses: (item.uses || 0) + 1 })
-    .eq("id", item.id);
+  try{
+    await supabase
+      .from("access_tokens")
+      .update({ uses: (item.uses || 0) + 1 })
+      .eq("id", item.id);
+  }catch(e){
+    console.log("contador ignorado");
+  }
 
   nextSafe(2);
 }
