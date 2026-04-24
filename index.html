@@ -85,7 +85,7 @@ window.login = async function(){
 }
 
 /* =========================
-   🚀 QR + RASTREAMENTO
+   🚀 QR + RASTREAMENTO (CORRIGIDO)
 ========================= */
 async function checkQRAccess(){
 
@@ -94,12 +94,17 @@ async function checkQRAccess(){
 
   if(!token) return;
 
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("access_tokens")
     .select("*")
     .eq("token", token)
     .eq("status", "ativo")
     .limit(1);
+
+  if(error){
+    console.log("Erro token:", error);
+    return;
+  }
 
   if(data && data.length > 0){
 
@@ -129,8 +134,12 @@ window.nextSafe = function(n){
   document.getElementById("s"+n).classList.add("active");
 }
 
-/* INIT */
-checkQRAccess();
+/* =========================
+   INIT (CORREÇÃO PRINCIPAL)
+========================= */
+window.addEventListener("DOMContentLoaded", async () => {
+  await checkQRAccess();
+});
 
 </script>
 
