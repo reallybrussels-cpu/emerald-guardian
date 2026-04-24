@@ -6,122 +6,33 @@
 <title>Emerald Guardian</title>
 
 <style>
-body{
-margin:0;
-background:#000;
-color:#fff;
-font-family:system-ui,-apple-system,Segoe UI,Roboto;
-overflow:hidden;
-}
-
-.section{
-position:absolute;
-width:100%;
-height:100vh;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-opacity:0;
-pointer-events:none;
-transition:1.2s ease;
-}
-
-.section.active{
-opacity:1;
-pointer-events:auto;
-}
-
+body{margin:0;background:#000;color:#fff;font-family:system-ui,-apple-system,Segoe UI,Roboto;overflow:hidden;}
+.section{position:absolute;width:100%;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;opacity:0;pointer-events:none;transition:1.2s ease;}
+.section.active{opacity:1;pointer-events:auto;}
 h1{font-size:56px;color:#d4af37;letter-spacing:2px;}
 h2{font-size:20px;font-weight:300;text-align:center;max-width:420px;color:#aaa;line-height:1.6;}
-
 .sub{font-size:12px;letter-spacing:3px;color:#666;margin-bottom:10px;}
-
 .shield{width:140px;margin-bottom:30px;}
 .felino{width:340px;max-width:85%;margin-bottom:25px;}
-
 .input-group{position:relative;width:280px;margin:20px 0;}
-
-.input-group input{
-width:100%;
-background:rgba(0,255,136,0.03);
-border:1px solid rgba(0,255,136,0.25);
-color:white;
-padding:12px 14px;
-outline:none;
-transition:0.3s;
-}
-
-.input-group input:focus{
-border:1px solid #00ff88;
-box-shadow:0 0 10px rgba(0,255,136,0.25);
-}
-
-.input-group label{
-position:absolute;
-top:-10px;
-left:0;
-font-size:10px;
-color:#00ff88;
-}
-
-/* DROPDOWN */
+.input-group input{width:100%;background:rgba(0,255,136,0.03);border:1px solid rgba(0,255,136,0.25);color:white;padding:12px 14px;outline:none;transition:0.3s;}
+.input-group input:focus{border:1px solid #00ff88;box-shadow:0 0 10px rgba(0,255,136,0.25);}
+.input-group label{position:absolute;top:-10px;left:0;font-size:10px;color:#00ff88;}
 .dropdown{width:280px;margin:20px 0;position:relative;cursor:pointer;}
-
-.dropdown-selected{
-border:1px solid rgba(0,255,136,0.25);
-padding:12px;
-color:#aaa;
-}
-
-.dropdown-list{
-position:absolute;
-top:100%;
-left:0;
-width:100%;
-background:#000;
-border:1px solid rgba(0,255,136,0.3);
-max-height:0;
-overflow:auto;
-transition:0.3s ease;
-z-index:10;
-}
-
+.dropdown-selected{border:1px solid rgba(0,255,136,0.25);padding:12px;color:#aaa;}
+.dropdown-list{position:absolute;top:100%;left:0;width:100%;background:#000;border:1px solid rgba(0,255,136,0.3);max-height:0;overflow:auto;transition:0.3s ease;z-index:10;}
 .dropdown.open .dropdown-list{max-height:240px;}
-
 .dropdown-item{padding:12px;transition:0.2s;}
 .dropdown-item:hover{background:#001a10;}
-
-.btn{
-padding:14px 40px;
-margin-top:25px;
-background:transparent;
-border:1px solid #d4af37;
-color:#d4af37;
-cursor:pointer;
-transition:0.4s;
-letter-spacing:2px;
-}
-
-.btn:hover{
-background:#d4af37;
-color:#000;
-box-shadow:0 0 25px rgba(212,175,55,0.4);
-}
-
-.form-container{
-width:320px;
-padding:35px;
-border:1px solid rgba(0,255,136,0.08);
-}
-
+.btn{padding:14px 40px;margin-top:25px;background:transparent;border:1px solid #d4af37;color:#d4af37;cursor:pointer;transition:0.4s;letter-spacing:2px;}
+.btn:hover{background:#d4af37;color:#000;box-shadow:0 0 25px rgba(212,175,55,0.4);}
+.form-container{width:320px;padding:35px;border:1px solid rgba(0,255,136,0.08);}
 .success{color:#00ff88;}
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
 <div class="section active" id="s1">
 <img src="1977.png" class="shield">
 <div class="sub">PRIVATE ACCESS</div>
@@ -140,41 +51,34 @@ border:1px solid rgba(0,255,136,0.08);
 <button class="btn" onclick="login()">ENTER</button>
 </div>
 
-<!-- S2 -->
 <div class="section" id="s2">
 <h2>Access is restricted to a limited number of qualified individuals.</h2>
 <button class="btn" onclick="nextSafe(3)">CONTINUE</button>
 </div>
 
-<!-- S3 -->
 <div class="section" id="s3">
 <h2>Forged beneath extreme geological pressure,<br>over millions of years,<br>to exist only once.</h2>
 <button class="btn" onclick="nextSafe(4)">CONTINUE</button>
 </div>
 
-<!-- S4 -->
 <div class="section" id="s4">
 <img src="1979.png" class="felino">
 <h2>A singular specimen,<br>beyond conventional classification.</h2>
 <button class="btn" onclick="nextSafe(5)">CONTINUE</button>
 </div>
 
-<!-- S5 -->
 <div class="section" id="s5">
 <h2>Its rarity transcends market availability.</h2>
 <button class="btn" onclick="nextSafe(6)">CONTINUE</button>
 </div>
 
-<!-- S6 -->
 <div class="section" id="s6">
 <h2>Acquisition is private,<br>selective,<br>and discreet.</h2>
 <button class="btn" onclick="nextSafe(7)">CONTINUE</button>
 </div>
 
-<!-- FORM -->
 <div class="section" id="s7">
 <div class="form-container">
-
 <h2>Private Acquisition Request</h2>
 
 <form id="formEG">
@@ -204,11 +108,9 @@ border:1px solid rgba(0,255,136,0.08);
 <button class="btn">SUBMIT</button>
 
 </form>
-
 </div>
 </div>
 
-<!-- SUCCESS -->
 <div class="section" id="s8">
 <h2 class="success">Request sent successfully</h2>
 <button class="btn" onclick="nextSafe(1)">RETURN</button>
@@ -223,7 +125,7 @@ const supabase = createClient(
   "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
 );
 
-/* QR COM LOG + CONTADOR */
+/* ✅ QR CORRIGIDO */
 async function checkQRAccess(){
 
   const token = new URLSearchParams(window.location.search).get("access");
@@ -233,10 +135,11 @@ async function checkQRAccess(){
     .from("access_tokens")
     .select("*")
     .eq("token", token)
-    .eq("status", "ativo")
-    .single();
+    .eq("status", "ativo");
 
-  if(!data) return;
+  if(!data || data.length === 0) return;
+
+  const item = data[0];
 
   try{
     let geo = {};
@@ -246,9 +149,9 @@ async function checkQRAccess(){
     }catch(e){}
 
     await supabase.from("access_logs").insert({
-      token: data.token,
-      nome: data.nome,
-      tipo: data.tipo,
+      token: item.token,
+      nome: item.nome,
+      tipo: item.tipo,
       ip: geo.ip || "unknown",
       cidade: geo.city || "unknown",
       pais: geo.country_name || "unknown",
@@ -258,24 +161,19 @@ async function checkQRAccess(){
 
   await supabase
     .from("access_tokens")
-    .update({ uses: (data.uses || 0) + 1 })
-    .eq("id", data.id);
+    .update({ uses: (item.uses || 0) + 1 })
+    .eq("id", item.id);
 
   nextSafe(2);
 }
 
-/* LOGIN */
 window.login = async function(){
-
   const email = document.getElementById("email").value.trim().toLowerCase();
   const password = document.getElementById("password").value;
 
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
-  if(error){
-    alert("Invalid login credentials");
-    return;
-  }
+  if(error){ alert("Invalid login credentials"); return; }
 
   const { data } = await supabase
     .from("users_access")
@@ -283,26 +181,17 @@ window.login = async function(){
     .ilike("email", email)
     .limit(1);
 
-  if(!data || data.length === 0){
-    alert("User not found in access list");
-    return;
-  }
-
-  if(data[0].status !== "aprovado"){
-    alert("Access not approved");
-    return;
-  }
+  if(!data || data.length === 0){ alert("User not found"); return; }
+  if(data[0].status !== "aprovado"){ alert("Access not approved"); return; }
 
   nextSafe(2);
 }
 
-/* NAV */
 window.nextSafe = function(n){
   document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
   document.getElementById("s"+n).classList.add("active");
 }
 
-/* INIT */
 window.addEventListener("DOMContentLoaded", () => {
   checkQRAccess();
 });
