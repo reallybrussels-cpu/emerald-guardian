@@ -194,7 +194,81 @@ window.nextSafe = function(n){
 window.addEventListener("DOMContentLoaded", () => {
   checkQRAccess();
 });
+/* 🌍 LISTA GLOBAL ISO + DDI */
+const countries = [
+{name:"Brasil", code:"+55"},
+{name:"Estados Unidos", code:"+1"},
+{name:"Canadá", code:"+1"},
+{name:"Reino Unido", code:"+44"},
+{name:"Alemanha", code:"+49"},
+{name:"França", code:"+33"},
+{name:"Itália", code:"+39"},
+{name:"Espanha", code:"+34"},
+{name:"Portugal", code:"+351"},
+{name:"Suíça", code:"+41"},
+{name:"Austrália", code:"+61"},
+{name:"Japão", code:"+81"},
+{name:"China", code:"+86"},
+{name:"Emirados Árabes", code:"+971"},
+{name:"Singapura", code:"+65"},
+{name:"Hong Kong", code:"+852"},
+{name:"Índia", code:"+91"},
+{name:"África do Sul", code:"+27"},
+{name:"México", code:"+52"},
+{name:"Argentina", code:"+54"},
+{name:"Chile", code:"+56"},
+{name:"Colômbia", code:"+57"},
+{name:"Peru", code:"+51"},
+{name:"Uruguai", code:"+598"},
+{name:"Paraguai", code:"+595"},
+{name:"Bolívia", code:"+591"},
+{name:"Turquia", code:"+90"},
+{name:"Israel", code:"+972"},
+{name:"Arábia Saudita", code:"+966"},
+{name:"Qatar", code:"+974"},
+{name:"Kuwait", code:"+965"},
+{name:"Egito", code:"+20"},
+{name:"Marrocos", code:"+212"},
+{name:"Nigéria", code:"+234"},
+{name:"Quênia", code:"+254"},
+{name:"Tailândia", code:"+66"},
+{name:"Indonésia", code:"+62"},
+{name:"Filipinas", code:"+63"},
+{name:"Malásia", code:"+60"},
+{name:"Coreia do Sul", code:"+82"},
+{name:"Nova Zelândia", code:"+64"}
+];
 
+/* 🔽 DROPDOWN FUNCIONAL */
+const dropdown = document.getElementById("dropdown");
+const list = dropdown.querySelector(".dropdown-list");
+const selected = dropdown.querySelector(".dropdown-selected");
+const ddiInput = document.getElementById("ddi");
+
+countries.forEach(c=>{
+  const item = document.createElement("div");
+  item.className = "dropdown-item";
+  item.textContent = `${c.name} (${c.code})`;
+
+  item.onclick = () => {
+    selected.textContent = `${c.name} (${c.code})`;
+    ddiInput.value = c.code;
+    dropdown.classList.remove("open");
+  };
+
+  list.appendChild(item);
+});
+
+dropdown.onclick = () => {
+  dropdown.classList.toggle("open");
+};
+
+/* 🔒 FECHAR AO CLICAR FORA */
+document.addEventListener("click",(e)=>{
+  if(!dropdown.contains(e.target)){
+    dropdown.classList.remove("open");
+  }
+});
 </script>
 
 </body>
