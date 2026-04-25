@@ -49,6 +49,11 @@ button{
 
 <div id="list"></div>
 
+<hr>
+
+<h2>Access Logs</h2>
+<div id="logs"></div>
+
 <script type="module">
 
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
@@ -66,7 +71,7 @@ if(!userData.user){
   location.href="/";
 }
 
-/* LOAD */
+/* LOAD PÁGINAS */
 async function load(){
 
 const { data, error } = await supabase
@@ -101,6 +106,44 @@ list.appendChild(div);
 
 }
 
+/* 🔥 LOAD LOGS */
+async function loadLogs(){
+
+const { data, error } = await supabase
+.from("access_logs")
+.select("*")
+.order("created_at",{ascending:false})
+.limit(50);
+
+if(error){
+console.log(error);
+return;
+}
+
+const logsDiv = document.getElementById("logs");
+logsDiv.innerHTML = "";
+
+if(!data || data.length===0){
+logsDiv.innerHTML = "<b>Nenhum acesso registrado</b>";
+return;
+}
+
+data.forEach(l=>{
+const div=document.createElement("div");
+div.className="card";
+
+div.innerHTML=`
+<b>${l.token}</b><br>
+${new Date(l.created_at).toLocaleString()}<br>
+IP: ${l.ip}<br>
+${l.user_agent}
+`;
+
+logsDiv.appendChild(div);
+});
+
+}
+
 /* DELETE */
 window.del = async function(id){
 
@@ -117,6 +160,7 @@ console.log(error);
 }
 
 load();
+loadLogs();
 }
 
 /* UPLOAD */
@@ -128,10 +172,8 @@ try{
 
 const user = (await supabase.auth.getUser()).data.user;
 
-/* 🔑 caminho organizado por usuário */
 const name = user.id + "/" + Date.now() + "_" + file.name;
 
-/* ✅ BUCKET CORRETO */
 const { error: uploadError } = await supabase.storage
 .from("vault-assets")
 .upload(name,file);
@@ -141,7 +183,6 @@ console.log(uploadError);
 return null;
 }
 
-/* ✅ URL pública */
 const { data } = supabase.storage
 .from("vault-assets")
 .getPublicUrl(name);
@@ -188,6 +229,7 @@ return;
 msg.innerText="Página criada com sucesso";
 
 load();
+loadLogs();
 
 }catch(e){
 msg.innerText="Erro geral";
@@ -196,7 +238,9 @@ console.log(e);
 
 }
 
+/* INIT */
 load();
+loadLogs();
 
 </script>
 
