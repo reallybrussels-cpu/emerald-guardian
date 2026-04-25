@@ -140,6 +140,10 @@ async function checkQRAccess(){
 
   const item = data[0];
 
+  const ua = navigator.userAgent || "";
+const isBot = ua.toLowerCase().includes("uptimerobot");
+
+if(!isBot){
   try{
     await supabase.from("access_logs").insert({
       token: item.token,
@@ -148,9 +152,12 @@ async function checkQRAccess(){
       ip: "unknown",
       cidade: "unknown",
       pais: "unknown",
-      user_agent: navigator.userAgent
+      user_agent: ua
     });
   }catch(e){
+    console.log("log ignorado");
+  }
+}
     console.log("log ignorado");
   }
 
