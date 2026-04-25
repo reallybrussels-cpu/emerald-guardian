@@ -32,7 +32,6 @@ body{
   border:none;
   color:#d4af37;
   cursor:pointer;
-  font-size:14px;
 }
 
 /* SECTIONS */
@@ -41,7 +40,7 @@ body{
   padding:30px;
 }
 
-.active{
+.section.active{
   display:block;
 }
 
@@ -59,7 +58,6 @@ button.action{
   cursor:pointer;
 }
 
-/* CARDS */
 .card{
   background:#fff;
   padding:10px;
@@ -83,6 +81,7 @@ button.action{
   <button onclick="showSection('flip')">Flipbook</button>
   <button onclick="showSection('stats')">QR Stats</button>
   <button onclick="showSection('logs')">Access Logs</button>
+  <button onclick="showSection('qr')">Gerador de QR</button>
 </div>
 
 <!-- FLIPBOOK -->
@@ -115,6 +114,22 @@ button.action{
 <div id="logsContent"></div>
 </div>
 
+<!-- GERADOR QR -->
+<div id="qr" class="section">
+
+<h2>Gerador de QR VIP</h2>
+
+<input id="qrNome" placeholder="Nome do cliente (ex: Dubai)">
+<input id="qrMax" placeholder="Limite de acessos (ex: 5)">
+
+<button class="action" onclick="gerarQR()">Gerar QR</button>
+
+<h3 id="qrResultado"></h3>
+
+<div id="qrImagem"></div>
+
+</div>
+
 <script type="module">
 
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
@@ -124,10 +139,11 @@ const supabase = createClient(
 "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
 );
 
-/* 🔐 LOGIN */
+/* LOGIN */
 const { data: userData } = await supabase.auth.getUser();
+
 if(!userData.user){
-  alert("Acesso negado");
+  alert("Acesso negado. Faça login.");
   location.href="/";
 }
 
@@ -212,6 +228,42 @@ logs.appendChild(div);
 });
 }
 
+/* GERADOR QR */
+window.gerarQR = async function(){
+
+const nome = document.getElementById("qrNome").value || "VIP";
+const max = parseInt(document.getElementById("qrMax").value) || null;
+
+const random = Math.floor(Math.random()*10000);
+const token = `VIP-${nome.toUpperCase().replace(/\s/g,'')}-${random}`;
+
+const { error } = await supabase
+.from("access_tokens")
+.insert({
+token,
+nome,
+tipo:"vip",
+max_uses:max
+});
+
+if(error){
+alert("Erro ao criar QR");
+return;
+}
+
+const link = `https://www.projectemeraldvault.com/?access=${token}`;
+
+document.getElementById("qrResultado").innerHTML = `
+<b>${token}</b><br>${link}
+`;
+
+document.getElementById("qrImagem").innerHTML = `
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${link}">
+`;
+
+loadStats();
+}
+
 /* DELETE */
 window.del = async function(id){
 await supabase.from("vault_pages").delete().eq("id",id);
@@ -227,9 +279,7 @@ const name = user.id + "/" + Date.now() + "_" + file.name;
 
 await supabase.storage.from("vault-assets").upload(name,file);
 
-const { data } = supabase.storage
-.from("vault-assets")
-.getPublicUrl(name);
+const { data } = supabase.storage.from("vault-assets").getPublicUrl(name);
 
 return data.publicUrl;
 }
@@ -242,7 +292,7 @@ msg.innerText="Salvando...";
 
 const title=document.getElementById("title").value;
 const content=document.getElementById("content").value;
-const order=parseInt(document.getElementById("order").value)||0;
+const order=parseInt(document.getElementById("order").value) || 0;
 
 const file=document.getElementById("image").files[0];
 const image_url = await upload(file);
