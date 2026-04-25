@@ -148,14 +148,11 @@ try{
 
   if(!isBot){
     await supabase.from("access_logs").insert({
-      token: item.token,
-      nome: item.nome,
-      tipo: item.tipo,
-      ip: "unknown",
-      cidade: "unknown",
-      pais: "unknown",
-      user_agent: ua
-    });
+  token: item.token,
+  ip: "unknown",
+  user_agent: ua
+});
+    
   }
 
 }catch(e){
