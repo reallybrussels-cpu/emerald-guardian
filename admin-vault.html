@@ -8,22 +8,58 @@
 body{
   font-family:Arial;
   background:#f5f5f5;
+  margin:0;
+}
+
+/* MENU */
+.menu{
+  background:#000;
+  color:#d4af37;
+  display:flex;
+  padding:15px 30px;
+  gap:30px;
+  align-items:center;
+}
+
+.menu h1{
+  margin:0;
+  font-size:20px;
+  margin-right:40px;
+}
+
+.menu button{
+  background:none;
+  border:none;
+  color:#d4af37;
+  cursor:pointer;
+  font-size:14px;
+}
+
+/* SECTIONS */
+.section{
+  display:none;
   padding:30px;
 }
 
+.active{
+  display:block;
+}
+
+/* FORM */
 input, textarea{
   width:100%;
   padding:10px;
   margin:5px 0;
 }
 
-button{
+button.action{
   padding:10px;
   background:gold;
   border:none;
   cursor:pointer;
 }
 
+/* CARDS */
 .card{
   background:#fff;
   padding:10px;
@@ -41,14 +77,23 @@ button{
 
 <body>
 
-<h1>Vault Admin</h1>
+<div class="menu">
+  <h1>Vault Admin</h1>
+
+  <button onclick="showSection('flip')">Flipbook</button>
+  <button onclick="showSection('stats')">QR Stats</button>
+  <button onclick="showSection('logs')">Access Logs</button>
+</div>
+
+<!-- FLIPBOOK -->
+<div id="flip" class="section active">
 
 <input id="title" placeholder="Título">
 <textarea id="content" placeholder="Conteúdo"></textarea>
 <input type="file" id="image">
 <input id="order" placeholder="Ordem">
 
-<button onclick="createPage()">Criar Página</button>
+<button class="action" onclick="createPage()">Criar Página</button>
 
 <h3 id="msg"></h3>
 
@@ -56,15 +101,19 @@ button{
 
 <div id="list"></div>
 
-<hr>
+</div>
 
+<!-- QR STATS -->
+<div id="stats" class="section">
 <h2>QR Stats</h2>
-<div id="stats"></div>
+<div id="statsContent"></div>
+</div>
 
-<hr>
-
+<!-- LOGS -->
+<div id="logs" class="section">
 <h2>Access Logs</h2>
-<div id="logs"></div>
+<div id="logsContent"></div>
+</div>
 
 <script type="module">
 
@@ -75,26 +124,26 @@ const supabase = createClient(
 "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
 );
 
-/* LOGIN */
+/* 🔐 LOGIN */
 const { data: userData } = await supabase.auth.getUser();
-
 if(!userData.user){
-  alert("Acesso negado. Faça login.");
+  alert("Acesso negado");
   location.href="/";
+}
+
+/* MENU */
+window.showSection = function(id){
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
 }
 
 /* LOAD PAGES */
 async function load(){
 
-const { data, error } = await supabase
+const { data } = await supabase
 .from("vault_pages")
 .select("*")
 .order("order_index");
-
-if(error){
-console.log(error);
-return;
-}
 
 const list=document.getElementById("list");
 list.innerHTML="";
@@ -110,23 +159,17 @@ div.innerHTML=`
 
 list.appendChild(div);
 });
-
 }
 
-/* 🔥 STATS POR QR */
+/* STATS */
 async function loadStats(){
 
-const { data, error } = await supabase
+const { data } = await supabase
 .from("access_tokens")
 .select("*")
 .order("uses",{ascending:false});
 
-if(error){
-console.log(error);
-return;
-}
-
-const stats=document.getElementById("stats");
+const stats=document.getElementById("statsContent");
 stats.innerHTML="";
 
 data.forEach(t=>{
@@ -141,25 +184,19 @@ Usos: ${t.uses || 0} ${t.max_uses ? "/ "+t.max_uses : ""}
 
 stats.appendChild(div);
 });
-
 }
 
-/* LOAD LOGS */
+/* LOGS */
 async function loadLogs(){
 
-const { data, error } = await supabase
+const { data } = await supabase
 .from("access_logs")
 .select("*")
 .order("created_at",{ascending:false})
 .limit(50);
 
-if(error){
-console.log(error);
-return;
-}
-
-const logsDiv = document.getElementById("logs");
-logsDiv.innerHTML = "";
+const logs=document.getElementById("logsContent");
+logs.innerHTML="";
 
 data.forEach(l=>{
 const div=document.createElement("div");
@@ -171,36 +208,24 @@ ${new Date(l.created_at).toLocaleString()}<br>
 ${l.user_agent}
 `;
 
-logsDiv.appendChild(div);
+logs.appendChild(div);
 });
-
 }
 
 /* DELETE */
 window.del = async function(id){
-
-if(!confirm("Deseja realmente excluir?")) return;
-
-await supabase
-.from("vault_pages")
-.delete()
-.eq("id",id);
-
+await supabase.from("vault_pages").delete().eq("id",id);
 load();
 }
 
 /* UPLOAD */
 async function upload(file){
-
 if(!file) return null;
 
 const user = (await supabase.auth.getUser()).data.user;
-
 const name = user.id + "/" + Date.now() + "_" + file.name;
 
-await supabase.storage
-.from("vault-assets")
-.upload(name,file);
+await supabase.storage.from("vault-assets").upload(name,file);
 
 const { data } = supabase.storage
 .from("vault-assets")
@@ -217,32 +242,20 @@ msg.innerText="Salvando...";
 
 const title=document.getElementById("title").value;
 const content=document.getElementById("content").value;
-const order=parseInt(document.getElementById("order").value) || 0;
+const order=parseInt(document.getElementById("order").value)||0;
 
 const file=document.getElementById("image").files[0];
-
 const image_url = await upload(file);
 
-const { error } = await supabase
-.from("vault_pages")
-.insert({
-title,
-content,
-image_url,
-order_index:order
+await supabase.from("vault_pages").insert({
+title,content,image_url,order_index:order
 });
-
-if(error){
-msg.innerText="ERRO: "+error.message;
-return;
-}
 
 msg.innerText="Página criada";
 
 load();
 loadStats();
 loadLogs();
-
 }
 
 /* INIT */
