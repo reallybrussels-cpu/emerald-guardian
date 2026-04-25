@@ -29,6 +29,13 @@ button{
   padding:10px;
   margin:10px 0;
 }
+
+.stat{
+  background:#000;
+  color:#d4af37;
+  padding:10px;
+  margin:10px 0;
+}
 </style>
 </head>
 
@@ -51,6 +58,11 @@ button{
 
 <hr>
 
+<h2>QR Stats</h2>
+<div id="stats"></div>
+
+<hr>
+
 <h2>Access Logs</h2>
 <div id="logs"></div>
 
@@ -63,7 +75,7 @@ const supabase = createClient(
 "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
 );
 
-/* 🔐 PROTEÇÃO LOGIN */
+/* LOGIN */
 const { data: userData } = await supabase.auth.getUser();
 
 if(!userData.user){
@@ -71,7 +83,7 @@ if(!userData.user){
   location.href="/";
 }
 
-/* LOAD PÁGINAS */
+/* LOAD PAGES */
 async function load(){
 
 const { data, error } = await supabase
@@ -87,11 +99,6 @@ return;
 const list=document.getElementById("list");
 list.innerHTML="";
 
-if(!data || data.length===0){
-list.innerHTML="<b>Nenhuma página criada ainda</b>";
-return;
-}
-
 data.forEach(p=>{
 const div=document.createElement("div");
 div.className="card";
@@ -106,7 +113,38 @@ list.appendChild(div);
 
 }
 
-/* 🔥 LOAD LOGS */
+/* 🔥 STATS POR QR */
+async function loadStats(){
+
+const { data, error } = await supabase
+.from("access_tokens")
+.select("*")
+.order("uses",{ascending:false});
+
+if(error){
+console.log(error);
+return;
+}
+
+const stats=document.getElementById("stats");
+stats.innerHTML="";
+
+data.forEach(t=>{
+const div=document.createElement("div");
+div.className="stat";
+
+div.innerHTML=`
+<b>${t.token}</b><br>
+Tipo: ${t.tipo}<br>
+Usos: ${t.uses || 0} ${t.max_uses ? "/ "+t.max_uses : ""}
+`;
+
+stats.appendChild(div);
+});
+
+}
+
+/* LOAD LOGS */
 async function loadLogs(){
 
 const { data, error } = await supabase
@@ -123,11 +161,6 @@ return;
 const logsDiv = document.getElementById("logs");
 logsDiv.innerHTML = "";
 
-if(!data || data.length===0){
-logsDiv.innerHTML = "<b>Nenhum acesso registrado</b>";
-return;
-}
-
 data.forEach(l=>{
 const div=document.createElement("div");
 div.className="card";
@@ -135,7 +168,6 @@ div.className="card";
 div.innerHTML=`
 <b>${l.token}</b><br>
 ${new Date(l.created_at).toLocaleString()}<br>
-IP: ${l.ip}<br>
 ${l.user_agent}
 `;
 
@@ -149,18 +181,12 @@ window.del = async function(id){
 
 if(!confirm("Deseja realmente excluir?")) return;
 
-const { error } = await supabase
+await supabase
 .from("vault_pages")
 .delete()
 .eq("id",id);
 
-if(error){
-alert("Erro ao deletar");
-console.log(error);
-}
-
 load();
-loadLogs();
 }
 
 /* UPLOAD */
@@ -168,32 +194,19 @@ async function upload(file){
 
 if(!file) return null;
 
-try{
-
 const user = (await supabase.auth.getUser()).data.user;
 
 const name = user.id + "/" + Date.now() + "_" + file.name;
 
-const { error: uploadError } = await supabase.storage
+await supabase.storage
 .from("vault-assets")
 .upload(name,file);
-
-if(uploadError){
-console.log(uploadError);
-return null;
-}
 
 const { data } = supabase.storage
 .from("vault-assets")
 .getPublicUrl(name);
 
 return data.publicUrl;
-
-}catch(e){
-console.log("upload erro",e);
-return null;
-}
-
 }
 
 /* CREATE */
@@ -201,8 +214,6 @@ window.createPage = async function(){
 
 const msg = document.getElementById("msg");
 msg.innerText="Salvando...";
-
-try{
 
 const title=document.getElementById("title").value;
 const content=document.getElementById("content").value;
@@ -226,20 +237,17 @@ msg.innerText="ERRO: "+error.message;
 return;
 }
 
-msg.innerText="Página criada com sucesso";
+msg.innerText="Página criada";
 
 load();
+loadStats();
 loadLogs();
-
-}catch(e){
-msg.innerText="Erro geral";
-console.log(e);
-}
 
 }
 
 /* INIT */
 load();
+loadStats();
 loadLogs();
 
 </script>
