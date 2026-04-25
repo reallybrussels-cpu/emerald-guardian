@@ -140,11 +140,13 @@ async function checkQRAccess(){
 
   const item = data[0];
 
-  const ua = navigator.userAgent || "";
-const isBot = ua.toLowerCase().includes("uptimerobot");
+ /* LOG + PROTEÇÃO TOTAL */
+try{
 
-if(!isBot){
-  try{
+  const ua = navigator.userAgent || "";
+  const isBot = ua.toLowerCase().includes("uptimerobot");
+
+  if(!isBot){
     await supabase.from("access_logs").insert({
       token: item.token,
       nome: item.nome,
@@ -154,12 +156,11 @@ if(!isBot){
       pais: "unknown",
       user_agent: ua
     });
-  }catch(e){
-    console.log("log ignorado");
   }
+
+}catch(e){
+  console.log("erro log ignorado");
 }
-    console.log("log ignorado");
-  }
 
   try{
     await supabase
