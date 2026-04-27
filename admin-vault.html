@@ -133,7 +133,7 @@ async function criarQRPremium(link, token, tamanho){
   return canvas;
 }
 
-async function baixarQRPremium(link, token, tamanho){
+window.baixarQRPremium = async function(link, token, tamanho){
   const canvas = await criarQRPremium(link, token, tamanho);
   const dataURL = canvas.toDataURL("image/png");
 
@@ -145,7 +145,7 @@ async function baixarQRPremium(link, token, tamanho){
   document.body.removeChild(a);
 }
 
-async function baixarAutomatico(link, token){
+window.baixarAutomatico = async function(link, token){
   await baixarQRPremium(link, token, 2000);
   await baixarQRPremium(link, token, 4000);
 }
