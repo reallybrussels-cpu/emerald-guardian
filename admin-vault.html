@@ -182,10 +182,17 @@ return;
 const link = `https://www.projectemeraldvault.com/?access=${token}`;
 
 document.getElementById("qrResultado").innerHTML = `<b>${token}</b><br>${link}`;
-document.getElementById("qrImagem").innerHTML =
-`<img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${link}">`;
+const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=2000x2000&data=${encodeURIComponent(link)}`;
 
-loadStats();
+document.getElementById("qrImagem").innerHTML = `
+  <img src="${qrURL}" style="max-width:300px; display:block; margin-top:10px;">
+
+  <br>
+
+  <a href="${qrURL}" download="QR-${token}.png">
+    <button class="action">Baixar QR em Alta Resolução</button>
+  </a>
+`;
 }
 
 /* TOGGLE */
