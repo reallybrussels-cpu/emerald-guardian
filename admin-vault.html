@@ -31,7 +31,6 @@ button.action{padding:10px;background:gold;border:none;cursor:pointer;}
   <button onclick="showSection('qr')">Gerador de QR</button>
 </div>
 
-<!-- FLIPBOOK -->
 <div id="flip" class="section active">
 <input id="title" placeholder="Título">
 <textarea id="content" placeholder="Conteúdo"></textarea>
@@ -43,19 +42,16 @@ button.action{padding:10px;background:gold;border:none;cursor:pointer;}
 <div id="list"></div>
 </div>
 
-<!-- QR STATS -->
 <div id="stats" class="section">
 <h2>QR Stats</h2>
 <div id="statsContent"></div>
 </div>
 
-<!-- LOGS -->
 <div id="logs" class="section">
 <h2>Access Logs</h2>
 <div id="logsContent"></div>
 </div>
 
-<!-- GERADOR QR -->
 <div id="qr" class="section">
 <h2>Gerador de QR VIP</h2>
 <input id="qrNome" placeholder="Nome do cliente (ex: Dubai)">
@@ -75,6 +71,23 @@ const supabase = createClient(
 "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
 );
 
+/* NOVO — DOWNLOAD QR */
+window.baixarQR = async function(link, tamanho, nome){
+  const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=${tamanho}x${tamanho}&data=${encodeURIComponent(link)}`;
+  const response = await fetch(qrURL);
+  const blob = await response.blob();
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = nome;
+  document.body.appendChild(a);
+  a.click();
+
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 /* LOGIN */
 const { data: userData } = await supabase.auth.getUser();
 if(!userData.user){
@@ -82,13 +95,11 @@ if(!userData.user){
   location.href="/";
 }
 
-/* MENU */
 window.showSection = function(id){
   document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 }
 
-/* LOAD PAGES */
 async function load(){
 const { data } = await supabase.from("vault_pages").select("*").order("order_index");
 const list=document.getElementById("list");
@@ -102,7 +113,6 @@ list.appendChild(div);
 });
 }
 
-/* STATS COM CONTROLE */
 async function loadStats(){
 const { data } = await supabase.from("access_tokens").select("*").order("uses",{ascending:false});
 const stats=document.getElementById("statsContent");
@@ -131,7 +141,6 @@ stats.appendChild(div);
 });
 }
 
-/* LOGS (CORRIGIDO) */
 async function loadLogs(){
 const { data } = await supabase
 .from("access_logs")
@@ -153,7 +162,6 @@ logs.appendChild(div);
 });
 }
 
-/* GERADOR QR AVANÇADO */
 window.gerarQR = async function(){
 
 const nome = document.getElementById("qrNome").value || "VIP";
@@ -182,39 +190,39 @@ return;
 const link = `https://www.projectemeraldvault.com/?access=${token}`;
 
 document.getElementById("qrResultado").innerHTML = `<b>${token}</b><br>${link}`;
-const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=2000x2000&data=${encodeURIComponent(link)}`;
 
 document.getElementById("qrImagem").innerHTML = `
-  <img src="${qrURL}" style="max-width:300px; display:block; margin-top:10px;">
+  <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(link)}" 
+  style="border:4px solid #000;">
 
-  <br>
+  <div style="margin-top:15px;">
+    <button class="action" onclick="baixarQR('${link}',2000,'QR-${token}-2000.png')">
+      Download 2000px
+    </button>
 
-  <a href="${qrURL}" download="QR-${token}.png">
-    <button class="action">Baixar QR em Alta Resolução</button>
-  </a>
+    <button class="action" onclick="baixarQR('${link}',4000,'QR-${token}-4000.png')">
+      Download 4000px
+    </button>
+  </div>
 `;
 }
 
-/* TOGGLE */
 window.toggleQR = async function(id, atual){
 await supabase.from("access_tokens").update({ ativo: !atual }).eq("id", id);
 loadStats();
 }
 
-/* DELETE QR */
 window.deleteQR = async function(id){
 if(!confirm("Excluir QR?")) return;
 await supabase.from("access_tokens").delete().eq("id", id);
 loadStats();
 }
 
-/* DELETE PAGE */
 window.del = async function(id){
 await supabase.from("vault_pages").delete().eq("id",id);
 load();
 }
 
-/* UPLOAD */
 async function upload(file){
 if(!file) return null;
 const user = (await supabase.auth.getUser()).data.user;
@@ -224,7 +232,6 @@ const { data } = supabase.storage.from("vault-assets").getPublicUrl(name);
 return data.publicUrl;
 }
 
-/* CREATE PAGE */
 window.createPage = async function(){
 const msg = document.getElementById("msg");
 msg.innerText="Salvando...";
@@ -242,7 +249,6 @@ msg.innerText="Página criada";
 load();
 }
 
-/* INIT */
 load();
 loadStats();
 loadLogs();
