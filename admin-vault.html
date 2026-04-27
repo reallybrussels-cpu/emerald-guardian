@@ -5,71 +5,19 @@
 <title>Vault Admin</title>
 
 <style>
-body{
-  font-family:Arial;
-  background:#f5f5f5;
-  margin:0;
-}
-
-/* MENU */
-.menu{
-  background:#000;
-  color:#d4af37;
-  display:flex;
-  padding:15px 30px;
-  gap:30px;
-  align-items:center;
-}
-
-.menu h1{
-  margin:0;
-  font-size:20px;
-  margin-right:40px;
-}
-
-.menu button{
-  background:none;
-  border:none;
-  color:#d4af37;
-  cursor:pointer;
-}
-
-/* SECTIONS */
-.section{
-  display:none;
-  padding:30px;
-}
-
-.section.active{
-  display:block;
-}
-
-/* FORM */
-input, textarea{
-  width:100%;
-  padding:10px;
-  margin:5px 0;
-}
-
-button.action{
-  padding:10px;
-  background:gold;
-  border:none;
-  cursor:pointer;
-}
-
-.card{
-  background:#fff;
-  padding:10px;
-  margin:10px 0;
-}
-
-.stat{
-  background:#000;
-  color:#d4af37;
-  padding:10px;
-  margin:10px 0;
-}
+body{font-family:Arial;background:#f5f5f5;margin:0;}
+.menu{background:#000;color:#d4af37;display:flex;padding:15px 30px;gap:30px;align-items:center;}
+.menu h1{margin:0;font-size:20px;margin-right:40px;}
+.menu button{background:none;border:none;color:#d4af37;cursor:pointer;}
+.section{display:none;padding:30px;}
+.section.active{display:block;}
+input, textarea{width:100%;padding:10px;margin:5px 0;}
+button.action{padding:10px;background:gold;border:none;cursor:pointer;}
+.card{background:#fff;padding:10px;margin:10px 0;}
+.stat{background:#000;color:#d4af37;padding:10px;margin:10px 0;}
+.btnSmall{padding:5px 10px;margin:5px;border:none;cursor:pointer;}
+.btnOn{background:green;color:#fff;}
+.btnOff{background:red;color:#fff;}
 </style>
 </head>
 
@@ -77,7 +25,6 @@ button.action{
 
 <div class="menu">
   <h1>Vault Admin</h1>
-
   <button onclick="showSection('flip')">Flipbook</button>
   <button onclick="showSection('stats')">QR Stats</button>
   <button onclick="showSection('logs')">Access Logs</button>
@@ -86,20 +33,14 @@ button.action{
 
 <!-- FLIPBOOK -->
 <div id="flip" class="section active">
-
 <input id="title" placeholder="Título">
 <textarea id="content" placeholder="Conteúdo"></textarea>
 <input type="file" id="image">
 <input id="order" placeholder="Ordem">
-
 <button class="action" onclick="createPage()">Criar Página</button>
-
 <h3 id="msg"></h3>
-
 <hr>
-
 <div id="list"></div>
-
 </div>
 
 <!-- QR STATS -->
@@ -116,18 +57,13 @@ button.action{
 
 <!-- GERADOR QR -->
 <div id="qr" class="section">
-
 <h2>Gerador de QR VIP</h2>
-
 <input id="qrNome" placeholder="Nome do cliente (ex: Dubai)">
 <input id="qrMax" placeholder="Limite de acessos (ex: 5)">
-
+<input id="qrExpire" placeholder="Expiração (YYYY-MM-DD)">
 <button class="action" onclick="gerarQR()">Gerar QR</button>
-
 <h3 id="qrResultado"></h3>
-
 <div id="qrImagem"></div>
-
 </div>
 
 <script type="module">
@@ -141,7 +77,6 @@ const supabase = createClient(
 
 /* LOGIN */
 const { data: userData } = await supabase.auth.getUser();
-
 if(!userData.user){
   alert("Acesso negado. Faça login.");
   location.href="/";
@@ -155,116 +90,118 @@ window.showSection = function(id){
 
 /* LOAD PAGES */
 async function load(){
-
-const { data } = await supabase
-.from("vault_pages")
-.select("*")
-.order("order_index");
-
+const { data } = await supabase.from("vault_pages").select("*").order("order_index");
 const list=document.getElementById("list");
 list.innerHTML="";
-
 data.forEach(p=>{
 const div=document.createElement("div");
 div.className="card";
-
-div.innerHTML=`
-<strong>${p.title}</strong>
-<button onclick="del('${p.id}')">Excluir</button>
-`;
-
+div.innerHTML=`<strong>${p.title}</strong>
+<button onclick="del('${p.id}')">Excluir</button>`;
 list.appendChild(div);
 });
 }
 
-/* STATS */
+/* STATS COM CONTROLE */
 async function loadStats(){
-
-const { data } = await supabase
-.from("access_tokens")
-.select("*")
-.order("uses",{ascending:false});
-
+const { data } = await supabase.from("access_tokens").select("*").order("uses",{ascending:false});
 const stats=document.getElementById("statsContent");
 stats.innerHTML="";
-
 data.forEach(t=>{
 const div=document.createElement("div");
 div.className="stat";
 
 div.innerHTML=`
 <b>${t.token}</b><br>
+Nome: ${t.nome || "-"}<br>
 Tipo: ${t.tipo}<br>
-Usos: ${t.uses || 0} ${t.max_uses ? "/ "+t.max_uses : ""}
+Usos: ${t.uses || 0} ${t.max_uses ? "/ "+t.max_uses : ""}<br>
+Ativo: ${t.ativo ? "SIM" : "NÃO"}<br>
+Expira: ${t.expires_at || "-"}<br>
+
+<button class="btnSmall ${t.ativo ? "btnOff" : "btnOn"}"
+onclick="toggleQR('${t.id}', ${t.ativo})">
+${t.ativo ? "Desativar" : "Ativar"}
+</button>
+
+<button class="btnSmall" onclick="deleteQR('${t.id}')">Excluir</button>
 `;
 
 stats.appendChild(div);
 });
 }
 
-/* LOGS */
+/* LOGS (CORRIGIDO) */
 async function loadLogs(){
-
 const { data } = await supabase
 .from("access_logs")
 .select("*")
-.order("created_at",{ascending:false})
+.order("accessed_at",{ascending:false})
 .limit(50);
 
 const logs=document.getElementById("logsContent");
 logs.innerHTML="";
-
 data.forEach(l=>{
 const div=document.createElement("div");
 div.className="card";
-
 div.innerHTML=`
 <b>${l.token}</b><br>
-${new Date(l.created_at).toLocaleString()}<br>
+${l.accessed_at}<br>
 ${l.user_agent}
 `;
-
 logs.appendChild(div);
 });
 }
 
-/* GERADOR QR */
+/* GERADOR QR AVANÇADO */
 window.gerarQR = async function(){
 
 const nome = document.getElementById("qrNome").value || "VIP";
 const max = parseInt(document.getElementById("qrMax").value) || null;
+const expire = document.getElementById("qrExpire").value || null;
 
 const random = Math.floor(Math.random()*10000);
 const token = `VIP-${nome.toUpperCase().replace(/\s/g,'')}-${random}`;
 
-const { error } = await supabase
-.from("access_tokens")
-.insert({
+const { error } = await supabase.from("access_tokens").insert({
 token,
 nome,
 tipo:"vip",
-max_uses:max
+max_uses:max,
+expires_at: expire,
+ativo:true,
+uses:0
 });
 
 if(error){
 alert("Erro ao criar QR");
+console.log(error);
 return;
 }
 
 const link = `https://www.projectemeraldvault.com/?access=${token}`;
 
-document.getElementById("qrResultado").innerHTML = `
-<b>${token}</b><br>${link}
-`;
-
-document.getElementById("qrImagem").innerHTML = `
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${link}">
-`;
+document.getElementById("qrResultado").innerHTML = `<b>${token}</b><br>${link}`;
+document.getElementById("qrImagem").innerHTML =
+`<img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${link}">`;
 
 loadStats();
 }
 
-/* DELETE */
+/* TOGGLE */
+window.toggleQR = async function(id, atual){
+await supabase.from("access_tokens").update({ ativo: !atual }).eq("id", id);
+loadStats();
+}
+
+/* DELETE QR */
+window.deleteQR = async function(id){
+if(!confirm("Excluir QR?")) return;
+await supabase.from("access_tokens").delete().eq("id", id);
+loadStats();
+}
+
+/* DELETE PAGE */
 window.del = async function(id){
 await supabase.from("vault_pages").delete().eq("id",id);
 load();
@@ -273,27 +210,20 @@ load();
 /* UPLOAD */
 async function upload(file){
 if(!file) return null;
-
 const user = (await supabase.auth.getUser()).data.user;
 const name = user.id + "/" + Date.now() + "_" + file.name;
-
 await supabase.storage.from("vault-assets").upload(name,file);
-
 const { data } = supabase.storage.from("vault-assets").getPublicUrl(name);
-
 return data.publicUrl;
 }
 
-/* CREATE */
+/* CREATE PAGE */
 window.createPage = async function(){
-
 const msg = document.getElementById("msg");
 msg.innerText="Salvando...";
-
 const title=document.getElementById("title").value;
 const content=document.getElementById("content").value;
 const order=parseInt(document.getElementById("order").value) || 0;
-
 const file=document.getElementById("image").files[0];
 const image_url = await upload(file);
 
@@ -302,10 +232,7 @@ title,content,image_url,order_index:order
 });
 
 msg.innerText="Página criada";
-
 load();
-loadStats();
-loadLogs();
 }
 
 /* INIT */
@@ -314,6 +241,5 @@ loadStats();
 loadLogs();
 
 </script>
-
 </body>
 </html>
