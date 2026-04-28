@@ -172,7 +172,10 @@ window.baixarQRPremium = async function(link, token, tamanho){
 
 window.baixarAutomatico = async function(link, token){
   await baixarQRPremium(link, token, 2000);
-  await baixarQRPremium(link, token, 4000);
+
+  setTimeout(async ()=>{
+    await baixarQRPremium(link, token, 4000);
+  }, 800);
 }
 
 /* ===== FIM DO BLOCO PREMIUM ===== */
