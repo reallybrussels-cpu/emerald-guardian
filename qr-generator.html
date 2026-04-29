@@ -115,10 +115,23 @@ async function criarQRPremium(link, token, tamanho){
 // ======================
 function baixar(link, token, tamanho){
   criarQRPremium(link, token, tamanho).then(canvas=>{
-    const a = document.createElement("a");
-    a.href = canvas.toDataURL();
-    a.download = `QR-${token}-${tamanho}.png`;
-    a.click();
+
+    canvas.toBlob(function(blob){
+
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `QR-${token}-${tamanho}.png`;
+
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      URL.revokeObjectURL(url);
+
+    }, "image/png");
+
   });
 }
 
