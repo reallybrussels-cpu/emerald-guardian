@@ -83,7 +83,7 @@ async function criarQRPremium(link, token, tamanho){
   }
 
   // TEMPLATE
-  const bg = await loadImg("https://projectemeraldvault.com/template-premium.png");
+  const bg = await loadImg("./template-premium.png");
   ctx.drawImage(bg, 0, 0, tamanho, tamanho);
 
   const qrSize = tamanho * 0.55;
@@ -94,7 +94,7 @@ async function criarQRPremium(link, token, tamanho){
   ctx.drawImage(qr, qrX, qrY, qrSize, qrSize);
 
   // PUMA
-  const logo = await loadImg("https://projectemeraldvault.com/puma-escudo.png");
+  const logo = await loadImg("./puma-escudo.png");
 
   const logoSize = qrSize * 0.26;
   const cx = qrX + qrSize/2;
