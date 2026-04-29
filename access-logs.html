@@ -33,59 +33,67 @@ body{
 
 function gerarLogs(){
 
-  const nomes = [
-    "Dubai Client","London Investor","Paris Guest","Tokyo VIP","New York Elite",
-    "Moscow Buyer","Brazil Premium","Italy VIP","Qatar Client","Monaco Private"
+  const perfis = [
+    {nome:"VIP Switzerland", pais:"Switzerland", qtd:18},
+    {nome:"VIP USA", pais:"United States", qtd:12},
+    {nome:"VIP Russia", pais:"Russia", qtd:8},
+    {nome:"VIP Italy", pais:"Italy", qtd:10},
+    {nome:"VIP Germany", pais:"Germany", qtd:8},
+    {nome:"VIP France", pais:"France", qtd:8},
+    {nome:"VIP Canada", pais:"Canada", qtd:6},
+    {nome:"VIP UAE", pais:"United Arab Emirates", qtd:6},
+    {nome:"VIP Saudi", pais:"Saudi Arabia", qtd:5},
+    {nome:"VIP India", pais:"India", qtd:5},
+    {nome:"VIP Denmark", pais:"Denmark", qtd:4},
+    {nome:"VIP Netherlands", pais:"Netherlands", qtd:4},
+    {nome:"VIP Ireland", pais:"Ireland", qtd:3},
+    {nome:"VIP Mexico", pais:"Mexico", qtd:3},
+    {nome:"VIP Brazil", pais:"Brazil", qtd:3},
+    {nome:"VIP Japan", pais:"Japan", qtd:4},
+    {nome:"VIP China", pais:"China", qtd:4},
+    {nome:"VIP South Africa", pais:"South Africa", qtd:3},
+    {nome:"VIP Argentina", pais:"Argentina", qtd:3},
+    {nome:"VIP Chile", pais:"Chile", qtd:3}
   ];
 
   const dispositivos = ["iPhone","Android","Desktop","Tablet"];
-  const cidades = ["Dubai","London","Paris","Tokyo","New York","São Paulo","Roma","Doha","Monaco"];
-
   const logs = [];
 
-  // intervalo de tempo (09:00 até 16:30)
-  const inicio = 9 * 60;      // 540 minutos
-  const fim = 16 * 60 + 30;   // 990 minutos
+  const inicio = 9 * 60;
+  const fim = 16 * 60 + 30;
 
-  for(let i=1;i<=165;i++){
+  perfis.forEach(p => {
 
-    const nome = nomes[Math.floor(Math.random()*nomes.length)];
-    const cidade = cidades[Math.floor(Math.random()*cidades.length)];
-    const dispositivo = dispositivos[Math.floor(Math.random()*dispositivos.length)];
+    for(let i=0;i<p.qtd;i++){
 
-    // gera horário aleatório dentro do intervalo
-    const minutosTotal = Math.floor(Math.random() * (fim - inicio)) + inicio;
+      const minutosTotal = Math.floor(Math.random() * (fim - inicio)) + inicio;
 
-    const horas = Math.floor(minutosTotal / 60).toString().padStart(2,'0');
-    const minutos = (minutosTotal % 60).toString().padStart(2,'0');
+      const horas = Math.floor(minutosTotal / 60).toString().padStart(2,'0');
+      const minutos = (minutosTotal % 60).toString().padStart(2,'0');
 
-    const data = `29/04/2026 ${horas}:${minutos}`;
+      logs.push({
+        token: "VIP-"+(Math.floor(Math.random()*9999)),
+        nome: p.nome,
+        pais: p.pais,
+        dispositivo: dispositivos[Math.floor(Math.random()*dispositivos.length)],
+        data: `29/04/2026 ${horas}:${minutos}`
+      });
+    }
 
-    logs.push({
-      token: "VIP-"+(Math.floor(Math.random()*9999)),
-      nome,
-      cidade,
-      dispositivo,
-      data
-    });
-  }
+  });
 
   return logs;
 }
 
 
-// =========================
 // RENDER
-// =========================
 const container = document.getElementById("logs");
 
 const logs = gerarLogs();
 
-// ordena por horário (mais recente primeiro)
+// ordenar por horário
 logs.sort((a,b)=>{
-  const ta = a.data.split(" ")[1];
-  const tb = b.data.split(" ")[1];
-  return tb.localeCompare(ta);
+  return b.data.localeCompare(a.data);
 });
 
 logs.forEach(log => {
@@ -96,7 +104,7 @@ logs.forEach(log => {
   div.innerHTML = `
     <b>${log.token}</b><br>
     Nome: ${log.nome}<br>
-    Cidade: ${log.cidade}<br>
+    País: ${log.pais}<br>
     Dispositivo: ${log.dispositivo}<br>
     <span class="small">Acesso em: ${log.data}</span>
   `;
