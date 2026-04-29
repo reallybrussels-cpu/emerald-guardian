@@ -115,23 +115,16 @@ async function criarQRPremium(link, token, tamanho){
 // ======================
 function baixar(link, token, tamanho){
   criarQRPremium(link, token, tamanho).then(canvas=>{
+    const url = canvas.toDataURL("image/png");
 
-    canvas.toBlob(function(blob){
-
-      const url = URL.createObjectURL(blob);
-
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `QR-${token}-${tamanho}.png`;
-
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-
-      URL.revokeObjectURL(url);
-
-    }, "image/png");
-
+    const novaAba = window.open();
+    novaAba.document.write(`
+      <title>QR ${token}</title>
+      <img src="${url}" style="width:100%;max-width:800px;display:block;margin:auto;" />
+      <p style="text-align:center;font-family:Arial;">
+        Clique com botão direito → Salvar imagem
+      </p>
+    `);
   });
 }
 
