@@ -50,6 +50,52 @@ const supabase = createClient(
 "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
 );
 
+// =============================
+// LOGIN AUTOMÁTICO VIA QR
+// =============================
+const params = new URLSearchParams(window.location.search);
+const tokenURL = params.get("access");
+
+if(tokenURL){
+
+  const { data, error } = await supabase
+    .from("access_tokens")
+    .select("*")
+    .eq("token", tokenURL)
+    .eq("ativo", true)
+    .single();
+
+  if(!data || error){
+    document.body.innerHTML = "<h2>Acesso inválido</h2>";
+  }else{
+
+    if(data.expires_at){
+      const agora = new Date();
+      const exp = new Date(data.expires_at);
+      if(agora > exp){
+        document.body.innerHTML = "<h2>QR expirado</h2>";
+        throw new Error("Expirado");
+      }
+    }
+
+    if(data.max_uses && data.uses >= data.max_uses){
+      document.body.innerHTML = "<h2>Limite de acessos atingido</h2>";
+      throw new Error("Limite atingido");
+    }
+
+    await supabase
+      .from("access_tokens")
+      .update({ uses: (data.uses || 0) + 1 })
+      .eq("token", tokenURL);
+
+    window.ACCESS_GRANTED = true;
+
+    console.log("ACESSO VIP LIBERADO:", data.nome);
+
+    window.history.replaceState({}, document.title, "/");
+  }
+}
+
 // ======================
 // QR IMAGE
 // ======================
@@ -82,7 +128,6 @@ async function criarQRPremium(link, token, tamanho){
     });
   }
 
-  // TEMPLATE
   const bg = await loadImg("./template-premium.png");
   ctx.drawImage(bg, 0, 0, tamanho, tamanho);
 
@@ -93,7 +138,6 @@ async function criarQRPremium(link, token, tamanho){
   const qr = await gerarImagemQR(link, qrSize);
   ctx.drawImage(qr, qrX, qrY, qrSize, qrSize);
 
-  // PUMA
   const logo = await loadImg("./puma-escudo.png");
 
   const logoSize = qrSize * 0.26;
@@ -140,17 +184,18 @@ window.gerarQR = async function(){
 
   const nome = document.getElementById("nome").value || "VIP";
   const max = parseInt(document.getElementById("max").value) || null;
- let expireInput = document.getElementById("expire").value;
 
-let expire = null;
+  let expireInput = document.getElementById("expire").value;
+  let expire = null;
 
-if(expireInput){
-  if(expireInput.includes("-")){
-    expire = expireInput;
-  } else if(expireInput.length === 8){
-    expire = `${expireInput.slice(0,4)}-${expireInput.slice(4,6)}-${expireInput.slice(6,8)}`;
+  if(expireInput){
+    if(expireInput.includes("-")){
+      expire = expireInput;
+    } else if(expireInput.length === 8){
+      expire = `${expireInput.slice(0,4)}-${expireInput.slice(4,6)}-${expireInput.slice(6,8)}`;
+    }
   }
-}
+
   const token = `VIP-${nome}-${Math.floor(Math.random()*10000)}`;
 
   const { error } = await supabase.from("access_tokens").insert({
@@ -179,7 +224,6 @@ if(expireInput){
   `;
 }
 
-// FIX MODULE
 window.baixar = baixar;
 window.baixarAuto = baixarAuto;
 
