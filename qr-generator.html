@@ -134,8 +134,17 @@ window.gerarQR = async function(){
 
   const nome = document.getElementById("nome").value || "VIP";
   const max = parseInt(document.getElementById("max").value) || null;
-  const expire = document.getElementById("expire").value || null;
+ let expireInput = document.getElementById("expire").value;
 
+let expire = null;
+
+if(expireInput){
+  if(expireInput.includes("-")){
+    expire = expireInput;
+  } else if(expireInput.length === 8){
+    expire = `${expireInput.slice(0,4)}-${expireInput.slice(4,6)}-${expireInput.slice(6,8)}`;
+  }
+}
   const token = `VIP-${nome}-${Math.floor(Math.random()*10000)}`;
 
   const { error } = await supabase.from("access_tokens").insert({
