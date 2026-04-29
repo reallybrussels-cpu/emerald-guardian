@@ -1,1 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>QR Premium Generator</title>
 
+<style>
+body{
+  font-family:Arial;
+  background:#000;
+  color:#d4af37;
+  text-align:center;
+  padding:40px;
+}
+input{
+  display:block;
+  margin:10px auto;
+  padding:10px;
+  width:300px;
+}
+button{
+  padding:12px 20px;
+  margin:10px;
+  background:gold;
+  border:none;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<h1>QR PREMIUM</h1>
+
+<input id="nome" placeholder="Nome (ex: Dubai)">
+<input id="max" placeholder="Limite de acessos">
+<input id="expire" placeholder="Expiração YYYY-MM-DD">
+
+<button onclick="gerarQR()">GERAR QR</button>
+
+<h3 id="resultado"></h3>
+<div id="acoes"></div>
+
+<script type="module">
+
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+const supabase = createClient(
+"https://mihrsfotrbigixqkpwhu.supabase.co",
+"sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
+);
+
+// ======================
+// QR IMAGE
+// ======================
+async function gerarImagemQR(link, size){
+  const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(link)}`;
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.src = qrURL;
+  await new Promise(res => img.onload = res);
+  return img;
+}
+
+// ======================
+// PREMIUM
+// ======================
+async function criarQRPremium(link, token, tamanho){
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+
+  canvas.width = tamanho;
+  canvas.height = tamanho;
+
+  function loadImg(src){
+    return new Promise((resolve, reject)=>{
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = ()=>resolve(img);
+      img.onerror = ()=>reject(src);
+      img.src = src;
+    });
+  }
+
+  // TEMPLATE
+  const bg = await loadImg("https://projectemeraldvault.com/template-premium.png");
+  ctx.drawImage(bg, 0, 0, tamanho, tamanho);
+
+  const qrSize = tamanho * 0.55;
+  const qrX = (tamanho - qrSize)/2;
+  const qrY = tamanho * 0.24;
+
+  const qr = await gerarImagemQR(link, qrSize);
+  ctx.drawImage(qr, qrX, qrY, qrSize, qrSize);
+
+  // PUMA
+  const logo = await loadImg("https://projectemeraldvault.com/puma-escudo.png");
+
+  const logoSize = qrSize * 0.26;
+  const cx = qrX + qrSize/2;
+  const cy = qrY + qrSize/2;
+
+  ctx.fillStyle="#000";
+  ctx.beginPath();
+  ctx.arc(cx,cy,logoSize*0.6,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.drawImage(logo, cx-logoSize/2, cy-logoSize/2, logoSize, logoSize);
+
+  return canvas;
+}
+
+// ======================
+// DOWNLOAD
+// ======================
+function baixar(link, token, tamanho){
+  criarQRPremium(link, token, tamanho).then(canvas=>{
+    const a = document.createElement("a");
+    a.href = canvas.toDataURL();
+    a.download = `QR-${token}-${tamanho}.png`;
+    a.click();
+  });
+}
+
+function baixarAuto(link, token){
+  baixar(link, token, 2000);
+  setTimeout(()=>baixar(link, token, 4000),800);
+}
+
+// ======================
+// GERAR
+// ======================
+window.gerarQR = async function(){
+
+  const nome = document.getElementById("nome").value || "VIP";
+  const max = parseInt(document.getElementById("max").value) || null;
+  const expire = document.getElementById("expire").value || null;
+
+  const token = `VIP-${nome}-${Math.floor(Math.random()*10000)}`;
+
+  const { error } = await supabase.from("access_tokens").insert({
+    token,
+    nome,
+    tipo:"vip",
+    max_uses:max,
+    expires_at:expire,
+    ativo:true,
+    uses:0
+  });
+
+  if(error){
+    alert("Erro ao salvar no Supabase");
+    return;
+  }
+
+  const link = `https://www.projectemeraldvault.com/?access=${token}`;
+
+  document.getElementById("resultado").innerText = token;
+
+  document.getElementById("acoes").innerHTML = `
+    <button onclick="baixar('${link}','${token}',2000)">2000px</button>
+    <button onclick="baixar('${link}','${token}',4000)">4000px</button>
+    <button onclick="baixarAuto('${link}','${token}')">AUTO</button>
+  `;
+}
+
+// FIX MODULE
+window.baixar = baixar;
+window.baixarAuto = baixarAuto;
+
+</script>
+
+</body>
+</html>
