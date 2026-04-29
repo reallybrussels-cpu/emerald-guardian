@@ -31,7 +31,30 @@ button.action{padding:10px;background:gold;border:none;cursor:pointer;}
   <button data-section="qr">Gerador de QR</button>
 </div>
 
-<!-- RESTANTE DO HTML IGUAL (não alterado) -->
+<!-- SEÇÕES -->
+<div id="flip" class="section active">
+  <h2>Flipbook</h2>
+</div>
+
+<div id="stats" class="section">
+  <h2>QR Stats</h2>
+</div>
+
+<div id="logs" class="section">
+  <h2>Access Logs</h2>
+</div>
+
+<div id="qr" class="section">
+  <h2>Gerador de QR</h2>
+
+  <input id="qrNome" placeholder="Nome">
+  <input id="qrMax" placeholder="Limite de acessos">
+  <input id="qrExpire" placeholder="YYYY-MM-DD">
+
+  <button class="action" onclick="gerarQR()">Gerar QR</button>
+
+  <div id="qrImagem"></div>
+</div>
 
 <script type="module">
 
@@ -42,55 +65,101 @@ const supabase = createClient(
 "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
 );
 
-/* ===== TODAS SUAS FUNÇÕES ORIGINAIS PERMANECEM ===== */
-
-/* 🔥 AJUSTE APENAS AQUI (QR BOTÕES) */
+// ======================
+// GERAR QR
+// ======================
 window.gerarQR = async function(){
 
-const nome = document.getElementById("qrNome").value || "VIP";
-const max = parseInt(document.getElementById("qrMax").value) || null;
-const expire = document.getElementById("qrExpire").value || null;
+  const nome = document.getElementById("qrNome").value || "VIP";
+  const max = parseInt(document.getElementById("qrMax").value) || null;
+  const expire = document.getElementById("qrExpire").value || null;
 
-const random = Math.floor(Math.random()*10000);
-const token = `VIP-${nome.toUpperCase().replace(/\s/g,'')}-${random}`;
+  const random = Math.floor(Math.random()*10000);
+  const token = `VIP-${nome.toUpperCase().replace(/\s/g,'')}-${random}`;
 
-const { error } = await supabase.from("access_tokens").insert({
-token,nome,tipo:"vip",max_uses:max,expires_at: expire,ativo:true,uses:0
-});
+  const { error } = await supabase.from("access_tokens").insert({
+    token,nome,tipo:"vip",max_uses:max,expires_at: expire,ativo:true,uses:0
+  });
 
-if(error){ alert("Erro ao criar QR"); return; }
+  if(error){
+    alert("Erro ao criar QR");
+    return;
+  }
 
-const link = `https://www.projectemeraldvault.com/?access=${token}`;
+  const link = `https://www.projectemeraldvault.com/?access=${token}`;
 
-document.getElementById("qrImagem").innerHTML = `
-  <button class="action" data-qr="2000" data-link="${link}" data-token="${token}">
-    Premium 2000px
-  </button>
+  document.getElementById("qrImagem").innerHTML = `
+    <p><strong>${token}</strong></p>
 
-  <button class="action" data-qr="4000" data-link="${link}" data-token="${token}">
-    Premium 4000px
-  </button>
+    <button class="action" data-qr="2000" data-link="${link}" data-token="${token}">
+      Premium 2000px
+    </button>
 
-  <button class="action" data-auto="1" data-link="${link}" data-token="${token}">
-    Gerar + Baixar Automático
-  </button>
-`;
+    <button class="action" data-qr="4000" data-link="${link}" data-token="${token}">
+      Premium 4000px
+    </button>
+
+    <button class="action" data-auto="1" data-link="${link}" data-token="${token}">
+      Gerar + Baixar Automático
+    </button>
+  `;
 }
 
-/* ==============================
-   FIX FINAL (ESTÁVEL)
-============================== */
+// ======================
+// DOWNLOAD SIMPLES (QR LIMPO)
+// ======================
+function gerarImagemQR(link, size){
+  return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(link)}`;
+}
 
+function baixarQRPremium(link, token, tamanho){
+  const url = gerarImagemQR(link, tamanho);
+
+  const novaAba = window.open();
+  novaAba.document.write(`
+    <title>${token}</title>
+    <img src="${url}" style="width:100%;max-width:800px;display:block;margin:auto;" />
+  `);
+}
+
+function baixarAutomatico(link, token){
+  baixarQRPremium(link, token, 2000);
+  setTimeout(()=>baixarQRPremium(link, token, 4000),800);
+}
+
+// ======================
 // MENU
+// ======================
+window.showSection = function(id){
+
+  const sections = document.querySelectorAll(".section");
+
+  sections.forEach(sec=>{
+    sec.classList.remove("active");
+  });
+
+  const el = document.getElementById(id);
+  if(el){
+    el.classList.add("active");
+  }
+
+}
+
+// ======================
+// EVENTOS
+// ======================
 document.addEventListener("DOMContentLoaded", () => {
+
+  // MENU
   document.querySelectorAll(".menu button").forEach(btn=>{
     btn.addEventListener("click", ()=>{
       showSection(btn.dataset.section);
     });
   });
+
 });
 
-// BOTÕES QR
+// BOTÕES DINÂMICOS
 document.addEventListener("click", (e)=>{
   const btn = e.target.closest("button");
   if(!btn) return;
@@ -112,5 +181,6 @@ document.addEventListener("click", (e)=>{
 });
 
 </script>
+
 </body>
 </html>
