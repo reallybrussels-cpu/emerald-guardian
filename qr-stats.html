@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>QR Stats</title>
+
+<style>
+body{font-family:Arial;background:#000;color:#d4af37;padding:30px;}
+.stat{background:#111;padding:15px;margin:10px 0;}
+button{margin-top:10px;padding:8px;background:gold;border:none;cursor:pointer;}
+</style>
+</head>
+
+<body>
+
+<h1>QR STATS</h1>
+<div id="stats"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const supabase = window.supabase.createClient(
+"https://mihrsfotrbigixqkpwhu.supabase.co",
+"sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
+);
+
+async function load(){
+
+const { data } = await supabase
+.from("access_tokens")
+.select("*")
+.order("uses",{ascending:false});
+
+const el = document.getElementById("stats");
+el.innerHTML="";
+
+data.forEach(t=>{
+  const div = document.createElement("div");
+  div.className="stat";
+
+  div.innerHTML=`
+    <b>${t.token}</b><br>
+    Nome: ${t.nome || "-"}<br>
+    Usos: ${t.uses || 0}<br>
+
+    <button onclick="toggle('${t.id}', ${t.ativo})">
+      ${t.ativo ? "Desativar" : "Ativar"}
+    </button>
+
+    <button onclick="del('${t.id}')">Excluir</button>
+  `;
+
+  el.appendChild(div);
+});
+}
+
+window.toggle = async function(id, atual){
+await supabase.from("access_tokens").update({ ativo: !atual }).eq("id", id);
+load();
+}
+
+window.del = async function(id){
+if(!confirm("Excluir?")) return;
+await supabase.from("access_tokens").delete().eq("id", id);
+load();
+}
+
+load();
+</script>
+
+</body>
+</html>
