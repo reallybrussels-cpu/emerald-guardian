@@ -131,7 +131,7 @@ async function criarQRPremium(link, token, tamanho){
   const bg = await loadImg("./template-premium.png");
   ctx.drawImage(bg, 0, 0, tamanho, tamanho);
 
-  const qrSize = tamanho * 0.55;
+  const qrSize = tamanho * 0.60;
   const qrX = (tamanho - qrSize)/2;
   const qrY = tamanho * 0.24;
 
@@ -140,15 +140,11 @@ async function criarQRPremium(link, token, tamanho){
 
   const logo = await loadImg("./puma-escudo.png");
 
-  const logoSize = qrSize * 0.26;
+  const logoSize = qrSize * 0.18;
   const cx = qrX + qrSize/2;
   const cy = qrY + qrSize/2;
 
-  ctx.fillStyle="#000";
-  ctx.beginPath();
-  ctx.arc(cx,cy,logoSize*0.6,0,Math.PI*2);
-  ctx.fill();
-
+  
   ctx.drawImage(logo, cx-logoSize/2, cy-logoSize/2, logoSize, logoSize);
 
   return canvas;
