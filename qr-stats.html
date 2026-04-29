@@ -5,9 +5,24 @@
 <title>QR Stats</title>
 
 <style>
-body{font-family:Arial;background:#000;color:#d4af37;padding:30px;}
-.stat{background:#111;padding:15px;margin:10px 0;}
-button{margin-top:10px;padding:8px;background:gold;border:none;cursor:pointer;}
+body{
+  font-family:Arial;
+  background:#000;
+  color:#d4af37;
+  padding:30px;
+}
+.stat{
+  background:#111;
+  padding:15px;
+  margin:10px 0;
+}
+button{
+  margin-top:10px;
+  padding:8px;
+  background:gold;
+  border:none;
+  cursor:pointer;
+}
 </style>
 </head>
 
@@ -16,59 +31,97 @@ button{margin-top:10px;padding:8px;background:gold;border:none;cursor:pointer;}
 <h1>QR STATS</h1>
 <div id="stats"></div>
 
+<!-- SUPABASE (UMA ÚNICA VEZ) -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
+
 const supabase = window.supabase.createClient(
-"https://mihrsfotrbigixqkpwhu.supabase.co",
-"sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
+  "https://mihrsfotrbigixqkpwhu.supabase.co",
+  "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
 );
 
-<script>
+// =======================
+// LOAD DADOS
+// =======================
 async function load(){
 
-const { data, error } = await supabase
-.from("access_tokens")
-.select("*")
-.order("uses",{ascending:false});
+  const { data, error } = await supabase
+  .from("access_tokens")
+  .select("*")
+  .order("uses",{ascending:false});
 
-console.log("DATA:", data);
-console.log("ERROR:", error);
+  const el = document.getElementById("stats");
+  el.innerHTML = "";
 
-const el = document.getElementById("stats");
-el.innerHTML="";
+  if(error){
+    el.innerHTML = "<p>ERRO AO CARREGAR DADOS</p>";
+    console.log(error);
+    return;
+  }
 
-if(error){
-  el.innerHTML = "<p>ERRO AO CARREGAR DADOS</p>";
-  return;
+  if(!data || data.length === 0){
+    el.innerHTML = "<p>NENHUM DADO ENCONTRADO</p>";
+    return;
+  }
+
+  data.forEach(t=>{
+    const div = document.createElement("div");
+    div.className = "stat";
+
+    div.innerHTML = `
+      <b>${t.token}</b><br>
+      Nome: ${t.nome || "-"}<br>
+      Usos: ${t.uses || 0}<br>
+
+      <button onclick="toggle('${t.id}', ${t.ativo})">
+        ${t.ativo ? "Desativar" : "Ativar"}
+      </button>
+
+      <button onclick="del('${t.id}')">
+        Excluir
+      </button>
+    `;
+
+    el.appendChild(div);
+  });
 }
 
-if(!data || data.length === 0){
-  el.innerHTML = "<p>NENHUM DADO ENCONTRADO</p>";
-  return;
+// =======================
+// ATIVAR / DESATIVAR
+// =======================
+window.toggle = async function(id, atual){
+  await supabase
+  .from("access_tokens")
+  .update({ ativo: !atual })
+  .eq("id", id);
+
+  load();
 }
 
-data.forEach(t=>{
-  const div = document.createElement("div");
-  div.className="stat";
+// =======================
+// EXCLUIR
+// =======================
+window.del = async function(id){
 
-  div.innerHTML=`
-    <b>${t.token}</b><br>
-    Nome: ${t.nome || "-"}<br>
-    Usos: ${t.uses || 0}<br>
+  if(!confirm("Deseja excluir este QR?")) return;
 
-    <button onclick="toggle('${t.id}', ${t.ativo})">
-      ${t.ativo ? "Desativar" : "Ativar"}
-    </button>
+  const { error } = await supabase
+  .from("access_tokens")
+  .delete()
+  .eq("id", id);
 
-    <button onclick="del('${t.id}')">Excluir</button>
-  `;
+  if(error){
+    alert("Erro ao excluir");
+    console.log(error);
+  }
 
-  el.appendChild(div);
-});
+  load();
 }
 
+// =======================
 load();
+
 </script>
 
 </body>
