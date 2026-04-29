@@ -31,18 +31,25 @@ button{
 <h1>QR STATS</h1>
 <div id="stats"></div>
 
-<!-- SUPABASE (UMA ÚNICA VEZ) -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 
-const supabase = window.supabase.createClient(
-  "https://mihrsfotrbigixqkpwhu.supabase.co",
-  "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
-);
+// ⚠️ GARANTIA: NÃO DECLARA DUAS VEZES
+if(!window.supabaseClient){
+
+  window.supabaseClient = window.supabase.createClient(
+    "https://mihrsfotrbigixqkpwhu.supabase.co",
+    "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
+  );
+
+}
+
+const supabase = window.supabaseClient;
+
 
 // =======================
-// LOAD DADOS
+// LOAD
 // =======================
 async function load(){
 
@@ -55,13 +62,13 @@ async function load(){
   el.innerHTML = "";
 
   if(error){
-    el.innerHTML = "<p>ERRO AO CARREGAR DADOS</p>";
+    el.innerHTML = "<p>ERRO AO CARREGAR</p>";
     console.log(error);
     return;
   }
 
   if(!data || data.length === 0){
-    el.innerHTML = "<p>NENHUM DADO ENCONTRADO</p>";
+    el.innerHTML = "<p>SEM DADOS</p>";
     return;
   }
 
@@ -87,24 +94,21 @@ async function load(){
   });
 }
 
-// =======================
-// ATIVAR / DESATIVAR
+
 // =======================
 window.toggle = async function(id, atual){
-  await supabase
-  .from("access_tokens")
+  await supabase.from("access_tokens")
   .update({ ativo: !atual })
   .eq("id", id);
 
   load();
 }
 
-// =======================
-// EXCLUIR
+
 // =======================
 window.del = async function(id){
 
-  if(!confirm("Deseja excluir este QR?")) return;
+  if(!confirm("Excluir?")) return;
 
   const { error } = await supabase
   .from("access_tokens")
@@ -119,7 +123,7 @@ window.del = async function(id){
   load();
 }
 
-// =======================
+
 load();
 
 </script>
