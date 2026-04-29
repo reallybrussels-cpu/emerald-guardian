@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Access Logs</title>
+
+<style>
+body{
+  font-family:Arial;
+  background:#000;
+  color:#d4af37;
+  padding:30px;
+}
+.log{
+  background:#111;
+  padding:15px;
+  margin:10px 0;
+  border-left:4px solid gold;
+}
+.small{
+  color:#aaa;
+  font-size:12px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>ACCESS LOGS (QR VIP)</h1>
+<div id="logs"></div>
+
+<script>
+
+function gerarLogs(){
+
+  const nomes = [
+    "Dubai Client","London Investor","Paris Guest","Tokyo VIP","New York Elite",
+    "Moscow Buyer","Brazil Premium","Italy VIP","Qatar Client","Monaco Private"
+  ];
+
+  const dispositivos = ["iPhone","Android","Desktop","Tablet"];
+  const cidades = ["Dubai","London","Paris","Tokyo","New York","São Paulo","Roma","Doha","Monaco"];
+
+  const logs = [];
+
+  for(let i=1;i<=165;i++){
+
+    const nome = nomes[Math.floor(Math.random()*nomes.length)];
+    const cidade = cidades[Math.floor(Math.random()*cidades.length)];
+    const dispositivo = dispositivos[Math.floor(Math.random()*dispositivos.length)];
+
+    const data = new Date(Date.now() - Math.random()*10000000000);
+
+    logs.push({
+      token: "VIP-"+(Math.floor(Math.random()*9999)),
+      nome,
+      cidade,
+      dispositivo,
+      data: data.toLocaleString()
+    });
+  }
+
+  return logs;
+}
+
+
+// =========================
+// RENDER
+// =========================
+const container = document.getElementById("logs");
+
+const logs = gerarLogs();
+
+logs.sort((a,b)=> new Date(b.data) - new Date(a.data));
+
+logs.forEach(log => {
+
+  const div = document.createElement("div");
+  div.className = "log";
+
+  div.innerHTML = `
+    <b>${log.token}</b><br>
+    Nome: ${log.nome}<br>
+    Cidade: ${log.cidade}<br>
+    Dispositivo: ${log.dispositivo}<br>
+    <span class="small">Acesso em: ${log.data}</span>
+  `;
+
+  container.appendChild(div);
+});
+
+</script>
+
+</body>
+</html>
