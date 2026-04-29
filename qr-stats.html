@@ -24,15 +24,29 @@ const supabase = window.supabase.createClient(
 "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
 );
 
+<script>
 async function load(){
 
-const { data } = await supabase
+const { data, error } = await supabase
 .from("access_tokens")
 .select("*")
 .order("uses",{ascending:false});
 
+console.log("DATA:", data);
+console.log("ERROR:", error);
+
 const el = document.getElementById("stats");
 el.innerHTML="";
+
+if(error){
+  el.innerHTML = "<p>ERRO AO CARREGAR DADOS</p>";
+  return;
+}
+
+if(!data || data.length === 0){
+  el.innerHTML = "<p>NENHUM DADO ENCONTRADO</p>";
+  return;
+}
 
 data.forEach(t=>{
   const div = document.createElement("div");
@@ -52,17 +66,6 @@ data.forEach(t=>{
 
   el.appendChild(div);
 });
-}
-
-window.toggle = async function(id, atual){
-await supabase.from("access_tokens").update({ ativo: !atual }).eq("id", id);
-load();
-}
-
-window.del = async function(id){
-if(!confirm("Excluir?")) return;
-await supabase.from("access_tokens").delete().eq("id", id);
-load();
 }
 
 load();
