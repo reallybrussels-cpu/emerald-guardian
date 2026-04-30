@@ -297,20 +297,30 @@ async function updateStatus(id,status){
   load();
 }
 
-function exportCSV(){
-  let csv="Nome,Email,Telefone,Pais,Status\n";
+window.exportCSV = function(){
+
+  if(!leads || leads.length === 0){
+    alert("Nenhum dado para exportar");
+    return;
+  }
+
+  let csv = "Nome,Email,Telefone,Pais,Status\n";
 
   leads.forEach(l=>{
-    csv+=`"${l.name}","${l.email}","${l.phone}","${l.ddi}","${l.status || "novo"}"\n`;
+    csv += `"${l.name}","${l.email}","${l.phone}","${l.ddi}","${l.status || "novo"}"\n`;
   });
 
-  const blob=new Blob([csv],{type:"text/csv"});
-  const url=URL.createObjectURL(blob);
+  const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
+  const url = URL.createObjectURL(blob);
 
-  const a=document.createElement("a");
-  a.href=url;
-  a.download="leads.csv";
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "leads.csv";
+  document.body.appendChild(a);
   a.click();
+
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 </script>
