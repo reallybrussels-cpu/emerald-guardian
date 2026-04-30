@@ -9,40 +9,25 @@
 
 <style>
 body{margin:0;font-family:Arial;font-size:12px;}
-
-#login{
-height:100vh;display:flex;justify-content:center;align-items:center;
-background:#000;color:#fff;flex-direction:column;
-}
-
+#login{height:100vh;display:flex;justify-content:center;align-items:center;background:#000;color:#fff;flex-direction:column;}
 #login input{margin:5px;padding:10px;border:none;outline:none;width:200px;}
 #login button{padding:10px 20px;background:#b8962e;border:none;color:#000;cursor:pointer;}
-
 #app{display:none;padding:20px;background:#fff;color:#000;}
-
 h1{color:#b8962e;}
-
 .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;}
 .actions{display:flex;gap:8px;align-items:center;}
-
-button, select, input{
-padding:5px 10px;border:1px solid #b8962e;background:#fff;color:#b8962e;font-size:12px;
-}
-
+button, select, input{padding:5px 10px;border:1px solid #b8962e;background:#fff;color:#b8962e;font-size:12px;}
 .dashboard{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
 .card{border:1px solid #ddd;padding:10px;min-width:120px;background:#fafafa;}
-
 .table{width:100%;border-collapse:collapse;text-align:center;}
 .table th,.table td{padding:8px;border-bottom:1px solid #ddd;}
 .table th{background:#f5f5f5;}
-
 .star{color:#b8962e;}
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
 <div id="login">
 <h2>Emerald Secure Access</h2>
 <input id="email" placeholder="Email">
@@ -50,7 +35,6 @@ padding:5px 10px;border:1px solid #b8962e;background:#fff;color:#b8962e;font-siz
 <button onclick="login()">Entrar</button>
 </div>
 
-<!-- APP -->
 <div id="app">
 
 <div class="topbar">
@@ -79,7 +63,6 @@ padding:5px 10px;border:1px solid #b8962e;background:#fff;color:#b8962e;font-siz
 
 <div class="dashboard">
 <div class="card">Total<br><strong id="total">0</strong></div>
-<div class="card">Hoje<br><strong id="today">--</strong></div>
 <div class="card">Novos<br><strong id="novos">0</strong></div>
 <div class="card">Clientes<br><strong id="clientes">0</strong></div>
 <div class="card">Quentes<br><strong id="quentes">0</strong></div>
@@ -118,18 +101,10 @@ window.login = async function(){
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  if(!email || !password){
-    alert("Preencha email e senha");
-    return;
-  }
-
   const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if(error){ alert(error.message); return; }
 
-  if(error){
-    alert(error.message);
-  } else {
-    showApp();
-  }
+  showApp();
 }
 
 window.logout = async function(){
@@ -139,9 +114,7 @@ window.logout = async function(){
 
 async function checkSession(){
   const { data } = await supabase.auth.getSession();
-  if(data.session){
-    showApp();
-  }
+  if(data.session) showApp();
 }
 checkSession();
 
@@ -174,53 +147,30 @@ function loadCountries(){
   countries.forEach(c=>{
     const opt=document.createElement("option");
     opt.value=c;
-    opt.textContent=c;
+    opt.textContent=formatCountry(c);
     select.appendChild(opt);
   });
 }
 
-function stats(){
-  document.getElementById("total").innerText = leads.length;
+function formatCountry(ddi){
+  if(ddi && ddi.includes("(")) return ddi;
 
-  let novos=0,clientes=0,quentes=0,mornos=0,frios=0;
+  const map = {
+    "+1": "Canadá (+1)",
+    "+7": "Rússia (+7)",
+    "+966": "Arábia Saudita (+966)",
+    "+55": "Brasil (+55)"
+  };
 
-  leads.forEach(l=>{
-    const s=l.status||"novo";
-    if(s==="novo") novos++;
-    else if(s==="cliente") clientes++;
-    else if(s==="quente") quentes++;
-    else if(s==="morno") mornos++;
-    else frios++;
-  });
-
-  document.getElementById("novos").innerText=novos;
-  document.getElementById("clientes").innerText=clientes;
-  document.getElementById("quentes").innerText=quentes;
-  document.getElementById("mornos").innerText=mornos;
-  document.getElementById("frios").innerText=frios;
-}
-
-function getScore(status){
-  if(status==="cliente") return "⭐⭐⭐⭐";
-  if(status==="quente") return "⭐⭐⭐";
-  if(status==="morno") return "⭐⭐";
-  if(status==="frio") return "⭐";
-  return "🆕";
+  return map[ddi] || ddi;
 }
 
 function render(){
-  const search = document.getElementById("search").value.toLowerCase();
   const tbody=document.getElementById("tbody");
   tbody.innerHTML="";
 
   leads.forEach(l=>{
     const status=l.status||"novo";
-
-    if(
-      search &&
-      !l.name.toLowerCase().includes(search) &&
-      !l.email.toLowerCase().includes(search)
-    ) return;
 
     const tr=document.createElement("tr");
 
@@ -229,7 +179,6 @@ function render(){
 <td>${l.email}</td>
 <td>${l.phone}</td>
 <td>${formatCountry(l.ddi)}</td>
-
 <td>
 <select onchange="updateStatus(${l.id}, this.value)">
 <option value="novo" ${status==="novo"?"selected":""}>Novo</option>
@@ -239,30 +188,18 @@ function render(){
 <option value="cliente" ${status==="cliente"?"selected":""}>Cliente</option>
 </select>
 </td>
-
-<td class="star">${getScore(status)}</td>
-
-<td>
-<button onclick="del(${l.id})">Excluir</button>
-</td>
+<td>${status}</td>
+<td><button onclick="del(${l.id})">Excluir</button></td>
 `;
 
     tbody.appendChild(tr);
   });
-
-  stats();
 }
 
-/* 🔥 DELETE CORRIGIDO */
 window.del = async function(id){
-
   if(!confirm("Excluir lead?")) return;
 
-  window.del = async function(id){
-
-  if(!confirm("Excluir lead?")) return;
-
-  const res = await fetch(
+  await fetch(
     `https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?id=eq.${id}`,
     {
       method: "DELETE",
@@ -273,14 +210,6 @@ window.del = async function(id){
     }
   );
 
-  if(!res.ok){
-    console.error(await res.text());
-    alert("Erro ao excluir");
-    return;
-  }
-
-  load();
-}
   load();
 }
 
@@ -298,16 +227,10 @@ async function updateStatus(id,status){
 }
 
 window.exportCSV = function(){
-
-  if(!leads || leads.length === 0){
-    alert("Nenhum dado para exportar");
-    return;
-  }
-
   let csv = "Nome,Email,Telefone,Pais,Status\n";
 
   leads.forEach(l=>{
-    csv += `"${l.name}","${l.email}","${l.phone}","${l.ddi}","${l.status || "novo"}"\n`;
+    csv += `"${l.name}","${l.email}","${l.phone}","${formatCountry(l.ddi)}","${l.status || "novo"}"\n`;
   });
 
   const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
@@ -316,33 +239,9 @@ window.exportCSV = function(){
   const a = document.createElement("a");
   a.href = url;
   a.download = "leads.csv";
-  document.body.appendChild(a);
   a.click();
-
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
 }
-
 </script>
-function formatCountry(ddi){
 
-  // se já vier formatado (ex: Brasil (+55)), mantém
-  if(ddi && ddi.includes("(")) return ddi;
-
-  const map = {
-    "+1": "Canadá (+1)",
-    "+7": "Rússia (+7)",
-    "+966": "Arábia Saudita (+966)",
-    "+55": "Brasil (+55)",
-    "+41": "Suíça (+41)",
-    "+971": "Dubai (+971)",
-    "+39": "Itália (+39)",
-    "+44": "Reino Unido (+44)",
-    "+49": "Alemanha (+49)",
-    "+33": "França (+33)"
-  };
-
-  return map[ddi] || ddi;
-}
 </body>
 </html>
