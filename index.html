@@ -269,9 +269,47 @@ dropdown.onclick = () => {
 };
 
 /* 🔒 FECHAR AO CLICAR FORA */
-document.addEventListener("click",(e)=>{
-  if(!dropdown.contains(e.target)){
-    dropdown.classList.remove("open");
+/* 🔥 ENVIO DO FORMULÁRIO PARA SUPABASE */
+document.getElementById("formEG").addEventListener("submit", async (e)=>{
+  e.preventDefault();
+
+  const form = new FormData(e.target);
+
+  const data = {
+    name: form.get("name"),
+    email: form.get("email"),
+    phone: form.get("phone"),
+    ddi: form.get("ddi"),
+    status: "novo"
+  };
+
+  try{
+    const res = await fetch(
+      "https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL",
+          "Authorization": "Bearer sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL",
+          "Prefer": "return=minimal"
+        },
+        body: JSON.stringify(data)
+      }
+    );
+
+    if(!res.ok){
+      const err = await res.text();
+      console.error(err);
+      alert("Erro ao enviar");
+      return;
+    }
+
+    nextSafe(8);
+
+  }catch(e){
+    console.error(e);
+    alert("Erro de conexão");
   }
 });
 </script>
