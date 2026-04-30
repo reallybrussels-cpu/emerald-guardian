@@ -153,13 +153,21 @@ function loadCountries(){
 }
 
 function formatCountry(ddi){
+
+  // mantém se já estiver formatado
   if(ddi && ddi.includes("(")) return ddi;
 
   const map = {
-    "+1": "Canadá (+1)",
+    "+1": "USA / Canadá (+1)",
     "+7": "Rússia (+7)",
     "+966": "Arábia Saudita (+966)",
-    "+55": "Brasil (+55)"
+    "+55": "Brasil (+55)",
+    "+41": "Suíça (+41)",
+    "+971": "Dubai, UAE (+971)",
+    "+39": "Itália (+39)",
+    "+44": "Reino Unido (+44)",
+    "+49": "Alemanha (+49)",
+    "+33": "França (+33)"
   };
 
   return map[ddi] || ddi;
