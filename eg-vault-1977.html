@@ -258,12 +258,29 @@ window.del = async function(id){
 
   if(!confirm("Excluir lead?")) return;
 
-  await fetch('/api/delete-lead',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({id})
-  });
+  window.del = async function(id){
 
+  if(!confirm("Excluir lead?")) return;
+
+  const res = await fetch(
+    `https://mihrsfotrbigixqkpwhu.supabase.co/rest/v1/leads?id=eq.${id}`,
+    {
+      method: "DELETE",
+      headers: {
+        "apikey": "sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL",
+        "Authorization": "Bearer sb_publishable_eyG-SUt4b3_dV37u_QzdIQ_78X8r1rL"
+      }
+    }
+  );
+
+  if(!res.ok){
+    console.error(await res.text());
+    alert("Erro ao excluir");
+    return;
+  }
+
+  load();
+}
   load();
 }
 
