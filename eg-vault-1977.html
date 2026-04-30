@@ -228,7 +228,7 @@ function render(){
 <td>${l.name}</td>
 <td>${l.email}</td>
 <td>${l.phone}</td>
-<td>${l.ddi}</td>
+<td>${formatCountry(l.ddi)}</td>
 
 <td>
 <select onchange="updateStatus(${l.id}, this.value)">
@@ -324,6 +324,25 @@ window.exportCSV = function(){
 }
 
 </script>
+function formatCountry(ddi){
 
+  // se já vier formatado (ex: Brasil (+55)), mantém
+  if(ddi && ddi.includes("(")) return ddi;
+
+  const map = {
+    "+1": "Canadá (+1)",
+    "+7": "Rússia (+7)",
+    "+966": "Arábia Saudita (+966)",
+    "+55": "Brasil (+55)",
+    "+41": "Suíça (+41)",
+    "+971": "Dubai (+971)",
+    "+39": "Itália (+39)",
+    "+44": "Reino Unido (+44)",
+    "+49": "Alemanha (+49)",
+    "+33": "França (+33)"
+  };
+
+  return map[ddi] || ddi;
+}
 </body>
 </html>
